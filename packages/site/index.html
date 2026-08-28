@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tacto Reporting</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="gate" class="gate">
+      <form id="gate-form" class="gate-form">
+        <h1>Tacto Reporting</h1>
+        <label for="gate-password">Passwort</label>
+        <input type="password" id="gate-password" name="password" autocomplete="current-password" required />
+        <button type="submit">Ansehen</button>
+        <p id="gate-error" class="gate-error" hidden>Falsches Passwort.</p>
+      </form>
+    </div>
+
+    <div id="app" class="app" hidden>
+      <header class="app-header">
+        <h1>Tacto Reporting</h1>
+        <div class="header-controls">
+          <label for="gesellschaft-filter">Gesellschaft</label>
+          <select id="gesellschaft-filter"></select>
+        </div>
+      </header>
+      <p id="stand" class="stand"></p>
+
+      <section id="empty-state" class="empty-state" hidden>
+        <p>Noch keine Daten hochgeladen.</p>
+      </section>
+
+      <main id="content">
+        <section>
+          <h2>KPIs</h2>
+          <div id="kpi-grid" class="kpi-grid"></div>
+        </section>
+
+        <section>
+          <h2>Implementierungs-Status</h2>
+          <div id="status-board" class="status-board"></div>
+        </section>
+      </main>
+
+      <p class="upload-link"><a href="/upload.html">Daten aktualisieren →</a></p>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

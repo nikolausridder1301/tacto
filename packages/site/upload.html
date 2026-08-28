@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tacto Reporting – Upload</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="gate" class="gate">
+      <form id="gate-form" class="gate-form">
+        <h1>Tacto Reporting</h1>
+        <label for="gate-password">Passwort</label>
+        <input type="password" id="gate-password" name="password" autocomplete="current-password" required />
+        <button type="submit">Ansehen</button>
+        <p id="gate-error" class="gate-error" hidden>Falsches Passwort.</p>
+      </form>
+    </div>
+
+    <div id="app" class="app" hidden>
+      <header class="app-header">
+        <h1>Daten aktualisieren</h1>
+      </header>
+
+      <form id="upload-form" class="upload-form">
+        <div class="upload-field">
+          <label for="kpis-file">KPI-CSV (kpis.csv)</label>
+          <input type="file" id="kpis-file" name="kpis" accept=".csv" />
+        </div>
+        <div class="upload-field">
+          <label for="status-file">Status-CSV (status.csv)</label>
+          <input type="file" id="status-file" name="status" accept=".csv" />
+        </div>
+        <button type="submit">Hochladen</button>
+        <p id="upload-message" class="upload-message" hidden></p>
+      </form>
+
+      <p class="upload-link"><a href="/index.html">← Zurück zum Dashboard</a></p>
+    </div>
+
+    <script type="module" src="/src/upload.ts"></script>
+  </body>
+</html>

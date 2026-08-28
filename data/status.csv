@@ -1,0 +1,11 @@
+Gesellschaft,Thema,Status,Verantwortlicher,Naechster_Schritt,Prioritaet,Zieltermin
+HAZEMAG,Auftragsbestaetigungen,Gelb,N. Ridder,ERP-Integration mit proALPHA klaeren,Hoch,2026-10-15
+HAZEMAG,Echtdatentransfer,Gelb,N. Ridder,Regelbetrieb stabilisieren,Hoch,2026-10-01
+Allmineral,Datenanbindung,Rot,N. Ridder,Workspace mit echten Daten befuellen,Hoch,2026-10-01
+Allmineral,Workspace-Einrichtung,Gelb,N. Ridder,Ersten Datenupload abschliessen,Mittel,2026-09-20
+Maximator,Warengruppen,Gruen,N. Ridder,Fachliche Pflege abschliessen,Mittel,2026-09-30
+Maximator,Academy,Gelb,N. Ridder,Verbleibende Nutzer abschliessen lassen,Niedrig,2026-10-31
+Hazemag Systems,Workspace-Einrichtung,Rot,N. Ridder,Workspace initial einrichten,Hoch,2026-09-15
+Hazemag Systems,Datenanbindung,Rot,N. Ridder,Datentransfer aufsetzen,Hoch,2026-10-15
+FEST,Status-Klaerung,Rot,N. Ridder,Aktuellen Stand mit FEST verifizieren,Mittel,2026-10-10
+FEST,Datenanbindung,Rot,N. Ridder,Datentransfer aufsetzen,Mittel,2026-10-31

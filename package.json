@@ -1,0 +1,16 @@
+{
+  "name": "tacto-reporting",
+  "private": true,
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=packages/site",
+    "build": "npm run build --workspace=packages/site",
+    "test": "npm run test --workspaces --if-present"
+  }
+}

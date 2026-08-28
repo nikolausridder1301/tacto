@@ -1,0 +1,12 @@
+name = "tacto-upload"
+main = "src/index.ts"
+compatibility_date = "2026-08-28"
+
+[vars]
+GITHUB_OWNER = "nikolausridder1301"
+GITHUB_REPO = "tacto"
+GITHUB_BRANCH = "main"
+
+# Secrets (nie hier eintragen, sondern per `npx wrangler@4 secret put <NAME>`):
+#   GITHUB_TOKEN        – fein-scoped PAT, nur contents:write auf dieses Repo
+#   SITE_PASSWORD_HASH  – SHA-256-Hash des gemeinsamen Seiten-Passworts
