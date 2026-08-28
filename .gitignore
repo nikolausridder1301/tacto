@@ -4,6 +4,10 @@ dist/
 *.local
 *.tsbuildinfo
 
+# Maschinenspezifisch, siehe README.md#lokal-entwickeln – nicht teilen,
+# bricht CI (Linux) wenn committed.
+.npmrc
+
 .env
 .env.*
 !.env.example

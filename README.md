@@ -26,6 +26,8 @@ npm run build    # Produktions-Build der Site
 
 `packages/worker` hat bewusst **kein** `wrangler` als Projektabhängigkeit (siehe unten) – dadurch läuft `npm install` auf jeder Plattform durch, auch auf Windows-ARM64, wo Cloudflares `workerd`-Laufzeit kein natives Binary anbietet.
 
+> **Windows: enthält dein Projektpfad ein `&`?** (z.B. wie hier "Schmidt, Kranz & Co. GmbH") Dann bricht npms Standard-Skript-Shell (`cmd.exe`) beim Ausführen von `npm test`/`npm run dev` mit kryptischen Fehlern wie `"Der Befehl 'Co.' ... nicht gefunden"` ab – ein bekanntes npm/cmd.exe-Problem mit `&` im Pfad der automatisch generierten `.cmd`-Wrapper. Fix: eine lokale (nicht committete) `.npmrc` im Projektordner mit `script-shell=C:\\Program Files\\Git\\bin\\bash.exe`. **Nicht ins Repo committen** – das bricht die CI, die auf Linux läuft und diesen Pfad nicht kennt (`.npmrc` ist deshalb in `.gitignore`).
+
 ## Deployment
 
 ### Dashboard (GitHub Pages)
