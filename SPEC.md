@@ -10,12 +10,12 @@
 
 Eine schlanke, öffentlich unter GitHub Pages gehostete Web-Anwendung, die zwei Dinge zeigt:
 
-1. **KPI-Reporting** – zentrale Kennzahlen zur Tacto-Einkaufstransformation, je Gesellschaft und Quartal, als Ist/Forecast/Budget-Gegenüberstellung (Quartal + Year-to-Date) und als Trendverlauf über die Quartale.
+1. **KPI-Reporting** – zentrale Kennzahlen zur Tacto-Einkaufstransformation, erfasst je Gesellschaft und Monat. Im Dashboard als konsolidierte Ist/Budget-Gegenüberstellung auf Quartalsebene (Quartal + Year-to-Date) sowie als monatlicher Trendverlauf (Ist/Forecast) über die letzten Monate.
 2. **Implementierungs-Status** – Rollout-Fortschritt von Tacto je Gesellschaft und Thema/Modul (Ampel, Verantwortlicher, nächster Schritt, Termin).
 
 Die App ist **kein** Analyse-Tool auf echten Tacto-/ERP-Procurement-Rohdaten und **keine** Live-Integration mit SharePoint, Tacto oder proALPHA. Sie ist ein eigenständiges, manuell gepflegtes Reporting-Werkzeug über den *Rollout* und die *Wirkung* von Tacto bei der SK Group.
 
-Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in Excel/CSV) und lädt sie regelmäßig (quartalsweise) über eine einfache Upload-Seite hoch.
+Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in Excel/CSV) und lädt sie regelmäßig (monatlich) über eine einfache Upload-Seite hoch.
 
 ## 2. Zielgruppe
 
@@ -27,8 +27,8 @@ Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in
 ### 3.1 Dashboard (Hauptseite, `/`)
 
 - Kopfzeile mit Schmidt-Kranz-Logo (immer sichtbar), Titel und einem Gesellschafts-Filter (Dropdown: "Alle" + je eine der 6 Gesellschaften). Bei Auswahl einer konkreten Gesellschaft erscheint zusätzlich deren Logo (HAZEMAG und Hazemag Systems teilen sich dasselbe Logo).
-- **KPI-Bereich:** Tabelle mit einer Zeile je KPI (siehe Abschnitt 4.1) und einem Quartals-Filter (Dropdown, Default: neuestes vorhandenes Quartal). Für das gewählte Quartal je KPI: Ist Quartal, Budget Quartal, Delta Quartal, Ist Year to Date, Budget Year to Date, Delta Year to Date. YTD = Summe/Ø/aktuellster Wert (je nach KPI-Typ) aller Quartale desselben Jahres bis einschließlich des gewählten Quartals.
-- **KPI-Verlauf:** Chart mit Ist-Linie (durchgezogen) sowie optional Forecast-Linie (gestrichelt) über alle vorhandenen Quartale (reine Quartalswerte, keine YTD-Kumulation im Chart, kein Budget – das steht bereits in der Tabelle und würde den Trendverlauf im Chart unnötig überladen), KPI wählbar per Dropdown. Y-Achse bei Euro-KPIs kompakt in Millionen (z.B. "17 Mio. €").
+- **KPI-Bereich:** Tabelle mit einer Zeile je KPI (siehe Abschnitt 4.1) und einem Quartals-Filter (Dropdown, Default: neuestes vorhandenes Quartal). Die Quartalswerte sind aus den zugehörigen Monatsdaten **konsolidiert** (Summe/Ø/aktuellster Wert je nach KPI-Typ über die 3 Monate des Quartals). Für das gewählte Quartal je KPI: Ist Quartal, Budget Quartal, Delta Quartal, Ist Year to Date, Budget Year to Date, Delta Year to Date. YTD = dieselbe Konsolidierung über alle Monate desselben Jahres bis einschließlich des gewählten Quartals.
+- **KPI-Verlauf:** Chart mit Ist-Linie (durchgezogen) sowie optional Forecast-Linie (gestrichelt) über die letzten 6 vorhandenen **Monate** (kein Budget im Chart – das steht bereits in der Tabelle und würde den Trendverlauf unnötig überladen), KPI wählbar per Dropdown. Y-Achse bei Euro-KPIs kompakt in Millionen (z.B. "17 Mio. €").
 - **Status-Bereich:** Matrix, Themen/Module als Zeilen, Gesellschaften als Spalten, mit Ampel-Farbe (Rot/Gelb/Grün); Verantwortlicher/nächster Schritt/Priorität/Zieltermin als Tooltip.
 - Sichtbarer Hinweis "Stand: [neuestes Quartal]" oben auf der Seite, damit Betrachter die Aktualität der Daten einschätzen können.
 - Leerzustand vor dem ersten Upload: Hinweistext "Noch keine Daten hochgeladen."
@@ -47,38 +47,44 @@ Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in
 
 ## 4. Datenmodell
 
-Zwei CSV-Dateien, UTF-8 kodiert. Jeder Upload **ersetzt die jeweilige Datei vollständig** (kein Anhängen/Mergen). Historie bei den KPIs entsteht dadurch, dass Nikolaus in seiner eigenen Master-Datei alle bisherigen Quartale mitführt und die komplette Historie bei jedem Upload mitschickt.
+Zwei CSV-Dateien, UTF-8 kodiert. Jeder Upload **ersetzt die jeweilige Datei vollständig** (kein Anhängen/Mergen). Historie bei den KPIs entsteht dadurch, dass Nikolaus in seiner eigenen Master-Datei alle bisherigen Monate mitführt und die komplette Historie bei jedem Upload mitschickt.
 
 Feste Gesellschaftswerte (exakt diese Schreibweisen, aus der Projektzusammenfassung): `HAZEMAG`, `Allmineral`, `Hazemag Systems`, `Maximator`, `Maximator Hydrogen`, `FEST`.
 
 ### 4.1 `kpis.csv`
 
+Die CSV führt die KPIs auf **Monatsebene**. Das Dashboard konsolidiert daraus automatisch die Quartals- und YTD-Ansicht (siehe unten) – Nikolaus muss selbst keine Quartalswerte berechnen.
+
 Pflichtspalten:
 
 | Spalte | Typ | Beschreibung |
 |---|---|---|
-| `Quartal` | `YYYY-Qn` | Berichtsquartal, z.B. `2026-Q3` (Q1–Q4) |
+| `Monat` | `YYYY-MM` | Berichtsmonat, z.B. `2026-09` |
 | `Gesellschaft` | Text | einer der 6 festen Werte |
-| `KPI_Einkaufsvolumen_EUR` | Zahl | Einkaufsvolumen im Quartal |
-| `KPI_Einsparung_Quartal_EUR` | Zahl | Realisierte Einsparung im Quartal |
+| `KPI_Einkaufsvolumen_EUR` | Zahl | Einkaufsvolumen im Monat |
+| `KPI_Einsparung_Monat_EUR` | Zahl | Realisierte Einsparung im Monat |
 | `KPI_Einsparquote_Prozent` | Zahl | Einsparung / Einkaufsvolumen, in % |
-| `KPI_Zeitersparnis_Std` | Zahl | Zeitersparnis in Stunden im Quartal |
-| `KPI_RFQs_Abgeschlossen` | Ganzzahl | Anzahl abgeschlossener RFQs/Ausschreibungen im Quartal |
-| `KPI_Aktive_Lieferanten` | Ganzzahl | Anzahl aktiver Lieferanten in Tacto (Stand Quartalsende) |
-| `KPI_Datenqualitaet_Prozent` | Zahl | Vollständigkeit/Qualität der Tacto-Daten, in % (Stand Quartalsende) |
-| `KPI_Aktive_Nutzer` | Ganzzahl | Anzahl aktiver Nutzer (Stand Quartalsende) |
+| `KPI_Zeitersparnis_Std` | Zahl | Zeitersparnis in Stunden im Monat |
+| `KPI_RFQs_Abgeschlossen` | Ganzzahl | Anzahl abgeschlossener RFQs/Ausschreibungen im Monat |
+| `KPI_Aktive_Lieferanten` | Ganzzahl | Anzahl aktiver Lieferanten in Tacto (Stand Monatsende) |
+| `KPI_Datenqualitaet_Prozent` | Zahl | Vollständigkeit/Qualität der Tacto-Daten, in % (Stand Monatsende) |
+| `KPI_Aktive_Nutzer` | Ganzzahl | Anzahl aktiver Nutzer (Stand Monatsende) |
 
-Eindeutigkeit: Kombination `Quartal` + `Gesellschaft` muss eindeutig sein (keine doppelten Zeilen).
+Eindeutigkeit: Kombination `Monat` + `Gesellschaft` muss eindeutig sein (keine doppelten Zeilen).
 
-**Forecast-/Budget-Spalten (optional):** Zu jeder `KPI_*`-Spalte können zwei gleichnamige Zusatzspalten ergänzt werden: `KPI_*_Forecast` (aktuelle Hochrechnung) und `KPI_*_Budget` (ursprünglicher Jahresplan). Das Dashboard stellt daraus automatisch Ist/Forecast/Budget samt Deltas gegenüber – in der Tabelle als eigene Spalten, im Chart als zusätzliche Linien. Vollständig optional: fehlt eine `_Forecast`- oder `_Budget`-Spalte komplett, wird für diese Kennzahl kein Vergleich angezeigt; ist die Spalte vorhanden, darf die einzelne Zelle trotzdem leer bleiben (kein Wert für dieses Quartal/diese Gesellschaft, kein Validierungsfehler).
+**Forecast-/Budget-Spalten (optional):** Zu jeder `KPI_*`-Spalte können zwei gleichnamige Zusatzspalten ergänzt werden: `KPI_*_Forecast` (aktuelle Hochrechnung) und `KPI_*_Budget` (ursprünglicher Jahresplan), jeweils auf Monatsebene. Das Dashboard stellt daraus automatisch Ist/Budget samt Delta gegenüber (Tabelle, konsolidiert auf Quartal + YTD) und Ist/Forecast als Trendlinien (Chart, Monatsebene). Vollständig optional: fehlt eine `_Forecast`- oder `_Budget`-Spalte komplett, wird für diese Kennzahl kein Vergleich angezeigt; ist die Spalte vorhanden, darf die einzelne Zelle trotzdem leer bleiben (kein Wert für diesen Monat/diese Gesellschaft, kein Validierungsfehler).
 
-**YTD-Berechnung (im Dashboard, nicht in der CSV):** Für ein gewähltes Quartal wird Year-to-Date automatisch aus allen Quartalen desselben Jahres bis einschließlich des gewählten Quartals berechnet – als Summe bei Flussgrößen (Einkaufsvolumen, Einsparung, Zeitersparnis, RFQs), als Durchschnitt bei der Einsparquote, als aktuellster Wert bei Bestandsgrößen (Aktive Lieferanten, Datenqualität, Aktive Nutzer – diese lassen sich nicht sinnvoll über Quartale aufsummieren).
+**Konsolidierung im Dashboard (nicht in der CSV):** Aus den Monatswerten werden automatisch abgeleitet:
+- **Quartal:** die 3 Monate des jeweiligen Quartals, kombiniert je nach KPI-Typ.
+- **Year-to-Date:** alle Monate desselben Jahres bis einschließlich des gewählten Quartals, mit derselben Kombinationslogik.
+
+Kombinationslogik je KPI-Typ: Summe bei Flussgrößen (Einkaufsvolumen, Einsparung, Zeitersparnis, RFQs), Durchschnitt bei der Einsparquote, aktuellster Monatswert bei Bestandsgrößen (Aktive Lieferanten, Datenqualität, Aktive Nutzer – diese lassen sich nicht sinnvoll über Monate aufsummieren).
 
 Beispiel (mit Forecast-/Budget-Spalten):
 ```
-Quartal,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einkaufsvolumen_EUR_Forecast,KPI_Einkaufsvolumen_EUR_Budget,KPI_Einsparung_Quartal_EUR,KPI_Einsparung_Quartal_EUR_Forecast,KPI_Einsparung_Quartal_EUR_Budget,KPI_Einsparquote_Prozent,KPI_Einsparquote_Prozent_Forecast,KPI_Einsparquote_Prozent_Budget,KPI_Zeitersparnis_Std,KPI_Zeitersparnis_Std_Forecast,KPI_Zeitersparnis_Std_Budget,KPI_RFQs_Abgeschlossen,KPI_RFQs_Abgeschlossen_Forecast,KPI_RFQs_Abgeschlossen_Budget,KPI_Aktive_Lieferanten,KPI_Aktive_Lieferanten_Forecast,KPI_Aktive_Lieferanten_Budget,KPI_Datenqualitaet_Prozent,KPI_Datenqualitaet_Prozent_Forecast,KPI_Datenqualitaet_Prozent_Budget,KPI_Aktive_Nutzer,KPI_Aktive_Nutzer_Forecast,KPI_Aktive_Nutzer_Budget
-2026-Q3,Maximator,8700000,8787000,9050610,38000,60000,69000,1.3,1.5,1.7,97,90,103,5,6,7,85,100,115,78,80,92,6,8,9
-2026-Q3,HAZEMAG,3600000,3636000,3745080,0,60000,69000,0,1.5,1.7,10,90,103,0,6,7,40,100,115,40,80,92,2,8,9
+Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einkaufsvolumen_EUR_Forecast,KPI_Einkaufsvolumen_EUR_Budget,KPI_Einsparung_Monat_EUR,KPI_Einsparung_Monat_EUR_Forecast,KPI_Einsparung_Monat_EUR_Budget,KPI_Einsparquote_Prozent,KPI_Einsparquote_Prozent_Forecast,KPI_Einsparquote_Prozent_Budget,KPI_Zeitersparnis_Std,KPI_Zeitersparnis_Std_Forecast,KPI_Zeitersparnis_Std_Budget,KPI_RFQs_Abgeschlossen,KPI_RFQs_Abgeschlossen_Forecast,KPI_RFQs_Abgeschlossen_Budget,KPI_Aktive_Lieferanten,KPI_Aktive_Lieferanten_Forecast,KPI_Aktive_Lieferanten_Budget,KPI_Datenqualitaet_Prozent,KPI_Datenqualitaet_Prozent_Forecast,KPI_Datenqualitaet_Prozent_Budget,KPI_Aktive_Nutzer,KPI_Aktive_Nutzer_Forecast,KPI_Aktive_Nutzer_Budget
+2026-09,Maximator,8700000,8787000,9050610,12667,20000,23000,1.3,1.5,1.7,32,30,35,2,2,2,85,100,115,78,80,92,6,8,9
+2026-09,HAZEMAG,3600000,3636000,3745080,0,20000,23000,0,1.5,1.7,3,30,35,0,2,2,40,100,115,40,80,92,2,8,9
 ```
 
 ### 4.2 `status.csv`
@@ -135,9 +141,9 @@ GitHub Pages (öffentlich erreichbar, Passwort-Gate im Frontend)
 ## 7. Validierung & Fehlerbehandlung (Edge Cases)
 
 - **Trennzeichen/Dezimaltrennzeichen:** Deutsches Excel exportiert CSV standardmäßig mit Semikolon als Trennzeichen und Komma als Dezimaltrennzeichen (z.B. `1.234,56`). Der Parser erkennt automatisch, ob Komma oder Semikolon als Trennzeichen verwendet wurde, und normalisiert Zahlenwerte (Komma → Punkt) beim Einlesen.
-- **Fehlende/zusätzliche Spalten:** Wird eine Pflichtspalte nicht gefunden, bricht die Validierung mit einer klaren Fehlermeldung ab ("Spalte 'KPI_Einsparung_Quartal_EUR' fehlt"). Zusätzliche, unbekannte Spalten werden ignoriert (kein harter Fehler), damit spätere Erweiterungen nicht sofort brechen.
+- **Fehlende/zusätzliche Spalten:** Wird eine Pflichtspalte nicht gefunden, bricht die Validierung mit einer klaren Fehlermeldung ab ("Spalte 'KPI_Einsparung_Monat_EUR' fehlt"). Zusätzliche, unbekannte Spalten werden ignoriert (kein harter Fehler), damit spätere Erweiterungen nicht sofort brechen.
 - **Ungültige Werte:** Nicht-numerische Werte in KPI-Spalten, ungültige Datumsformate oder unbekannte Gesellschaftsnamen führen zu einer Fehlermeldung mit Zeilennummer, **kein** Teil-Import fehlerhafter Daten.
-- **Duplikate:** Doppelte Kombination `Quartal`+`Gesellschaft` (bzw. `Gesellschaft`+`Thema`) wird als Validierungsfehler abgelehnt, nicht automatisch zusammengeführt.
+- **Duplikate:** Doppelte Kombination `Monat`+`Gesellschaft` (bzw. `Gesellschaft`+`Thema`) wird als Validierungsfehler abgelehnt, nicht automatisch zusammengeführt.
 - **Leere Datei / nur ein File hochgeladen:** zulässig – die jeweils andere Datei bleibt unverändert.
 - **Sehr große Datei / offensichtlich falsche Datei (z.B. .xlsx statt .csv):** wird vor dem Absenden client-seitig anhand der Dateiendung/Größe abgefangen (max. 2 MB, Endung `.csv`).
 - **Erstzustand ohne Daten:** Dashboard zeigt Leerzustand-Hinweis statt leerer/kaputter Charts.
@@ -162,7 +168,7 @@ GitHub Pages (öffentlich erreichbar, Passwort-Gate im Frontend)
 
 ## 10. Akzeptanzkriterien
 
-- [ ] Dashboard zeigt nach Eingabe des korrekten Passworts alle KPIs mit aktuellem Wert und Trendlinie über die in `kpis.csv` vorhandenen Quartale.
+- [ ] Dashboard zeigt nach Eingabe des korrekten Passworts alle KPIs mit aktuellem Quartalswert (konsolidiert aus `kpis.csv`) und Trendlinie über die letzten Monate.
 - [ ] Gesellschafts-Filter schränkt sowohl KPI- als auch Status-Bereich korrekt ein.
 - [ ] Status-Bereich zeigt alle Zeilen aus `status.csv`, gruppiert nach Gesellschaft, mit korrekter Ampel-Farbe.
 - [ ] Upload-Seite akzeptiert `kpis.csv` und/oder `status.csv`, prüft Passwort serverseitig, validiert Inhalt und committet nur bei vollständig gültigen Daten.

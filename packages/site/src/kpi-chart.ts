@@ -1,7 +1,10 @@
 import type { KpiRow } from "@tacto/csv";
 import { Chart } from "chart.js/auto";
-import { formatEur, formatEurMio, formatQuartalKurz } from "./format";
-import { KPI_DEFS, aggregateByQuartal, type NumericKey } from "./kpi-data";
+import { formatEur, formatEurMio, formatMonatKurz } from "./format";
+import { aggregateByMonat, KPI_DEFS, type NumericKey } from "./kpi-data";
+
+/** Anzahl der jüngsten Monate, die im Chart angezeigt werden. */
+const ANZAHL_MONATE = 6;
 
 let chart: Chart | null = null;
 let selectedKey: NumericKey = KPI_DEFS[0].key;
@@ -9,22 +12,22 @@ let lastRows: KpiRow[] = [];
 
 function draw(canvas: HTMLCanvasElement): void {
   const def = KPI_DEFS.find((d) => d.key === selectedKey) ?? KPI_DEFS[0];
-  const quartalsWerte = aggregateByQuartal(lastRows);
+  const monatsWerte = aggregateByMonat(lastRows).slice(-ANZAHL_MONATE);
 
   chart?.destroy();
   chart = null;
-  if (quartalsWerte.length === 0) return;
+  if (monatsWerte.length === 0) return;
 
-  const hasForecast = quartalsWerte.some((q) => q.forecast[def.key] !== null);
+  const hasForecast = monatsWerte.some((m) => m.forecast[def.key] !== null);
 
   chart = new Chart(canvas, {
     type: "line",
     data: {
-      labels: quartalsWerte.map((q) => formatQuartalKurz(q.quartal)),
+      labels: monatsWerte.map((m) => formatMonatKurz(m.monat)),
       datasets: [
         {
           label: "Ist",
-          data: quartalsWerte.map((q) => q.values[def.key]),
+          data: monatsWerte.map((m) => m.values[def.key]),
           borderColor: "#2563c9",
           backgroundColor: "rgba(37, 99, 201, 0.1)",
           fill: true,
@@ -36,7 +39,7 @@ function draw(canvas: HTMLCanvasElement): void {
           ? [
               {
                 label: "Forecast",
-                data: quartalsWerte.map((q) => q.forecast[def.key]),
+                data: monatsWerte.map((m) => m.forecast[def.key]),
                 borderColor: "#94a3b8",
                 borderDash: [6, 4],
                 backgroundColor: "transparent",

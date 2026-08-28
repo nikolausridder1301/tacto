@@ -3,7 +3,7 @@ import { formatEur, formatNumber, formatPercent } from "./format";
 
 export type NumericKey =
   | "einkaufsvolumenEur"
-  | "einsparungQuartalEur"
+  | "einsparungMonatEur"
   | "einsparquoteProzent"
   | "zeitersparnisStd"
   | "rfqsAbgeschlossen"
@@ -18,12 +18,13 @@ export type BudgetKey = `${NumericKey}Budget`;
 type CompanyAggregate = "sum" | "avg";
 
 /**
- * Wie Werte über mehrere Quartale hinweg kombiniert werden (YTD):
- * "sum"    – Flussgröße, addiert sich über das Jahr (z.B. Einsparung).
- * "avg"    – Durchschnitt über die bisherigen Quartale (z.B. Einsparquote).
- * "latest" – Bestandsgröße, YTD = aktuellster Quartalswert (z.B. Aktive Nutzer).
+ * Wie Werte über mehrere Monate hinweg zu einem größeren Zeitraum kombiniert
+ * werden (Monate -> Quartal, Monate -> Year-to-Date):
+ * "sum"    – Flussgröße, addiert sich über den Zeitraum (z.B. Einsparung).
+ * "avg"    – Durchschnitt über die enthaltenen Monate (z.B. Einsparquote).
+ * "latest" – Bestandsgröße, Wert des letzten enthaltenen Monats (z.B. Aktive Nutzer).
  */
-type YtdMode = "sum" | "avg" | "latest";
+type PeriodMode = "sum" | "avg" | "latest";
 
 export interface KpiDef {
   key: NumericKey;
@@ -31,7 +32,7 @@ export interface KpiDef {
   budgetKey: BudgetKey;
   label: string;
   companyAggregate: CompanyAggregate;
-  ytdMode: YtdMode;
+  periodMode: PeriodMode;
   format: (n: number) => string;
 }
 
@@ -39,7 +40,7 @@ function def(
   key: NumericKey,
   label: string,
   companyAggregate: CompanyAggregate,
-  ytdMode: YtdMode,
+  periodMode: PeriodMode,
   format: (n: number) => string,
 ): KpiDef {
   return {
@@ -48,14 +49,14 @@ function def(
     budgetKey: `${key}Budget` as BudgetKey,
     label,
     companyAggregate,
-    ytdMode,
+    periodMode,
     format,
   };
 }
 
 export const KPI_DEFS: KpiDef[] = [
   def("einkaufsvolumenEur", "Einkaufsvolumen gesamt", "sum", "sum", formatEur),
-  def("einsparungQuartalEur", "Einsparung (Quartal)", "sum", "sum", formatEur),
+  def("einsparungMonatEur", "Einsparung (Quartal)", "sum", "sum", formatEur),
   def("einsparquoteProzent", "Einsparquote", "avg", "avg", formatPercent),
   def("zeitersparnisStd", "Zeitersparnis", "sum", "sum", (n) => `${formatNumber(n)} Std.`),
   def("rfqsAbgeschlossen", "RFQs abgeschlossen", "sum", "sum", formatNumber),
@@ -69,50 +70,72 @@ function combine(nums: number[], mode: CompanyAggregate): number {
   return mode === "sum" ? sum : sum / nums.length;
 }
 
-/** Jahr und Quartalsnummer aus "YYYY-Qn". */
+function periodCombine(nums: number[], mode: PeriodMode): number {
+  if (mode === "latest") return nums[nums.length - 1];
+  if (mode === "sum") return nums.reduce((a, b) => a + b, 0);
+  return nums.reduce((a, b) => a + b, 0) / nums.length;
+}
+
+function splitMonat(monat: string): { jahr: number; monatNr: number } {
+  const [jahr, m] = monat.split("-");
+  return { jahr: Number(jahr), monatNr: Number(m) };
+}
+
 function splitQuartal(quartal: string): { jahr: number; q: number } {
   const [jahr, q] = quartal.split("-Q");
   return { jahr: Number(jahr), q: Number(q) };
 }
 
-export interface QuartalWerte {
-  quartal: string;
+/** z.B. "2026-09" -> "2026-Q3". */
+export function monatZuQuartal(monat: string): string {
+  const { jahr, monatNr } = splitMonat(monat);
+  return `${jahr}-Q${Math.ceil(monatNr / 3)}`;
+}
+
+export interface MonatWerte {
+  monat: string;
   values: Record<NumericKey, number>;
   forecast: Record<NumericKey, number | null>;
   budget: Record<NumericKey, number | null>;
 }
 
-/** Aggregiert Rohzeilen (ggf. mehrere Gesellschaften) je Quartal, über alle drei Wertreihen (Ist/Forecast/Budget). */
-export function aggregateByQuartal(rows: KpiRow[]): QuartalWerte[] {
-  const byQuartal = new Map<string, KpiRow[]>();
+/** Aggregiert Rohzeilen (ggf. mehrere Gesellschaften) je Monat, über alle drei Wertreihen (Ist/Forecast/Budget). */
+export function aggregateByMonat(rows: KpiRow[]): MonatWerte[] {
+  const byMonat = new Map<string, KpiRow[]>();
   for (const row of rows) {
-    const list = byQuartal.get(row.quartal) ?? [];
+    const list = byMonat.get(row.monat) ?? [];
     list.push(row);
-    byQuartal.set(row.quartal, list);
+    byMonat.set(row.monat, list);
   }
 
-  return Array.from(byQuartal.entries())
+  return Array.from(byMonat.entries())
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([quartal, quartalsRows]) => {
+    .map(([monat, monatsRows]) => {
       const values = {} as Record<NumericKey, number>;
       const forecast = {} as Record<NumericKey, number | null>;
       const budget = {} as Record<NumericKey, number | null>;
 
       for (const d of KPI_DEFS) {
         values[d.key] = combine(
-          quartalsRows.map((r) => r[d.key]),
+          monatsRows.map((r) => r[d.key]),
           d.companyAggregate,
         );
 
-        const fc = quartalsRows.map((r) => r[d.forecastKey]).filter((n): n is number => n !== null);
+        const fc = monatsRows.map((r) => r[d.forecastKey]).filter((n): n is number => n !== null);
         forecast[d.key] = fc.length === 0 ? null : combine(fc, d.companyAggregate);
 
-        const bu = quartalsRows.map((r) => r[d.budgetKey]).filter((n): n is number => n !== null);
+        const bu = monatsRows.map((r) => r[d.budgetKey]).filter((n): n is number => n !== null);
         budget[d.key] = bu.length === 0 ? null : combine(bu, d.companyAggregate);
       }
 
-      return { quartal, values, forecast, budget };
+      return { monat, values, forecast, budget };
     });
+}
+
+/** Alle im Datensatz vorkommenden Quartale (aus den Monatsdaten abgeleitet), aufsteigend sortiert. */
+export function verfuegbareQuartale(rows: KpiRow[]): string[] {
+  const quartale = new Set(aggregateByMonat(rows).map((m) => monatZuQuartal(m.monat)));
+  return Array.from(quartale).sort();
 }
 
 export interface QuartalSnapshot {
@@ -123,39 +146,47 @@ export interface QuartalSnapshot {
   budgetYtd: Record<NumericKey, number | null>;
 }
 
-function ytdCombine(nums: number[], mode: YtdMode): number {
-  if (mode === "latest") return nums[nums.length - 1];
-  if (mode === "sum") return nums.reduce((a, b) => a + b, 0);
-  return nums.reduce((a, b) => a + b, 0) / nums.length;
-}
-
 /**
- * Baut die Quartals-/YTD-Ansicht für genau ein ausgewähltes Quartal:
- * Ist/Budget dieses Quartals, plus Ist/Budget-YTD (kumuliert über alle
- * Quartale desselben Jahres bis einschließlich des gewählten Quartals).
+ * Baut die Quartals-/YTD-Ansicht für genau ein ausgewähltes Quartal, indem die
+ * zugehörigen Monate zu einem konsolidierten Quartalswert kombiniert werden
+ * (dieselbe Logik wie für Year-to-Date, nur über 3 statt N Monate). YTD =
+ * kombiniert alle Monate desselben Jahres bis einschließlich des gewählten
+ * Quartals.
  */
-export function buildQuartalSnapshot(alleQuartale: QuartalWerte[], zielQuartal: string): QuartalSnapshot | null {
-  const ziel = alleQuartale.find((q) => q.quartal === zielQuartal);
-  if (!ziel) return null;
+export function buildQuartalSnapshot(rows: KpiRow[], zielQuartal: string): QuartalSnapshot | null {
+  const alleMonate = aggregateByMonat(rows);
+  if (alleMonate.length === 0) return null;
 
-  const { jahr, q: zielQ } = splitQuartal(zielQuartal);
-  const ytdQuartale = alleQuartale.filter((qw) => {
-    const { jahr: j, q } = splitQuartal(qw.quartal);
-    return j === jahr && q <= zielQ;
+  const { jahr: zielJahr, q: zielQ } = splitQuartal(zielQuartal);
+
+  const quartalsMonate = alleMonate.filter((m) => monatZuQuartal(m.monat) === zielQuartal);
+  if (quartalsMonate.length === 0) return null;
+
+  const ytdMonate = alleMonate.filter((m) => {
+    const { jahr, monatNr } = splitMonat(m.monat);
+    return jahr === zielJahr && Math.ceil(monatNr / 3) <= zielQ;
   });
 
+  const ist = {} as Record<NumericKey, number>;
+  const budget = {} as Record<NumericKey, number | null>;
   const istYtd = {} as Record<NumericKey, number>;
   const budgetYtd = {} as Record<NumericKey, number | null>;
 
   for (const d of KPI_DEFS) {
-    istYtd[d.key] = ytdCombine(
-      ytdQuartale.map((q) => q.values[d.key]),
-      d.ytdMode,
+    ist[d.key] = periodCombine(
+      quartalsMonate.map((m) => m.values[d.key]),
+      d.periodMode,
     );
+    const buQ = quartalsMonate.map((m) => m.budget[d.key]).filter((n): n is number => n !== null);
+    budget[d.key] = buQ.length === 0 ? null : periodCombine(buQ, d.periodMode);
 
-    const bu = ytdQuartale.map((q) => q.budget[d.key]).filter((n): n is number => n !== null);
-    budgetYtd[d.key] = bu.length === 0 ? null : ytdCombine(bu, d.ytdMode);
+    istYtd[d.key] = periodCombine(
+      ytdMonate.map((m) => m.values[d.key]),
+      d.periodMode,
+    );
+    const buY = ytdMonate.map((m) => m.budget[d.key]).filter((n): n is number => n !== null);
+    budgetYtd[d.key] = buY.length === 0 ? null : periodCombine(buY, d.periodMode);
   }
 
-  return { quartal: zielQuartal, ist: ziel.values, budget: ziel.budget, istYtd, budgetYtd };
+  return { quartal: zielQuartal, ist, budget, istYtd, budgetYtd };
 }

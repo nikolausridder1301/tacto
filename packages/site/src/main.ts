@@ -2,7 +2,8 @@ import { GESELLSCHAFTEN, parseKpiCsv, parseStatusCsv, type Gesellschaft, type Kp
 import { initPasswordGate } from "./auth";
 import { formatQuartal } from "./format";
 import { renderKpiChart } from "./kpi-chart";
-import { renderKpiTable, verfuegbareQuartale } from "./kpi-table";
+import { verfuegbareQuartale } from "./kpi-data";
+import { renderKpiTable } from "./kpi-table";
 import { gesellschaftLogo, SK_LOGO } from "./logos";
 import { renderStatusTable } from "./status-board";
 import "./style.css";

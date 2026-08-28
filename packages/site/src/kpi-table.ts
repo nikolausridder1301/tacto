@@ -1,5 +1,5 @@
 import type { KpiRow } from "@tacto/csv";
-import { KPI_DEFS, aggregateByQuartal, buildQuartalSnapshot } from "./kpi-data";
+import { KPI_DEFS, buildQuartalSnapshot } from "./kpi-data";
 
 const EMPTY = `<td class="kpi-delta">–</td>`;
 
@@ -17,8 +17,7 @@ export function renderKpiTable(container: HTMLElement, rows: KpiRow[], zielQuart
   container.innerHTML = "";
   if (rows.length === 0 || !zielQuartal) return;
 
-  const alleQuartale = aggregateByQuartal(rows);
-  const snapshot = buildQuartalSnapshot(alleQuartale, zielQuartal);
+  const snapshot = buildQuartalSnapshot(rows, zielQuartal);
   if (!snapshot) return;
 
   const table = document.createElement("table");
@@ -62,9 +61,4 @@ export function renderKpiTable(container: HTMLElement, rows: KpiRow[], zielQuart
   wrap.className = "table-wrap";
   wrap.appendChild(table);
   container.appendChild(wrap);
-}
-
-/** Alle im Datensatz vorkommenden Quartale, aufsteigend sortiert. */
-export function verfuegbareQuartale(rows: KpiRow[]): string[] {
-  return aggregateByQuartal(rows).map((q) => q.quartal);
 }

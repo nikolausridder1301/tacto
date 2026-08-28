@@ -25,6 +25,14 @@ export function formatNumber(n: number): string {
   return numberFormatter.format(n);
 }
 
+const MONATE_KURZ = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+
+/** z.B. "2026-09" -> "Sep 26" – für Chart-Beschriftungen. */
+export function formatMonatKurz(monat: string): string {
+  const [year, m] = monat.split("-");
+  return `${MONATE_KURZ[Number(m) - 1]} ${year.slice(2)}`;
+}
+
 /** z.B. "2026-Q3" -> "Q3 26" – für Tabellen-/Chart-Beschriftungen. */
 export function formatQuartalKurz(quartal: string): string {
   const [year, q] = quartal.split("-Q");

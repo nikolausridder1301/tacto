@@ -18,9 +18,11 @@ Beide Seiten sind mit demselben Passwort geschützt.
 
 **Wenn eine Fehlermeldung erscheint:** Die Datei wurde noch NICHT übernommen – die aktuell sichtbaren Daten bleiben unverändert. Meist steht in der Meldung, welche Zeile/Spalte das Problem hat (z.B. falsches Datumsformat, unbekannte Gesellschaft, doppelte Zeile). Datei korrigieren und erneut hochladen.
 
-**Erwartetes Format:** UTF-8-CSV, egal ob mit Komma oder Semikolon getrennt (deutsches Excel-Format wird automatisch erkannt). Jede Zeile in `kpis.csv` braucht eine eindeutige Kombination aus Quartal (Format `YYYY-Qn`, z.B. `2026-Q3`) und Gesellschaft; jede Zeile in `status.csv` eine eindeutige Kombination aus Gesellschaft und Thema. Gültige Gesellschaften: `HAZEMAG`, `Allmineral`, `Hazemag Systems`, `Maximator`, `Maximator Hydrogen`, `FEST`.
+**Erwartetes Format:** UTF-8-CSV, egal ob mit Komma oder Semikolon getrennt (deutsches Excel-Format wird automatisch erkannt). Jede Zeile in `kpis.csv` braucht eine eindeutige Kombination aus Monat (Format `YYYY-MM`, z.B. `2026-09`) und Gesellschaft; jede Zeile in `status.csv` eine eindeutige Kombination aus Gesellschaft und Thema. Gültige Gesellschaften: `HAZEMAG`, `Allmineral`, `Hazemag Systems`, `Maximator`, `Maximator Hydrogen`, `FEST`.
 
-**Forecast-/Budget-Werte (optional):** Sobald ihr Hochrechnungs- bzw. Budget-Werte je KPI habt, könnt ihr sie in `kpis.csv` als zusätzliche `..._Forecast`- und `..._Budget`-Spalten ergänzen (z.B. `KPI_Einkaufsvolumen_EUR_Forecast`, `KPI_Einkaufsvolumen_EUR_Budget`, siehe Vorlage in [templates/kpis.csv](templates/kpis.csv)). Die Tabelle stellt Ist automatisch dem Budget gegenüber (inkl. Delta, je Quartal und Year-to-Date); der Forecast erscheint zusätzlich als eigene Linie im Chart. Ohne diese Spalten funktioniert alles wie bisher, nur ohne Forecast-/Budget-Vergleich.
+Die Zahlen kommen monatlich in die CSV – das Dashboard fasst sie selbst zu Quartals- und Year-to-Date-Werten zusammen (Tabelle) und zeigt zusätzlich die letzten 6 Monate im Zeitverlauf (Chart). Es muss also nichts manuell zu Quartalen aufsummiert werden.
+
+**Forecast-/Budget-Werte (optional):** Sobald ihr Hochrechnungs- bzw. Budget-Werte je KPI habt, könnt ihr sie in `kpis.csv` als zusätzliche `..._Forecast`- und `..._Budget`-Spalten ergänzen (z.B. `KPI_Einkaufsvolumen_EUR_Forecast`, `KPI_Einkaufsvolumen_EUR_Budget`, siehe Vorlage in [templates/kpis.csv](templates/kpis.csv)), ebenfalls auf Monatsebene. Die Tabelle stellt Ist automatisch dem Budget gegenüber (inkl. Delta, je Quartal und Year-to-Date, konsolidiert aus den Monatswerten); der Forecast erscheint zusätzlich als eigene Linie im Chart. Ohne diese Spalten funktioniert alles wie bisher, nur ohne Forecast-/Budget-Vergleich.
 
 ## Passwort ändern
 

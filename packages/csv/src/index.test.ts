@@ -11,18 +11,18 @@ describe("Projektgrundgerüst", () => {
 });
 
 const KPI_HEADER =
-  "Quartal,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einsparung_Quartal_EUR,KPI_Einsparquote_Prozent,KPI_Zeitersparnis_Std,KPI_RFQs_Abgeschlossen,KPI_Aktive_Lieferanten,KPI_Datenqualitaet_Prozent,KPI_Aktive_Nutzer";
+  "Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einsparung_Monat_EUR,KPI_Einsparquote_Prozent,KPI_Zeitersparnis_Std,KPI_RFQs_Abgeschlossen,KPI_Aktive_Lieferanten,KPI_Datenqualitaet_Prozent,KPI_Aktive_Nutzer";
 
 describe("parseKpiCsv", () => {
   it("parst eine gültige, komma-getrennte Datei", () => {
-    const csv = `${KPI_HEADER}\n2026-Q3,Maximator,8700000,38000,1.0,97,5,85,78,6`;
+    const csv = `${KPI_HEADER}\n2026-09,Maximator,2900000,15000,1.0,32,2,85,78,6`;
     const { rows, errors } = parseKpiCsv(csv);
     expect(errors).toEqual([]);
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject({
-      quartal: "2026-Q3",
+      monat: "2026-09",
       gesellschaft: "Maximator",
-      einkaufsvolumenEur: 8700000,
+      einkaufsvolumenEur: 2900000,
       aktiveNutzer: 6,
     });
     // Keine Forecast-/Budget-Spalten in der Datei -> beide null, kein Fehler.
@@ -32,36 +32,36 @@ describe("parseKpiCsv", () => {
 
   it("erkennt Semikolon-Trennzeichen und normalisiert Komma-Dezimalwerte (deutscher Excel-Export)", () => {
     const header = KPI_HEADER.replace(/,/g, ";");
-    const csv = `${header}\n2026-Q3;HAZEMAG;3.570.000;0;0,0;23;0;40;40;2`;
+    const csv = `${header}\n2026-09;HAZEMAG;1.190.000;0;0,0;3;0;40;40;2`;
     const { rows, errors } = parseKpiCsv(csv);
     expect(errors).toEqual([]);
     expect(rows).toHaveLength(1);
-    expect(rows[0].einkaufsvolumenEur).toBe(3570000);
+    expect(rows[0].einkaufsvolumenEur).toBe(1190000);
     expect(rows[0].einsparquoteProzent).toBe(0);
   });
 
-  it("erfordert kein Quartal-Format wie bei Monaten mehr, lehnt aber ungültige Quartale ab", () => {
+  it("lehnt ungültige Monatsformate ab", () => {
     const csv = `${KPI_HEADER}\n2026-13,Maximator,1,1,1,1,1,1,1,1`;
     const { rows, errors } = parseKpiCsv(csv);
     expect(rows).toEqual([]);
-    expect(errors.some((e) => e.includes("ungültiges Quartal"))).toBe(true);
+    expect(errors.some((e) => e.includes("ungültiger Monat"))).toBe(true);
   });
 
   it("meldet fehlende Pflichtspalten", () => {
-    const { rows, errors } = parseKpiCsv("Quartal,Gesellschaft\n2026-Q3,HAZEMAG");
+    const { rows, errors } = parseKpiCsv("Monat,Gesellschaft\n2026-09,HAZEMAG");
     expect(rows).toEqual([]);
     expect(errors.some((e) => e.includes("Fehlende Spalte"))).toBe(true);
   });
 
   it("lehnt unbekannte Gesellschaften ab", () => {
-    const csv = `${KPI_HEADER}\n2026-Q3,Unbekannt-AG,1,1,1,1,1,1,1,1`;
+    const csv = `${KPI_HEADER}\n2026-09,Unbekannt-AG,1,1,1,1,1,1,1,1`;
     const { rows, errors } = parseKpiCsv(csv);
     expect(rows).toEqual([]);
     expect(errors.some((e) => e.includes("unbekannte Gesellschaft"))).toBe(true);
   });
 
-  it("lehnt doppelte Quartal+Gesellschaft-Kombinationen ab", () => {
-    const row = "2026-Q3,Maximator,1,1,1,1,1,1,1,1";
+  it("lehnt doppelte Monat+Gesellschaft-Kombinationen ab", () => {
+    const row = "2026-09,Maximator,1,1,1,1,1,1,1,1";
     const csv = `${KPI_HEADER}\n${row}\n${row}`;
     const { rows, errors } = parseKpiCsv(csv);
     expect(rows).toHaveLength(1);
@@ -69,7 +69,7 @@ describe("parseKpiCsv", () => {
   });
 
   it("lehnt nicht-numerische KPI-Werte ab", () => {
-    const csv = `${KPI_HEADER}\n2026-Q3,Maximator,abc,1,1,1,1,1,1,1`;
+    const csv = `${KPI_HEADER}\n2026-09,Maximator,abc,1,1,1,1,1,1,1`;
     const { rows, errors } = parseKpiCsv(csv);
     expect(rows).toEqual([]);
     expect(errors.some((e) => e.includes("kein gültiger Zahlenwert"))).toBe(true);
@@ -83,17 +83,17 @@ describe("parseKpiCsv – Forecast-/Budget-Spalten", () => {
   ).replace("KPI_Aktive_Nutzer", "KPI_Aktive_Nutzer,KPI_Aktive_Nutzer_Forecast,KPI_Aktive_Nutzer_Budget")}`;
 
   it("parst vorhandene Forecast- und Budget-Werte", () => {
-    const csv = `${HEADER_WITH_FC_BU}\n2026-Q3,Maximator,8700000,8800000,9000000,38000,1.0,97,5,85,78,6,7,8`;
+    const csv = `${HEADER_WITH_FC_BU}\n2026-09,Maximator,2900000,2930000,3020000,15000,1.0,32,2,85,78,6,7,8`;
     const { rows, errors } = parseKpiCsv(csv);
     expect(errors).toEqual([]);
-    expect(rows[0].einkaufsvolumenEurForecast).toBe(8800000);
-    expect(rows[0].einkaufsvolumenEurBudget).toBe(9000000);
+    expect(rows[0].einkaufsvolumenEurForecast).toBe(2930000);
+    expect(rows[0].einkaufsvolumenEurBudget).toBe(3020000);
     expect(rows[0].aktiveNutzerForecast).toBe(7);
     expect(rows[0].aktiveNutzerBudget).toBe(8);
   });
 
   it("behandelt leere Forecast-/Budget-Zellen als null, nicht als Fehler", () => {
-    const csv = `${HEADER_WITH_FC_BU}\n2026-Q3,Maximator,8700000,,,38000,1.0,97,5,85,78,6,,`;
+    const csv = `${HEADER_WITH_FC_BU}\n2026-09,Maximator,2900000,,,15000,1.0,32,2,85,78,6,,`;
     const { rows, errors } = parseKpiCsv(csv);
     expect(errors).toEqual([]);
     expect(rows[0].einkaufsvolumenEurForecast).toBeNull();
@@ -101,7 +101,7 @@ describe("parseKpiCsv – Forecast-/Budget-Spalten", () => {
   });
 
   it("lehnt nicht-numerische Forecast-Werte ab", () => {
-    const csv = `${HEADER_WITH_FC_BU}\n2026-Q3,Maximator,8700000,abc,9000000,38000,1.0,97,5,85,78,6,7,8`;
+    const csv = `${HEADER_WITH_FC_BU}\n2026-09,Maximator,2900000,abc,3020000,15000,1.0,32,2,85,78,6,7,8`;
     const { rows, errors } = parseKpiCsv(csv);
     expect(rows).toEqual([]);
     expect(errors.some((e) => e.includes("KPI_Einkaufsvolumen_EUR_Forecast") && e.includes("kein gültiger Zahlenwert"))).toBe(true);

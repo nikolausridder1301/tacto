@@ -17,7 +17,7 @@ export type Gesellschaft = (typeof GESELLSCHAFTEN)[number];
 
 const KPI_BASE_FIELDS = [
   "KPI_Einkaufsvolumen_EUR",
-  "KPI_Einsparung_Quartal_EUR",
+  "KPI_Einsparung_Monat_EUR",
   "KPI_Einsparquote_Prozent",
   "KPI_Zeitersparnis_Std",
   "KPI_RFQs_Abgeschlossen",
@@ -36,14 +36,14 @@ function budgetColumn(field: KpiBaseField): string {
 }
 
 export interface KpiRow {
-  quartal: string; // "YYYY-Qn", z.B. "2026-Q3"
+  monat: string; // "YYYY-MM", z.B. "2026-03"
   gesellschaft: Gesellschaft;
   einkaufsvolumenEur: number;
   einkaufsvolumenEurForecast: number | null;
   einkaufsvolumenEurBudget: number | null;
-  einsparungQuartalEur: number;
-  einsparungQuartalEurForecast: number | null;
-  einsparungQuartalEurBudget: number | null;
+  einsparungMonatEur: number;
+  einsparungMonatEurForecast: number | null;
+  einsparungMonatEurBudget: number | null;
   einsparquoteProzent: number;
   einsparquoteProzentForecast: number | null;
   einsparquoteProzentBudget: number | null;
@@ -68,7 +68,7 @@ export interface KpiRow {
 // Parse-Schleife unten nicht neunmal denselben Code wiederholt.
 const FIELD_MAP: Record<KpiBaseField, keyof KpiRow> = {
   KPI_Einkaufsvolumen_EUR: "einkaufsvolumenEur",
-  KPI_Einsparung_Quartal_EUR: "einsparungQuartalEur",
+  KPI_Einsparung_Monat_EUR: "einsparungMonatEur",
   KPI_Einsparquote_Prozent: "einsparquoteProzent",
   KPI_Zeitersparnis_Std: "zeitersparnisStd",
   KPI_RFQs_Abgeschlossen: "rfqsAbgeschlossen",
@@ -95,7 +95,7 @@ export interface ParseResult<T> {
   errors: string[];
 }
 
-const KPI_REQUIRED_COLUMNS = ["Quartal", "Gesellschaft", ...KPI_BASE_FIELDS];
+const KPI_REQUIRED_COLUMNS = ["Monat", "Gesellschaft", ...KPI_BASE_FIELDS];
 const STATUS_REQUIRED_COLUMNS = [
   "Gesellschaft",
   "Thema",
@@ -106,7 +106,7 @@ const STATUS_REQUIRED_COLUMNS = [
   "Zieltermin",
 ];
 
-const QUARTAL_PATTERN = /^\d{4}-Q[1-4]$/;
+const MONAT_PATTERN = /^\d{4}-(0[1-9]|1[0-2])$/;
 const DATUM_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
@@ -174,11 +174,11 @@ export function parseKpiCsv(csvText: string): ParseResult<KpiRow> {
 
   data.forEach((raw, i) => {
     const lineNo = i + 2; // Zeile 1 = Header
-    const quartal = raw["Quartal"]?.trim() ?? "";
+    const monat = raw["Monat"]?.trim() ?? "";
     const gesellschaft = raw["Gesellschaft"]?.trim() ?? "";
 
-    if (!QUARTAL_PATTERN.test(quartal)) {
-      errors.push(`Zeile ${lineNo}: ungültiges Quartal "${quartal}" (erwartet YYYY-Q1..YYYY-Q4)`);
+    if (!MONAT_PATTERN.test(monat)) {
+      errors.push(`Zeile ${lineNo}: ungültiger Monat "${monat}" (erwartet YYYY-MM)`);
       return;
     }
     if (!GESELLSCHAFTEN.includes(gesellschaft as Gesellschaft)) {
@@ -186,13 +186,13 @@ export function parseKpiCsv(csvText: string): ParseResult<KpiRow> {
       return;
     }
 
-    const key = `${quartal}|${gesellschaft}`;
+    const key = `${monat}|${gesellschaft}`;
     if (seen.has(key)) {
-      errors.push(`Zeile ${lineNo}: doppelte Kombination Quartal+Gesellschaft (${quartal}, ${gesellschaft})`);
+      errors.push(`Zeile ${lineNo}: doppelte Kombination Monat+Gesellschaft (${monat}, ${gesellschaft})`);
       return;
     }
 
-    const row: Partial<KpiRow> = { quartal, gesellschaft: gesellschaft as Gesellschaft };
+    const row: Partial<KpiRow> = { monat, gesellschaft: gesellschaft as Gesellschaft };
     let rowValid = true;
 
     for (const field of KPI_BASE_FIELDS) {

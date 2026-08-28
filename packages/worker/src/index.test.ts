@@ -17,9 +17,9 @@ const baseEnv: Env = {
 };
 
 const VALID_KPI_CSV =
-  "Quartal,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einsparung_Quartal_EUR,KPI_Einsparquote_Prozent,KPI_Zeitersparnis_Std,KPI_RFQs_Abgeschlossen,KPI_Aktive_Lieferanten,KPI_Datenqualitaet_Prozent,KPI_Aktive_Nutzer\n2026-Q3,Maximator,8700000,38000,1.0,97,5,85,78,6";
+  "Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einsparung_Monat_EUR,KPI_Einsparquote_Prozent,KPI_Zeitersparnis_Std,KPI_RFQs_Abgeschlossen,KPI_Aktive_Lieferanten,KPI_Datenqualitaet_Prozent,KPI_Aktive_Nutzer\n2026-09,Maximator,2900000,15000,1.0,32,2,85,78,6";
 
-const INVALID_KPI_CSV = "Quartal,Gesellschaft\n2026-Q3,Maximator";
+const INVALID_KPI_CSV = "Monat,Gesellschaft\n2026-09,Maximator";
 
 function request(body: unknown, init?: RequestInit): Request {
   return new Request("https://worker.example/upload", {
