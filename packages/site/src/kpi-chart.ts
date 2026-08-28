@@ -16,7 +16,6 @@ function draw(canvas: HTMLCanvasElement): void {
   if (quartalsWerte.length === 0) return;
 
   const hasForecast = quartalsWerte.some((q) => q.forecast[def.key] !== null);
-  const hasBudget = quartalsWerte.some((q) => q.budget[def.key] !== null);
 
   chart = new Chart(canvas, {
     type: "line",
@@ -48,21 +47,6 @@ function draw(canvas: HTMLCanvasElement): void {
               },
             ]
           : []),
-        ...(hasBudget
-          ? [
-              {
-                label: "Budget",
-                data: quartalsWerte.map((q) => q.budget[def.key]),
-                borderColor: "#c9922c",
-                borderDash: [2, 3],
-                backgroundColor: "transparent",
-                fill: false,
-                tension: 0.3,
-                pointRadius: 2,
-                pointBackgroundColor: "#c9922c",
-              },
-            ]
-          : []),
       ],
     },
     options: {
@@ -70,7 +54,7 @@ function draw(canvas: HTMLCanvasElement): void {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          display: hasForecast || hasBudget,
+          display: hasForecast,
           position: "top",
           align: "end",
           labels: { boxWidth: 16, font: { family: "'JetBrains Mono', monospace", size: 11 }, color: "#5a6577" },

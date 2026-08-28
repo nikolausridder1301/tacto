@@ -28,7 +28,7 @@ Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in
 
 - Kopfzeile mit Titel und einem Gesellschafts-Filter (Dropdown: "Alle" + je eine der 6 Gesellschaften).
 - **KPI-Bereich:** Tabelle mit einer Zeile je KPI (siehe Abschnitt 4.1) und einem Quartals-Filter (Dropdown, Default: neuestes vorhandenes Quartal). Für das gewählte Quartal je KPI: Ist Quartal, Budget Quartal, Delta Quartal, Ist Year to Date, Budget Year to Date, Delta Year to Date. YTD = Summe/Ø/aktuellster Wert (je nach KPI-Typ) aller Quartale desselben Jahres bis einschließlich des gewählten Quartals.
-- **KPI-Verlauf:** Chart mit Ist-Linie (durchgezogen) sowie optional Forecast- und Budget-Linien (gestrichelt/gepunktet) über alle vorhandenen Quartale (reine Quartalswerte, keine YTD-Kumulation im Chart), KPI wählbar per Dropdown. Y-Achse bei Euro-KPIs kompakt in Millionen (z.B. "17 Mio. €").
+- **KPI-Verlauf:** Chart mit Ist-Linie (durchgezogen) sowie optional Forecast-Linie (gestrichelt) über alle vorhandenen Quartale (reine Quartalswerte, keine YTD-Kumulation im Chart, kein Budget – das steht bereits in der Tabelle und würde den Trendverlauf im Chart unnötig überladen), KPI wählbar per Dropdown. Y-Achse bei Euro-KPIs kompakt in Millionen (z.B. "17 Mio. €").
 - **Status-Bereich:** Matrix, Themen/Module als Zeilen, Gesellschaften als Spalten, mit Ampel-Farbe (Rot/Gelb/Grün); Verantwortlicher/nächster Schritt/Priorität/Zieltermin als Tooltip.
 - Sichtbarer Hinweis "Stand: [neuestes Quartal]" oben auf der Seite, damit Betrachter die Aktualität der Daten einschätzen können.
 - Leerzustand vor dem ersten Upload: Hinweistext "Noch keine Daten hochgeladen."
