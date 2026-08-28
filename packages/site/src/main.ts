@@ -3,6 +3,7 @@ import { initPasswordGate } from "./auth";
 import { formatQuartal } from "./format";
 import { renderKpiChart } from "./kpi-chart";
 import { renderKpiTable, verfuegbareQuartale } from "./kpi-table";
+import { gesellschaftLogo, SK_LOGO } from "./logos";
 import { renderStatusTable } from "./status-board";
 import "./style.css";
 
@@ -48,6 +49,11 @@ async function init(): Promise<void> {
   const filterSelect = document.getElementById("gesellschaft-filter") as HTMLSelectElement;
   populateFilter(filterSelect);
 
+  const headerLogo = document.getElementById("header-logo") as HTMLImageElement;
+  headerLogo.src = SK_LOGO;
+
+  const companyLogo = document.getElementById("company-logo") as HTMLImageElement;
+
   const quartalSelect = document.getElementById("quartal-filter") as HTMLSelectElement;
   const standEl = document.getElementById("stand")!;
   const emptyState = document.getElementById("empty-state")!;
@@ -92,6 +98,14 @@ async function init(): Promise<void> {
     renderKpiTable(kpiTable, gefilterteKpis, quartalSelect.value || null);
     renderKpiChart(kpiChartSelect, kpiChartCanvas, gefilterteKpis);
     renderStatusTable(statusTable, statusRows, filter);
+
+    if (filter === ALLE) {
+      companyLogo.hidden = true;
+    } else {
+      companyLogo.src = gesellschaftLogo(filter);
+      companyLogo.alt = filter;
+      companyLogo.hidden = false;
+    }
   };
 
   filterSelect.addEventListener("change", render);

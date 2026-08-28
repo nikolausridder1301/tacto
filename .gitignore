@@ -17,3 +17,7 @@ dist/
 
 *.log
 .DS_Store
+
+# Rohe Logo-Originale, die Nikolaus lokal ablegt – die tatsächlich
+# genutzten Dateien liegen (kopiert) unter packages/site/src/assets/logos/.
+/Logos/
