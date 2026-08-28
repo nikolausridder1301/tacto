@@ -57,14 +57,12 @@ Feste Gesellschaftswerte (exakt diese Schreibweisen, aus der Projektzusammenfass
 | `Monat` | `YYYY-MM` | Berichtsmonat, z.B. `2026-09` |
 | `Gesellschaft` | Text | einer der 5 festen Werte |
 | `KPI_Einkaufsvolumen_EUR` | Zahl | Gesamtes Einkaufsvolumen im Monat |
-| `KPI_Einkaufsvolumen_Aktiv_Betreut_EUR` | Zahl | Volumen mit aktiver Tacto-Transparenz/Betreuung |
 | `KPI_Einsparung_Monat_EUR` | Zahl | Realisierte Einsparung im Berichtsmonat |
 | `KPI_Einsparung_Kumulativ_EUR` | Zahl | Realisierte Einsparung seit Projektstart |
-| `KPI_Einsparquote_Prozent` | Zahl | Einsparung / betreutes Volumen, in % |
+| `KPI_Einsparquote_Prozent` | Zahl | Einsparung / Einkaufsvolumen, in % |
 | `KPI_Zeitersparnis_Std` | Zahl | Zeitersparnis in Stunden im Monat |
 | `KPI_RFQs_Abgeschlossen` | Ganzzahl | Anzahl abgeschlossener RFQs/Ausschreibungen im Monat |
 | `KPI_Aktive_Lieferanten` | Ganzzahl | Anzahl aktiver Lieferanten in Tacto |
-| `KPI_Lieferantenkonzentration_Top20_Prozent` | Zahl | Anteil der Top-20-Lieferanten am Volumen, in % |
 | `KPI_Datenqualitaet_Prozent` | Zahl | Vollständigkeit/Qualität der Tacto-Daten, in % |
 | `KPI_Aktive_Nutzer` | Ganzzahl | Anzahl aktiver Nutzer im Monat |
 
@@ -72,9 +70,9 @@ Eindeutigkeit: Kombination `Monat` + `Gesellschaft` muss eindeutig sein (keine d
 
 Beispiel:
 ```
-Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einkaufsvolumen_Aktiv_Betreut_EUR,KPI_Einsparung_Monat_EUR,KPI_Einsparung_Kumulativ_EUR,KPI_Einsparquote_Prozent,KPI_Zeitersparnis_Std,KPI_RFQs_Abgeschlossen,KPI_Aktive_Lieferanten,KPI_Lieferantenkonzentration_Top20_Prozent,KPI_Datenqualitaet_Prozent,KPI_Aktive_Nutzer
-2026-09,Maximator,2916666,1500000,15000,15000,1.0,40,2,85,62,78,6
-2026-09,HAZEMAG,1200000,300000,0,0,0.0,10,0,40,55,40,2
+Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einsparung_Monat_EUR,KPI_Einsparung_Kumulativ_EUR,KPI_Einsparquote_Prozent,KPI_Zeitersparnis_Std,KPI_RFQs_Abgeschlossen,KPI_Aktive_Lieferanten,KPI_Datenqualitaet_Prozent,KPI_Aktive_Nutzer
+2026-09,Maximator,2916666,15000,15000,1.0,40,2,85,78,6
+2026-09,HAZEMAG,1200000,0,0,0.0,10,0,40,40,2
 ```
 
 ### 4.2 `status.csv`

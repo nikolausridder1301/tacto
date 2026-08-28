@@ -23,12 +23,12 @@ function draw(canvas: HTMLCanvasElement): void {
         {
           label: def.label,
           data: monatsWerte.map((m) => m.values[def.key]),
-          borderColor: "#2563eb",
-          backgroundColor: "rgba(37, 99, 235, 0.12)",
+          borderColor: "#d8901f",
+          backgroundColor: "rgba(216, 144, 31, 0.12)",
           fill: true,
           tension: 0.3,
           pointRadius: 3,
-          pointBackgroundColor: "#2563eb",
+          pointBackgroundColor: "#d8901f",
         },
       ],
     },
@@ -40,8 +40,17 @@ function draw(canvas: HTMLCanvasElement): void {
         tooltip: { callbacks: { label: (ctx) => def.format(ctx.parsed.y ?? 0) } },
       },
       scales: {
+        x: {
+          grid: { color: "#dce1ea" },
+          ticks: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: "#5a6577" },
+        },
         y: {
-          ticks: { callback: (value) => def.format(Number(value)) },
+          grid: { color: "#dce1ea" },
+          ticks: {
+            callback: (value) => def.format(Number(value)),
+            font: { family: "'JetBrains Mono', monospace", size: 11 },
+            color: "#5a6577",
+          },
         },
       },
     },

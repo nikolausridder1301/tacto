@@ -1,16 +1,27 @@
 :root {
   color-scheme: light;
-  --bg: #f4f5f7;
+  --bg: #e7ebf1;
   --surface: #ffffff;
-  --border: #e2e4e9;
-  --text: #16181d;
-  --text-muted: #6b7280;
-  --accent: #2563eb;
+  --border: #dce1ea;
+  --text: #161b26;
+  --text-muted: #5a6577;
+  --accent: #d8901f;
+  --accent-bg: #fbefd6;
+  --dark: #161b26;
+  --dark-surface: #222b3a;
+  --dark-border: rgba(52, 64, 83, 0.4);
+  --dark-text: #c7d2e4;
   --rot: #dc2626;
-  --gelb: #f59e0b;
+  --gelb: #d8901f;
   --gruen: #16a34a;
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --radius-card: 16px;
+  --radius-sm: 8px;
+  --shadow-card:
+    0 1px 2px rgba(20, 30, 50, 0.05),
+    0 8px 24px rgba(20, 30, 50, 0.06);
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-family: var(--font-body);
 }
 
 * {
@@ -27,6 +38,17 @@ h1,
 h2,
 h3 {
   margin: 0 0 0.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.meta-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 /* Passwort-Gate */
@@ -46,14 +68,14 @@ h3 {
 .gate-form {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
   padding: 2rem;
   width: 100%;
   max-width: 320px;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .gate-form label {
@@ -64,24 +86,27 @@ h3 {
 .gate-form input {
   padding: 0.6rem 0.75rem;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 1rem;
+  font-family: var(--font-body);
+  background: var(--surface);
+  color: var(--text);
 }
 
 .gate-form button {
   margin-top: 0.5rem;
-  padding: 0.6rem 0.75rem;
+  padding: 0.65rem 0.75rem;
   border: none;
-  border-radius: 8px;
-  background: var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--dark);
   color: white;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
 }
 
 .gate-form button:hover {
-  filter: brightness(1.05);
+  background: var(--dark-surface);
 }
 
 .gate-error {
@@ -112,24 +137,29 @@ h3 {
   gap: 0.5rem;
 }
 
-.header-controls select {
-  padding: 0.4rem 0.6rem;
+.header-controls select,
+.chart-header select {
+  padding: 0.4rem 0.7rem;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--surface);
-  font-size: 0.9rem;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
 }
 
 .stand {
   color: var(--text-muted);
-  font-size: 0.875rem;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
   margin: 0.25rem 0 2rem;
 }
 
 .empty-state {
   background: var(--surface);
   border: 1px dashed var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   padding: 3rem 1.5rem;
   text-align: center;
   color: var(--text-muted);
@@ -145,7 +175,8 @@ main section {
   overflow-x: auto;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
 }
 
 .kpi-table,
@@ -153,32 +184,40 @@ main section {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
-  white-space: nowrap;
+  table-layout: fixed;
 }
 
 .kpi-table th,
 .kpi-table td,
 .status-matrix th,
 .status-matrix td {
-  padding: 0.6rem 0.9rem;
+  padding: 0.65rem 0.9rem;
   border-bottom: 1px solid var(--border);
+}
+
+.kpi-table td,
+.status-matrix td {
+  white-space: nowrap;
 }
 
 .kpi-table thead th,
 .status-matrix thead th {
   text-align: right;
   color: var(--text-muted);
+  font-family: var(--font-mono);
   font-weight: 500;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
   border-bottom: 2px solid var(--border);
+  white-space: normal;
 }
 
 .kpi-table tbody th,
 .status-matrix tbody th {
   text-align: left;
-  font-weight: 500;
+  font-weight: 600;
+  white-space: normal;
 }
 
 .kpi-table td {
@@ -189,6 +228,28 @@ main section {
 .kpi-table thead th:first-child,
 .status-matrix thead th:first-child {
   text-align: left;
+}
+
+/* Feste Spaltenbreiten, damit die Tabelle beim Wechseln des Gesellschafts-
+   Filters nicht durch unterschiedlich lange Werte "springt". */
+.kpi-table th:first-child,
+.kpi-table td:first-child {
+  width: 220px;
+}
+
+.kpi-table th:not(:first-child),
+.kpi-table td:not(:first-child) {
+  width: 130px;
+}
+
+.status-matrix th:first-child,
+.status-matrix td:first-child {
+  width: 200px;
+}
+
+.status-matrix th:not(:first-child),
+.status-matrix td:not(:first-child) {
+  width: 110px;
 }
 
 .kpi-table tbody th,
@@ -217,7 +278,7 @@ main section {
 
 .status-matrix-aggregate th,
 .status-matrix-aggregate td {
-  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  background: var(--accent-bg);
 }
 
 .status-cell-empty {
@@ -229,6 +290,19 @@ main section {
   width: 10px;
   height: 10px;
   border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+}
+
+.ampel-rot {
+  background: var(--rot);
+}
+
+.ampel-gelb {
+  background: var(--gelb);
+}
+
+.ampel-gruen {
+  background: var(--gruen);
 }
 
 /* KPI-Verlauf (Chart) */
@@ -236,7 +310,8 @@ main section {
 .chart-section {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
   padding: 1.25rem 1.25rem 1.5rem;
 }
 
@@ -252,29 +327,9 @@ main section {
   margin: 0;
 }
 
-.chart-header select {
-  padding: 0.4rem 0.6rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  font-size: 0.9rem;
-}
-
 .chart-container {
   position: relative;
   height: 320px;
-}
-
-.ampel-rot {
-  background: var(--rot);
-}
-
-.ampel-gelb {
-  background: var(--gelb);
-}
-
-.ampel-gruen {
-  background: var(--gruen);
 }
 
 /* Upload-Seite */
@@ -282,7 +337,8 @@ main section {
 .upload-form {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -302,20 +358,25 @@ main section {
 }
 
 .upload-form button {
-  padding: 0.6rem 0.75rem;
+  padding: 0.65rem 0.75rem;
   border: none;
-  border-radius: 8px;
-  background: var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--dark);
   color: white;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   align-self: flex-start;
 }
 
+.upload-form button:hover {
+  background: var(--dark-surface);
+}
+
 .upload-message {
   font-size: 0.875rem;
   color: var(--text-muted);
+  white-space: pre-line;
 }
 
 .upload-link {
@@ -324,6 +385,7 @@ main section {
 
 .upload-link a {
   color: var(--accent);
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -361,6 +423,26 @@ main section {
   .status-matrix th,
   .status-matrix td {
     padding: 0.5rem 0.6rem;
+  }
+
+  .kpi-table th:first-child,
+  .kpi-table td:first-child {
+    width: 160px;
+  }
+
+  .kpi-table th:not(:first-child),
+  .kpi-table td:not(:first-child) {
+    width: 110px;
+  }
+
+  .status-matrix th:first-child,
+  .status-matrix td:first-child {
+    width: 140px;
+  }
+
+  .status-matrix th:not(:first-child),
+  .status-matrix td:not(:first-child) {
+    width: 90px;
   }
 
   .chart-section {

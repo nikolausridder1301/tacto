@@ -17,7 +17,7 @@ const baseEnv: Env = {
 };
 
 const VALID_KPI_CSV =
-  "Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einkaufsvolumen_Aktiv_Betreut_EUR,KPI_Einsparung_Monat_EUR,KPI_Einsparung_Kumulativ_EUR,KPI_Einsparquote_Prozent,KPI_Zeitersparnis_Std,KPI_RFQs_Abgeschlossen,KPI_Aktive_Lieferanten,KPI_Lieferantenkonzentration_Top20_Prozent,KPI_Datenqualitaet_Prozent,KPI_Aktive_Nutzer\n2026-09,Maximator,2916666,1500000,15000,15000,1.0,40,2,85,62,78,6";
+  "Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einsparung_Monat_EUR,KPI_Einsparung_Kumulativ_EUR,KPI_Einsparquote_Prozent,KPI_Zeitersparnis_Std,KPI_RFQs_Abgeschlossen,KPI_Aktive_Lieferanten,KPI_Datenqualitaet_Prozent,KPI_Aktive_Nutzer\n2026-09,Maximator,2916666,15000,15000,1.0,40,2,85,78,6";
 
 const INVALID_KPI_CSV = "Monat,Gesellschaft\n2026-09,Maximator";
 

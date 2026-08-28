@@ -8,6 +8,9 @@ dist/
 # bricht CI (Linux) wenn committed.
 .npmrc
 
+# Sitzungslokales Lock-File von Tooling, kein Projektinhalt.
+.claude/scheduled_tasks.lock
+
 .env
 .env.*
 !.env.example

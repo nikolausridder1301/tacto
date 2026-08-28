@@ -18,14 +18,12 @@ export interface KpiRow {
   monat: string; // "YYYY-MM"
   gesellschaft: Gesellschaft;
   einkaufsvolumenEur: number;
-  einkaufsvolumenAktivBetreutEur: number;
   einsparungMonatEur: number;
   einsparungKumulativEur: number;
   einsparquoteProzent: number;
   zeitersparnisStd: number;
   rfqsAbgeschlossen: number;
   aktiveLieferanten: number;
-  lieferantenkonzentrationTop20Prozent: number;
   datenqualitaetProzent: number;
   aktiveNutzer: number;
 }
@@ -50,14 +48,12 @@ export interface ParseResult<T> {
 
 const KPI_NUMERIC_FIELDS = [
   "KPI_Einkaufsvolumen_EUR",
-  "KPI_Einkaufsvolumen_Aktiv_Betreut_EUR",
   "KPI_Einsparung_Monat_EUR",
   "KPI_Einsparung_Kumulativ_EUR",
   "KPI_Einsparquote_Prozent",
   "KPI_Zeitersparnis_Std",
   "KPI_RFQs_Abgeschlossen",
   "KPI_Aktive_Lieferanten",
-  "KPI_Lieferantenkonzentration_Top20_Prozent",
   "KPI_Datenqualitaet_Prozent",
   "KPI_Aktive_Nutzer",
 ] as const;
@@ -151,14 +147,12 @@ export function parseKpiCsv(csvText: string): ParseResult<KpiRow> {
       monat,
       gesellschaft: gesellschaft as Gesellschaft,
       einkaufsvolumenEur: values["KPI_Einkaufsvolumen_EUR"]!,
-      einkaufsvolumenAktivBetreutEur: values["KPI_Einkaufsvolumen_Aktiv_Betreut_EUR"]!,
       einsparungMonatEur: values["KPI_Einsparung_Monat_EUR"]!,
       einsparungKumulativEur: values["KPI_Einsparung_Kumulativ_EUR"]!,
       einsparquoteProzent: values["KPI_Einsparquote_Prozent"]!,
       zeitersparnisStd: values["KPI_Zeitersparnis_Std"]!,
       rfqsAbgeschlossen: values["KPI_RFQs_Abgeschlossen"]!,
       aktiveLieferanten: values["KPI_Aktive_Lieferanten"]!,
-      lieferantenkonzentrationTop20Prozent: values["KPI_Lieferantenkonzentration_Top20_Prozent"]!,
       datenqualitaetProzent: values["KPI_Datenqualitaet_Prozent"]!,
       aktiveNutzer: values["KPI_Aktive_Nutzer"]!,
     });
