@@ -1,3 +1,3 @@
-Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einsparung_Monat_EUR,KPI_Einsparung_Kumulativ_EUR,KPI_Einsparquote_Prozent,KPI_Zeitersparnis_Std,KPI_RFQs_Abgeschlossen,KPI_Aktive_Lieferanten,KPI_Datenqualitaet_Prozent,KPI_Aktive_Nutzer
-2026-09,Maximator,2916666,15000,15000,1.0,40,2,85,78,6
-2026-09,HAZEMAG,1200000,0,0,0.0,10,0,40,40,2
+Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einkaufsvolumen_EUR_Plan,KPI_Einsparung_Monat_EUR,KPI_Einsparung_Monat_EUR_Plan,KPI_Einsparung_Kumulativ_EUR,KPI_Einsparung_Kumulativ_EUR_Plan,KPI_Einsparquote_Prozent,KPI_Einsparquote_Prozent_Plan,KPI_Zeitersparnis_Std,KPI_Zeitersparnis_Std_Plan,KPI_RFQs_Abgeschlossen,KPI_RFQs_Abgeschlossen_Plan,KPI_Aktive_Lieferanten,KPI_Aktive_Lieferanten_Plan,KPI_Datenqualitaet_Prozent,KPI_Datenqualitaet_Prozent_Plan,KPI_Aktive_Nutzer,KPI_Aktive_Nutzer_Plan
+2026-09,Maximator,2916666,3000000,15000,20000,15000,90000,1.0,1.2,40,45,2,3,85,90,78,80,6,7
+2026-09,HAZEMAG,1200000,1200000,0,20000,0,90000,0.0,1.2,10,45,0,3,40,90,40,80,2,7

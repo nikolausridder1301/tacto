@@ -14,6 +14,10 @@ Maximator,Academy,Gelb,N. Ridder,Verbleibende Nutzer abschliessen lassen,Niedrig
 Maximator,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,
 Maximator,Automatisierung,Gelb,N. Ridder,Auftragsbestaetigungen an ERP anbinden,Hoch,2026-11-30
 Maximator,Agenten,Gelb,N. Ridder,Preisabwehragent testen,Mittel,2026-11-15
+Maximator Hydrogen,Workspace-Einrichtung,Rot,N. Ridder,Workspace initial einrichten,Mittel,2026-10-15
+Maximator Hydrogen,Analytics,Rot,N. Ridder,Noch nicht gestartet,Niedrig,
+Maximator Hydrogen,Automatisierung,Rot,N. Ridder,Noch nicht gestartet,Niedrig,
+Maximator Hydrogen,Agenten,Rot,N. Ridder,Noch nicht gestartet,Niedrig,
 Hazemag Systems,Workspace-Einrichtung,Rot,N. Ridder,Workspace initial einrichten,Hoch,2026-09-15
 Hazemag Systems,Datenanbindung,Rot,N. Ridder,Datentransfer aufsetzen,Hoch,2026-10-15
 Hazemag Systems,Analytics,Rot,N. Ridder,Wartet auf Workspace-Einrichtung,Hoch,2026-09-30

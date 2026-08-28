@@ -20,13 +20,13 @@ Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in
 ## 2. Zielgruppe
 
 - **Datenpfleger:** Nikolaus (einzige Person, die Daten hochlädt).
-- **Betrachter:** SteerCo / Ansprechpartner der Gesellschaften (HAZEMAG, Allmineral, Hazemag Systems, Maximator/MxH2, FEST) – lesender Zugriff auf das Dashboard, kein Login-Account, nur ein gemeinsames Passwort.
+- **Betrachter:** SteerCo / Ansprechpartner der Gesellschaften (HAZEMAG, Allmineral, Hazemag Systems, Maximator, Maximator Hydrogen, FEST) – lesender Zugriff auf das Dashboard, kein Login-Account, nur ein gemeinsames Passwort.
 
 ## 3. Funktionsumfang (MVP)
 
 ### 3.1 Dashboard (Hauptseite, `/`)
 
-- Kopfzeile mit Titel und einem Gesellschafts-Filter (Dropdown: "Alle" + je eine der 5 Gesellschaften).
+- Kopfzeile mit Titel und einem Gesellschafts-Filter (Dropdown: "Alle" + je eine der 6 Gesellschaften).
 - **KPI-Bereich:** 10 Kacheln (siehe Abschnitt 4.1), je Kachel: aktueller Wert (neuester vorhandener Monat, gefiltert nach gewählter Gesellschaft bzw. aggregiert über alle) + kleine Trendlinie über die in der Datei vorhandenen Monate.
 - **Status-Bereich:** Tabelle/Board, gruppiert nach Gesellschaft, mit Ampel-Farbe (Rot/Gelb/Grün), Thema, Verantwortlichem, nächstem Schritt, Priorität, Zieltermin.
 - Sichtbarer Hinweis "Stand: [Datum letzter Upload]" oben auf der Seite, damit Betrachter die Aktualität der Daten einschätzen können.
@@ -48,14 +48,14 @@ Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in
 
 Zwei CSV-Dateien, UTF-8 kodiert. Jeder Upload **ersetzt die jeweilige Datei vollständig** (kein Anhängen/Mergen). Historie bei den KPIs entsteht dadurch, dass Nikolaus in seiner eigenen Master-Datei alle bisherigen Monate mitführt und die komplette Historie bei jedem Upload mitschickt.
 
-Feste Gesellschaftswerte (exakt diese Schreibweisen, aus der Projektzusammenfassung): `HAZEMAG`, `Allmineral`, `Hazemag Systems`, `Maximator`, `FEST`.
+Feste Gesellschaftswerte (exakt diese Schreibweisen, aus der Projektzusammenfassung): `HAZEMAG`, `Allmineral`, `Hazemag Systems`, `Maximator`, `Maximator Hydrogen`, `FEST`.
 
 ### 4.1 `kpis.csv`
 
 | Spalte | Typ | Beschreibung |
 |---|---|---|
 | `Monat` | `YYYY-MM` | Berichtsmonat, z.B. `2026-09` |
-| `Gesellschaft` | Text | einer der 5 festen Werte |
+| `Gesellschaft` | Text | einer der 6 festen Werte |
 | `KPI_Einkaufsvolumen_EUR` | Zahl | Gesamtes Einkaufsvolumen im Monat |
 | `KPI_Einsparung_Monat_EUR` | Zahl | Realisierte Einsparung im Berichtsmonat |
 | `KPI_Einsparung_Kumulativ_EUR` | Zahl | Realisierte Einsparung seit Projektstart |
@@ -68,18 +68,20 @@ Feste Gesellschaftswerte (exakt diese Schreibweisen, aus der Projektzusammenfass
 
 Eindeutigkeit: Kombination `Monat` + `Gesellschaft` muss eindeutig sein (keine doppelten Zeilen).
 
-Beispiel:
+**Plan-Spalten (optional):** Zu jeder `KPI_*`-Spalte kann eine gleichnamige `KPI_*_Plan`-Spalte ergänzt werden (z.B. `KPI_Einkaufsvolumen_EUR_Plan`), um Ist- und Plan-Wert gegenüberzustellen – in der Tabelle als Zusatzzeile pro Zelle, im Chart als zweite (gestrichelte) Linie. Vollständig optional: fehlt eine `_Plan`-Spalte komplett, wird für diese Kennzahl kein Plan angezeigt; ist die Spalte vorhanden, darf die einzelne Zelle trotzdem leer bleiben (kein Plan-Wert für diesen Monat/diese Gesellschaft, kein Validierungsfehler).
+
+Beispiel (mit Plan-Spalten):
 ```
-Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einsparung_Monat_EUR,KPI_Einsparung_Kumulativ_EUR,KPI_Einsparquote_Prozent,KPI_Zeitersparnis_Std,KPI_RFQs_Abgeschlossen,KPI_Aktive_Lieferanten,KPI_Datenqualitaet_Prozent,KPI_Aktive_Nutzer
-2026-09,Maximator,2916666,15000,15000,1.0,40,2,85,78,6
-2026-09,HAZEMAG,1200000,0,0,0.0,10,0,40,40,2
+Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einkaufsvolumen_EUR_Plan,KPI_Einsparung_Monat_EUR,KPI_Einsparung_Monat_EUR_Plan,KPI_Einsparung_Kumulativ_EUR,KPI_Einsparung_Kumulativ_EUR_Plan,KPI_Einsparquote_Prozent,KPI_Einsparquote_Prozent_Plan,KPI_Zeitersparnis_Std,KPI_Zeitersparnis_Std_Plan,KPI_RFQs_Abgeschlossen,KPI_RFQs_Abgeschlossen_Plan,KPI_Aktive_Lieferanten,KPI_Aktive_Lieferanten_Plan,KPI_Datenqualitaet_Prozent,KPI_Datenqualitaet_Prozent_Plan,KPI_Aktive_Nutzer,KPI_Aktive_Nutzer_Plan
+2026-09,Maximator,2916666,3000000,15000,20000,15000,90000,1.0,1.2,40,45,2,3,85,90,78,80,6,7
+2026-09,HAZEMAG,1200000,1200000,0,20000,0,90000,0.0,1.2,10,45,0,3,40,90,40,80,2,7
 ```
 
 ### 4.2 `status.csv`
 
 | Spalte | Typ | Beschreibung |
 |---|---|---|
-| `Gesellschaft` | Text | einer der 5 festen Werte |
+| `Gesellschaft` | Text | einer der 6 festen Werte |
 | `Thema` | Text | z.B. "Auftragsbestätigungen", "Warengruppen", "Echtdatentransfer" |
 | `Status` | Text | `Rot` / `Gelb` / `Grün` |
 | `Verantwortlicher` | Text | Name/Rolle |

@@ -2,9 +2,10 @@ import { describe, expect, it } from "vitest";
 import { GESELLSCHAFTEN, parseKpiCsv, parseStatusCsv } from "./index";
 
 describe("Projektgrundgerüst", () => {
-  it("kennt die 5 Gesellschaften aus SPEC.md", () => {
-    expect(GESELLSCHAFTEN).toHaveLength(5);
+  it("kennt die 6 Gesellschaften aus SPEC.md", () => {
+    expect(GESELLSCHAFTEN).toHaveLength(6);
     expect(GESELLSCHAFTEN).toContain("HAZEMAG");
+    expect(GESELLSCHAFTEN).toContain("Maximator Hydrogen");
     expect(GESELLSCHAFTEN).toContain("FEST");
   });
 });
@@ -24,6 +25,8 @@ describe("parseKpiCsv", () => {
       einkaufsvolumenEur: 2916666,
       aktiveNutzer: 6,
     });
+    // Keine Plan-Spalten in der Datei -> alle Plan-Werte null, kein Fehler.
+    expect(rows[0].einkaufsvolumenEurPlan).toBeNull();
   });
 
   it("erkennt Semikolon-Trennzeichen und normalisiert Komma-Dezimalwerte (deutscher Excel-Export)", () => {
@@ -62,6 +65,33 @@ describe("parseKpiCsv", () => {
     const { rows, errors } = parseKpiCsv(csv);
     expect(rows).toEqual([]);
     expect(errors.some((e) => e.includes("kein gültiger Zahlenwert"))).toBe(true);
+  });
+});
+
+describe("parseKpiCsv – Plan-Spalten (Ist/Plan-Gegenüberstellung)", () => {
+  const HEADER_WITH_PLAN = `${KPI_HEADER.replace("KPI_Einkaufsvolumen_EUR,", "KPI_Einkaufsvolumen_EUR,KPI_Einkaufsvolumen_EUR_Plan,").replace("KPI_Aktive_Nutzer", "KPI_Aktive_Nutzer,KPI_Aktive_Nutzer_Plan")}`;
+
+  it("parst vorhandene Plan-Werte", () => {
+    const csv = `${HEADER_WITH_PLAN}\n2026-09,Maximator,2916666,3000000,15000,15000,1.0,40,2,85,78,6,8`;
+    const { rows, errors } = parseKpiCsv(csv);
+    expect(errors).toEqual([]);
+    expect(rows[0].einkaufsvolumenEurPlan).toBe(3000000);
+    expect(rows[0].aktiveNutzerPlan).toBe(8);
+  });
+
+  it("behandelt leere Plan-Zellen als null, nicht als Fehler", () => {
+    const csv = `${HEADER_WITH_PLAN}\n2026-09,Maximator,2916666,,15000,15000,1.0,40,2,85,78,6,`;
+    const { rows, errors } = parseKpiCsv(csv);
+    expect(errors).toEqual([]);
+    expect(rows[0].einkaufsvolumenEurPlan).toBeNull();
+    expect(rows[0].aktiveNutzerPlan).toBeNull();
+  });
+
+  it("lehnt nicht-numerische Plan-Werte ab", () => {
+    const csv = `${HEADER_WITH_PLAN}\n2026-09,Maximator,2916666,abc,15000,15000,1.0,40,2,85,78,6,8`;
+    const { rows, errors } = parseKpiCsv(csv);
+    expect(rows).toEqual([]);
+    expect(errors.some((e) => e.includes("KPI_Einkaufsvolumen_EUR_Plan") && e.includes("kein gültiger Zahlenwert"))).toBe(true);
   });
 });
 

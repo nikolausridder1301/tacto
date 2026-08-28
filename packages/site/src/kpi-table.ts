@@ -20,7 +20,13 @@ export function renderKpiTable(container: HTMLElement, rows: KpiRow[]): void {
   const tbody = document.createElement("tbody");
   for (const def of KPI_DEFS) {
     const tr = document.createElement("tr");
-    const cells = monatsWerte.map((m) => `<td>${def.format(m.values[def.key])}</td>`).join("");
+    const cells = monatsWerte
+      .map((m) => {
+        const plan = m.planValues[def.key];
+        const planHtml = plan === null ? "" : `<span class="kpi-plan">Plan ${def.format(plan)}</span>`;
+        return `<td><span class="kpi-ist">${def.format(m.values[def.key])}</span>${planHtml}</td>`;
+      })
+      .join("");
     tr.innerHTML = `<th scope="row">${def.label}</th>${cells}`;
     tbody.appendChild(tr);
   }

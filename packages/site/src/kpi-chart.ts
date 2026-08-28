@@ -15,13 +15,15 @@ function draw(canvas: HTMLCanvasElement): void {
   chart = null;
   if (monatsWerte.length === 0) return;
 
+  const hasPlan = monatsWerte.some((m) => m.planValues[def.key] !== null);
+
   chart = new Chart(canvas, {
     type: "line",
     data: {
       labels: monatsWerte.map((m) => formatMonatKurz(m.monat)),
       datasets: [
         {
-          label: def.label,
+          label: "Ist",
           data: monatsWerte.map((m) => m.values[def.key]),
           borderColor: "#2563c9",
           backgroundColor: "rgba(37, 99, 201, 0.1)",
@@ -30,14 +32,36 @@ function draw(canvas: HTMLCanvasElement): void {
           pointRadius: 3,
           pointBackgroundColor: "#2563c9",
         },
+        ...(hasPlan
+          ? [
+              {
+                label: "Plan",
+                data: monatsWerte.map((m) => m.planValues[def.key]),
+                borderColor: "#94a3b8",
+                borderDash: [6, 4],
+                backgroundColor: "transparent",
+                fill: false,
+                tension: 0.3,
+                pointRadius: 2,
+                pointBackgroundColor: "#94a3b8",
+              },
+            ]
+          : []),
       ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: (ctx) => def.format(ctx.parsed.y ?? 0) } },
+        legend: {
+          display: hasPlan,
+          position: "top",
+          align: "end",
+          labels: { boxWidth: 16, font: { family: "'JetBrains Mono', monospace", size: 11 }, color: "#5a6577" },
+        },
+        tooltip: {
+          callbacks: { label: (ctx) => `${ctx.dataset.label}: ${def.format(ctx.parsed.y ?? 0)}` },
+        },
       },
       scales: {
         x: {
