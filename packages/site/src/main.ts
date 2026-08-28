@@ -22,7 +22,7 @@ function populateFilter(select: HTMLSelectElement): void {
   for (const option of options) {
     const el = document.createElement("option");
     el.value = option;
-    el.textContent = option;
+    el.textContent = option === ALLE ? "Gruppenebene" : option;
     select.appendChild(el);
   }
 }
