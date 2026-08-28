@@ -24,7 +24,7 @@
     </div>
 
     <div id="app" class="app" hidden>
-      <header class="app-header">
+      <header class="app-header panel">
         <h1>Tacto Reporting</h1>
         <div class="header-controls">
           <label for="gesellschaft-filter">Gesellschaft</label>
@@ -38,13 +38,15 @@
       </section>
 
       <main id="content">
-        <section>
-          <h2>KPIs</h2>
+        <section class="panel">
+          <div class="panel-header">
+            <h2>KPIs</h2>
+          </div>
           <div id="kpi-table"></div>
         </section>
 
-        <section class="chart-section">
-          <div class="chart-header">
+        <section class="panel">
+          <div class="panel-header">
             <h2>KPI-Verlauf</h2>
             <select id="kpi-chart-select" aria-label="KPI für Grafik auswählen"></select>
           </div>
@@ -53,8 +55,10 @@
           </div>
         </section>
 
-        <section>
-          <h2>Implementierungs-Status</h2>
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Implementierungs-Status</h2>
+          </div>
           <div id="status-table"></div>
         </section>
       </main>

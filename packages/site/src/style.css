@@ -123,12 +123,32 @@ h3 {
   padding: 2rem 1.5rem 4rem;
 }
 
-.app-header {
+/* Panel: gemeinsame Karten-Optik für Kopfzeile und alle Abschnitte –
+   Titel (+ optionale Auswahl) sitzen zusammen in derselben Box, nicht
+   frei darüber. */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 1.25rem 1.25rem 1.5rem;
+}
+
+.app-header,
+.panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.panel-header {
+  margin-bottom: 0.75rem;
+}
+
+.panel-header h2 {
+  margin: 0;
 }
 
 .header-controls {
@@ -138,7 +158,7 @@ h3 {
 }
 
 .header-controls select,
-.chart-header select {
+.panel-header select {
   padding: 0.4rem 0.7rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -153,7 +173,7 @@ h3 {
   color: var(--text-muted);
   font-size: 0.8rem;
   font-family: var(--font-mono);
-  margin: 0.25rem 0 2rem;
+  margin: 0.5rem 0 2rem;
 }
 
 .empty-state {
@@ -173,10 +193,6 @@ main section {
 
 .table-wrap {
   overflow-x: auto;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
 }
 
 .kpi-table,
@@ -298,26 +314,6 @@ main section {
 
 /* KPI-Verlauf (Chart) */
 
-.chart-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
-  padding: 1.25rem 1.25rem 1.5rem;
-}
-
-.chart-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-.chart-header h2 {
-  margin: 0;
-}
-
 .chart-container {
   position: relative;
   height: 320px;
@@ -391,11 +387,6 @@ main section {
     padding: 1.25rem 1rem 3rem;
   }
 
-  .app-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .header-controls {
     width: 100%;
   }
@@ -436,11 +427,12 @@ main section {
     width: 90px;
   }
 
-  .chart-section {
+  .panel {
     padding: 1rem;
   }
 
-  .chart-header {
+  .app-header,
+  .panel-header {
     flex-direction: column;
     align-items: flex-start;
   }
