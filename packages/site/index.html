@@ -25,16 +25,17 @@
 
     <div id="app" class="app" hidden>
       <header class="app-header panel">
-        <div class="header-title">
-          <img id="header-logo" class="header-logo" alt="Schmidt, Kranz &amp; Co." />
-          <h1>Tacto Reporting</h1>
-          <img id="company-logo" class="header-logo company-logo" alt="" hidden />
+        <div class="app-header-row">
+          <div class="header-title">
+            <img id="header-logo" class="header-logo" alt="Schmidt, Kranz &amp; Co." />
+            <h1>Tacto Reporting</h1>
+          </div>
+          <div class="header-controls">
+            <div id="gesellschaft-filter"></div>
+          </div>
         </div>
-        <div class="header-controls">
-          <select id="gesellschaft-filter" class="filter-primary" aria-label="Gesellschaft auswählen"></select>
-        </div>
+        <p id="stand" class="stand"></p>
       </header>
-      <p id="stand" class="stand"></p>
 
       <section id="empty-state" class="empty-state" hidden>
         <p>Noch keine Daten hochgeladen.</p>

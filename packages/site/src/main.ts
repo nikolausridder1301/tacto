@@ -5,6 +5,7 @@ import { renderKpiChart } from "./kpi-chart";
 import { verfuegbareQuartale } from "./kpi-data";
 import { renderKpiTable } from "./kpi-table";
 import { gesellschaftLogo, SK_LOGO } from "./logos";
+import { createPillSelect } from "./pill-select";
 import { renderStatusTable } from "./status-board";
 import "./style.css";
 
@@ -15,16 +16,6 @@ async function fetchCsv(path: string): Promise<string | null> {
   const response = await fetch(path);
   if (!response.ok) return null;
   return response.text();
-}
-
-function populateFilter(select: HTMLSelectElement): void {
-  const options: Filter[] = [ALLE, ...GESELLSCHAFTEN];
-  for (const option of options) {
-    const el = document.createElement("option");
-    el.value = option;
-    el.textContent = option === ALLE ? "Gruppenebene" : option;
-    select.appendChild(el);
-  }
 }
 
 function populateQuartalFilter(select: HTMLSelectElement, quartale: string[]): void {
@@ -47,13 +38,7 @@ async function init(): Promise<void> {
 
   initPasswordGate({ gate, app, form, input, error });
 
-  const filterSelect = document.getElementById("gesellschaft-filter") as HTMLSelectElement;
-  populateFilter(filterSelect);
-
   const headerLogo = document.getElementById("header-logo") as HTMLImageElement;
-  headerLogo.src = SK_LOGO;
-
-  const companyLogo = document.getElementById("company-logo") as HTMLImageElement;
 
   const quartalSelect = document.getElementById("quartal-filter") as HTMLSelectElement;
   const standEl = document.getElementById("stand")!;
@@ -93,23 +78,25 @@ async function init(): Promise<void> {
   const letztesQuartal = quartale.at(-1);
   standEl.textContent = letztesQuartal ? `Stand: ${formatQuartal(letztesQuartal)}` : "";
 
-  const render = () => {
-    const filter = filterSelect.value as Filter;
+  function render(): void {
+    const filter = filterSelect.getValue() as Filter;
     const gefilterteKpis = filter === ALLE ? kpiRows : kpiRows.filter((r) => r.gesellschaft === filter);
     renderKpiTable(kpiTable, gefilterteKpis, quartalSelect.value || null);
     renderKpiChart(kpiChartSelect, kpiChartCanvas, gefilterteKpis);
     renderStatusTable(statusTable, statusRows, filter);
 
     if (filter === ALLE) {
-      companyLogo.hidden = true;
+      headerLogo.src = SK_LOGO;
+      headerLogo.alt = "Schmidt, Kranz & Co.";
     } else {
-      companyLogo.src = gesellschaftLogo(filter);
-      companyLogo.alt = filter;
-      companyLogo.hidden = false;
+      headerLogo.src = gesellschaftLogo(filter);
+      headerLogo.alt = filter;
     }
-  };
+  }
 
-  filterSelect.addEventListener("change", render);
+  const filterOptions = [ALLE, ...GESELLSCHAFTEN].map((g) => ({ value: g, label: g === ALLE ? "Gruppenebene" : g }));
+  const filterSelect = createPillSelect(document.getElementById("gesellschaft-filter")!, filterOptions, render);
+
   quartalSelect.addEventListener("change", render);
   render();
 }
