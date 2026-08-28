@@ -34,12 +34,22 @@
       <main id="content">
         <section>
           <h2>KPIs</h2>
-          <div id="kpi-grid" class="kpi-grid"></div>
+          <div id="kpi-table"></div>
+        </section>
+
+        <section class="chart-section">
+          <div class="chart-header">
+            <h2>KPI-Verlauf</h2>
+            <select id="kpi-chart-select" aria-label="KPI für Grafik auswählen"></select>
+          </div>
+          <div class="chart-container">
+            <canvas id="kpi-chart"></canvas>
+          </div>
         </section>
 
         <section>
           <h2>Implementierungs-Status</h2>
-          <div id="status-board" class="status-board"></div>
+          <div id="status-table"></div>
         </section>
       </main>
 

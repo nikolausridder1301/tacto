@@ -1,69 +1,101 @@
-import type { StatusRow } from "@tacto/csv";
-import { formatDatum } from "./format";
+import { GESELLSCHAFTEN, type Gesellschaft, type StatusRow } from "@tacto/csv";
+import { escapeHtml, formatDatum } from "./format";
 
-const STATUS_CLASS: Record<StatusRow["status"], string> = {
+type Status = StatusRow["status"];
+
+const STATUS_RANK: Record<Status, number> = { Gruen: 0, Gelb: 1, Rot: 2 };
+const STATUS_CLASS: Record<Status, string> = {
   Rot: "ampel ampel-rot",
   Gelb: "ampel ampel-gelb",
   Gruen: "ampel ampel-gruen",
 };
 
-export function renderStatusBoard(container: HTMLElement, rows: StatusRow[]): void {
+function worst(statuses: Status[]): Status | null {
+  if (statuses.length === 0) return null;
+  return statuses.reduce((a, b) => (STATUS_RANK[b] > STATUS_RANK[a] ? b : a));
+}
+
+function ampelCell(status: Status, title: string): string {
+  return `<td><span class="${STATUS_CLASS[status]}" title="${escapeHtml(title)}"></span></td>`;
+}
+
+function buildRow(label: string, rowsForEntity: StatusRow[], bereiche: string[], isAggregate: boolean): string {
+  const byBereich = new Map<string, StatusRow[]>();
+  for (const r of rowsForEntity) {
+    const list = byBereich.get(r.thema) ?? [];
+    list.push(r);
+    byBereich.set(r.thema, list);
+  }
+
+  const gesamt = worst(rowsForEntity.map((r) => r.status));
+
+  const cells = bereiche
+    .map((b) => {
+      const entries = byBereich.get(b);
+      if (!entries || entries.length === 0) return `<td class="status-cell-empty">–</td>`;
+      const status = worst(entries.map((e) => e.status))!;
+      const title = isAggregate
+        ? entries.map((e) => `${e.gesellschaft}: ${e.status}`).join(" · ")
+        : (() => {
+            const e = entries[0];
+            const termin = e.zieltermin ? ` (bis ${formatDatum(e.zieltermin)})` : "";
+            return `${e.status} – ${e.verantwortlicher}: ${e.naechsterSchritt}${termin}`;
+          })();
+      return ampelCell(status, title);
+    })
+    .join("");
+
+  const gesamtCell = gesamt
+    ? ampelCell(gesamt, isAggregate ? "Schlechtester Status über alle Gesellschaften" : "Schlechtester Status über alle Bereiche")
+    : `<td class="status-cell-empty">–</td>`;
+
+  return `<tr${isAggregate ? ' class="status-matrix-aggregate"' : ""}><th scope="row">${escapeHtml(label)}</th>${gesamtCell}${cells}</tr>`;
+}
+
+// Module stehen fachlich für sich (Tacto-Funktionsbereiche) und werden vor
+// den Rollout-Themen (z.B. Echtdatentransfer) einsortiert, wenn beide in den
+// Daten vorkommen.
+const MODUL_REIHENFOLGE = ["Analytics", "Automatisierung", "Agenten"];
+
+function sortiereBereiche(bereiche: string[]): string[] {
+  const module = MODUL_REIHENFOLGE.filter((m) => bereiche.includes(m));
+  const themen = bereiche.filter((b) => !MODUL_REIHENFOLGE.includes(b));
+  return [...module, ...themen];
+}
+
+export function renderStatusTable(container: HTMLElement, rows: StatusRow[], filter: Gesellschaft | "Alle"): void {
   container.innerHTML = "";
+  if (rows.length === 0) return;
 
-  if (rows.length === 0) {
-    return;
+  // Spalten = alle vorkommenden Bereiche: Module zuerst, dann Themen in
+  // erster Auftrittsreihenfolge.
+  const gesehen: string[] = [];
+  for (const r of rows) if (!gesehen.includes(r.thema)) gesehen.push(r.thema);
+  const bereiche = sortiereBereiche(gesehen);
+
+  const gesellschaften: Gesellschaft[] = filter === "Alle" ? [...GESELLSCHAFTEN] : [filter];
+
+  const table = document.createElement("table");
+  table.className = "status-matrix";
+
+  const theadHtml = `<thead><tr><th>Gesellschaft</th><th>Gesamt</th>${bereiche
+    .map((b) => `<th>${escapeHtml(b)}</th>`)
+    .join("")}</tr></thead>`;
+
+  const bodyRows: string[] = [];
+  if (filter === "Alle") {
+    bodyRows.push(buildRow("Gesamt (Gruppe)", rows, bereiche, true));
+  }
+  for (const g of gesellschaften) {
+    bodyRows.push(
+      buildRow(g, rows.filter((r) => r.gesellschaft === g), bereiche, false),
+    );
   }
 
-  const byGesellschaft = new Map<string, StatusRow[]>();
-  for (const row of rows) {
-    const list = byGesellschaft.get(row.gesellschaft) ?? [];
-    list.push(row);
-    byGesellschaft.set(row.gesellschaft, list);
-  }
+  table.innerHTML = `${theadHtml}<tbody>${bodyRows.join("")}</tbody>`;
 
-  for (const [gesellschaft, themen] of byGesellschaft) {
-    const group = document.createElement("section");
-    group.className = "status-group";
-
-    const heading = document.createElement("h3");
-    heading.textContent = gesellschaft;
-    group.appendChild(heading);
-
-    const table = document.createElement("table");
-    table.className = "status-table";
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th></th>
-          <th>Thema</th>
-          <th>Verantwortlicher</th>
-          <th>Nächster Schritt</th>
-          <th>Priorität</th>
-          <th>Zieltermin</th>
-        </tr>
-      </thead>
-    `;
-
-    const tbody = document.createElement("tbody");
-    for (const row of themen) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td><span class="${STATUS_CLASS[row.status]}" title="${row.status}"></span></td>
-        <td>${row.thema}</td>
-        <td>${row.verantwortlicher}</td>
-        <td>${row.naechsterSchritt}</td>
-        <td>${row.prioritaet}</td>
-        <td>${row.zieltermin ? formatDatum(row.zieltermin) : "–"}</td>
-      `;
-      tbody.appendChild(tr);
-    }
-    table.appendChild(tbody);
-
-    const tableWrap = document.createElement("div");
-    tableWrap.className = "status-table-wrap";
-    tableWrap.appendChild(table);
-
-    group.appendChild(tableWrap);
-    container.appendChild(group);
-  }
+  const wrap = document.createElement("div");
+  wrap.className = "table-wrap";
+  wrap.appendChild(table);
+  container.appendChild(wrap);
 }

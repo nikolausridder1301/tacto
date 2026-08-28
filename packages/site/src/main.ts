@@ -1,8 +1,9 @@
 import { GESELLSCHAFTEN, parseKpiCsv, parseStatusCsv, type Gesellschaft, type KpiRow, type StatusRow } from "@tacto/csv";
 import { initPasswordGate } from "./auth";
 import { formatDatum } from "./format";
-import { renderKpiGrid } from "./kpi-grid";
-import { renderStatusBoard } from "./status-board";
+import { renderKpiChart } from "./kpi-chart";
+import { renderKpiTable } from "./kpi-table";
+import { renderStatusTable } from "./status-board";
 import "./style.css";
 
 const ALLE = "Alle" as const;
@@ -39,8 +40,10 @@ async function init(): Promise<void> {
   const standEl = document.getElementById("stand")!;
   const emptyState = document.getElementById("empty-state")!;
   const content = document.getElementById("content")!;
-  const kpiGrid = document.getElementById("kpi-grid")!;
-  const statusBoard = document.getElementById("status-board")!;
+  const kpiTable = document.getElementById("kpi-table")!;
+  const kpiChartSelect = document.getElementById("kpi-chart-select") as HTMLSelectElement;
+  const kpiChartCanvas = document.getElementById("kpi-chart") as HTMLCanvasElement;
+  const statusTable = document.getElementById("status-table")!;
 
   const base = import.meta.env.BASE_URL;
   const [kpiCsv, statusCsv] = await Promise.all([fetchCsv(`${base}kpis.csv`), fetchCsv(`${base}status.csv`)]);
@@ -72,9 +75,9 @@ async function init(): Promise<void> {
   const render = () => {
     const filter = filterSelect.value as Filter;
     const gefilterteKpis = filter === ALLE ? kpiRows : kpiRows.filter((r) => r.gesellschaft === filter);
-    const gefilterterStatus = filter === ALLE ? statusRows : statusRows.filter((r) => r.gesellschaft === filter);
-    renderKpiGrid(kpiGrid, gefilterteKpis);
-    renderStatusBoard(statusBoard, gefilterterStatus);
+    renderKpiTable(kpiTable, gefilterteKpis);
+    renderKpiChart(kpiChartSelect, kpiChartCanvas, gefilterteKpis);
+    renderStatusTable(statusTable, statusRows, filter);
   };
 
   filterSelect.addEventListener("change", render);

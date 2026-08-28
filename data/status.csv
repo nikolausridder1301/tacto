@@ -1,11 +1,26 @@
 Gesellschaft,Thema,Status,Verantwortlicher,Naechster_Schritt,Prioritaet,Zieltermin
 HAZEMAG,Auftragsbestaetigungen,Gelb,N. Ridder,ERP-Integration mit proALPHA klaeren,Hoch,2026-10-15
 HAZEMAG,Echtdatentransfer,Gelb,N. Ridder,Regelbetrieb stabilisieren,Hoch,2026-10-01
+HAZEMAG,Analytics,Gelb,N. Ridder,Datenqualitaet fuer belastbare Auswertungen verbessern,Mittel,2026-10-31
+HAZEMAG,Automatisierung,Rot,N. Ridder,Noch nicht gestartet,Mittel,
+HAZEMAG,Agenten,Rot,N. Ridder,Noch nicht gestartet,Niedrig,
 Allmineral,Datenanbindung,Rot,N. Ridder,Workspace mit echten Daten befuellen,Hoch,2026-10-01
 Allmineral,Workspace-Einrichtung,Gelb,N. Ridder,Ersten Datenupload abschliessen,Mittel,2026-09-20
+Allmineral,Analytics,Rot,N. Ridder,Wartet auf echten Datenbestand,Hoch,2026-10-15
+Allmineral,Automatisierung,Rot,N. Ridder,Noch nicht gestartet,Niedrig,
+Allmineral,Agenten,Rot,N. Ridder,Noch nicht gestartet,Niedrig,
 Maximator,Warengruppen,Gruen,N. Ridder,Fachliche Pflege abschliessen,Mittel,2026-09-30
 Maximator,Academy,Gelb,N. Ridder,Verbleibende Nutzer abschliessen lassen,Niedrig,2026-10-31
+Maximator,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,
+Maximator,Automatisierung,Gelb,N. Ridder,Auftragsbestaetigungen an ERP anbinden,Hoch,2026-11-30
+Maximator,Agenten,Gelb,N. Ridder,Preisabwehragent testen,Mittel,2026-11-15
 Hazemag Systems,Workspace-Einrichtung,Rot,N. Ridder,Workspace initial einrichten,Hoch,2026-09-15
 Hazemag Systems,Datenanbindung,Rot,N. Ridder,Datentransfer aufsetzen,Hoch,2026-10-15
+Hazemag Systems,Analytics,Rot,N. Ridder,Wartet auf Workspace-Einrichtung,Hoch,2026-09-30
+Hazemag Systems,Automatisierung,Rot,N. Ridder,Noch nicht gestartet,Niedrig,
+Hazemag Systems,Agenten,Rot,N. Ridder,Noch nicht gestartet,Niedrig,
 FEST,Status-Klaerung,Rot,N. Ridder,Aktuellen Stand mit FEST verifizieren,Mittel,2026-10-10
 FEST,Datenanbindung,Rot,N. Ridder,Datentransfer aufsetzen,Mittel,2026-10-31
+FEST,Analytics,Rot,N. Ridder,Status noch zu klaeren,Mittel,2026-10-10
+FEST,Automatisierung,Rot,N. Ridder,Noch nicht gestartet,Niedrig,
+FEST,Agenten,Rot,N. Ridder,Noch nicht gestartet,Niedrig,

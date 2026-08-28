@@ -93,7 +93,7 @@ h3 {
 /* App-Layout */
 
 .app {
-  max-width: 1100px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem 1.5rem 4rem;
 }
@@ -139,87 +139,89 @@ main section {
   margin-bottom: 2.5rem;
 }
 
-/* KPI-Grid */
+/* Tabellen (KPI- und Status-Ansicht) */
 
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
-}
-
-.kpi-tile {
+.table-wrap {
+  overflow-x: auto;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 1rem 1.1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
 }
 
-.kpi-label {
-  margin: 0;
-  font-size: 0.8rem;
+.kpi-table,
+.status-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.kpi-table th,
+.kpi-table td,
+.status-matrix th,
+.status-matrix td {
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.kpi-table thead th,
+.status-matrix thead th {
+  text-align: right;
   color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  border-bottom: 2px solid var(--border);
 }
 
-.kpi-value {
-  margin: 0;
-  font-size: 1.4rem;
+.kpi-table tbody th,
+.status-matrix tbody th {
+  text-align: left;
+  font-weight: 500;
+}
+
+.kpi-table td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-table thead th:first-child,
+.status-matrix thead th:first-child {
+  text-align: left;
+}
+
+.kpi-table tbody th,
+.kpi-table thead th:first-child,
+.status-matrix tbody th,
+.status-matrix thead th:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--surface);
+}
+
+.kpi-table tbody tr:last-child td,
+.kpi-table tbody tr:last-child th,
+.status-matrix tbody tr:last-child td,
+.status-matrix tbody tr:last-child th {
+  border-bottom: none;
+}
+
+.status-matrix td {
+  text-align: center;
+}
+
+.status-matrix-aggregate {
   font-weight: 700;
 }
 
-.kpi-sparkline {
-  height: 40px;
+.status-matrix-aggregate th,
+.status-matrix-aggregate td {
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
 }
 
-/* Status-Board */
-
-.status-board {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.status-group {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
-}
-
-.status-group h3 {
-  font-size: 1rem;
-}
-
-.status-table-wrap {
-  overflow-x: auto;
-}
-
-.status-table {
-  width: 100%;
-  min-width: 560px;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-.status-table th {
-  text-align: left;
+.status-cell-empty {
   color: var(--text-muted);
-  font-weight: 500;
-  font-size: 0.8rem;
-  padding: 0.4rem 0.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.status-table td {
-  padding: 0.5rem;
-  border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-}
-
-.status-table tr:last-child td {
-  border-bottom: none;
 }
 
 .ampel {
@@ -227,6 +229,40 @@ main section {
   width: 10px;
   height: 10px;
   border-radius: 50%;
+}
+
+/* KPI-Verlauf (Chart) */
+
+.chart-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.25rem 1.5rem;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.chart-header h2 {
+  margin: 0;
+}
+
+.chart-header select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.9rem;
+}
+
+.chart-container {
+  position: relative;
+  height: 320px;
 }
 
 .ampel-rot {
@@ -315,13 +351,29 @@ main section {
     flex: 1;
   }
 
-  .kpi-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 0.75rem;
+  .kpi-table,
+  .status-matrix {
+    font-size: 0.8rem;
   }
 
-  .kpi-value {
-    font-size: 1.2rem;
+  .kpi-table th,
+  .kpi-table td,
+  .status-matrix th,
+  .status-matrix td {
+    padding: 0.5rem 0.6rem;
+  }
+
+  .chart-section {
+    padding: 1rem;
+  }
+
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chart-container {
+    height: 240px;
   }
 
   .gate-form {
