@@ -6,8 +6,15 @@ const eurFormatter = new Intl.NumberFormat("de-DE", {
 
 const numberFormatter = new Intl.NumberFormat("de-DE", { maximumFractionDigits: 1 });
 
+const millionenFormatter = new Intl.NumberFormat("de-DE", { maximumFractionDigits: 1 });
+
 export function formatEur(n: number): string {
   return eurFormatter.format(n);
+}
+
+/** Kompakte Darstellung in Millionen für Achsenbeschriftungen, z.B. "17 Mio. €". */
+export function formatEurMio(n: number): string {
+  return `${millionenFormatter.format(n / 1_000_000)} Mio. €`;
 }
 
 export function formatPercent(n: number): string {

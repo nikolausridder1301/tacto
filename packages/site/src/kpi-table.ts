@@ -12,7 +12,7 @@ function valueCell(value: number | null, format: (n: number) => string): string 
   return `<td>${value === null ? "–" : format(value)}</td>`;
 }
 
-/** Zeigt für ein ausgewähltes Quartal Ist/Forecast/Budget je KPI, mit YTD-Summen und Deltas. */
+/** Zeigt für ein ausgewähltes Quartal Ist/Budget je KPI, mit YTD-Summen und Deltas. */
 export function renderKpiTable(container: HTMLElement, rows: KpiRow[], zielQuartal: string | null): void {
   container.innerHTML = "";
   if (rows.length === 0 || !zielQuartal) return;
@@ -28,14 +28,12 @@ export function renderKpiTable(container: HTMLElement, rows: KpiRow[], zielQuart
     <thead>
       <tr>
         <th>KPI</th>
-        <th>IST Quartal</th>
-        <th>Forecast Quartal</th>
-        <th class="kpi-delta">Delta Forecast</th>
-        <th>IST YTD</th>
-        <th>Forecast YTD</th>
-        <th>Budget YTD</th>
-        <th class="kpi-delta">Delta Forecast (YTD)</th>
-        <th class="kpi-delta">Delta Budget (YTD)</th>
+        <th>Ist Quartal</th>
+        <th>Budget Quartal</th>
+        <th class="kpi-delta">Delta Quartal</th>
+        <th>Ist Year to Date</th>
+        <th>Budget Year to Date</th>
+        <th class="kpi-delta">Delta Year to Date</th>
       </tr>
     </thead>
   `;
@@ -44,20 +42,17 @@ export function renderKpiTable(container: HTMLElement, rows: KpiRow[], zielQuart
   for (const def of KPI_DEFS) {
     const tr = document.createElement("tr");
     const istQ = snapshot.ist[def.key];
-    const fcQ = snapshot.forecast[def.key];
+    const buQ = snapshot.budget[def.key];
     const istYtd = snapshot.istYtd[def.key];
-    const fcYtd = snapshot.forecastYtd[def.key];
     const buYtd = snapshot.budgetYtd[def.key];
 
     tr.innerHTML =
       `<th scope="row">${def.label}</th>` +
       valueCell(istQ, def.format) +
-      valueCell(fcQ, def.format) +
-      deltaCell(istQ, fcQ, def.format) +
+      valueCell(buQ, def.format) +
+      deltaCell(istQ, buQ, def.format) +
       valueCell(istYtd, def.format) +
-      valueCell(fcYtd, def.format) +
       valueCell(buYtd, def.format) +
-      deltaCell(istYtd, fcYtd, def.format) +
       deltaCell(istYtd, buYtd, def.format);
     tbody.appendChild(tr);
   }

@@ -1,6 +1,6 @@
 import type { KpiRow } from "@tacto/csv";
 import { Chart } from "chart.js/auto";
-import { formatQuartalKurz } from "./format";
+import { formatEur, formatEurMio, formatQuartalKurz } from "./format";
 import { KPI_DEFS, aggregateByQuartal, type NumericKey } from "./kpi-data";
 
 let chart: Chart | null = null;
@@ -87,7 +87,7 @@ function draw(canvas: HTMLCanvasElement): void {
         y: {
           grid: { color: "#dce1ea" },
           ticks: {
-            callback: (value) => def.format(Number(value)),
+            callback: (value) => (def.format === formatEur ? formatEurMio(Number(value)) : def.format(Number(value))),
             font: { family: "'JetBrains Mono', monospace", size: 11 },
             color: "#5a6577",
           },

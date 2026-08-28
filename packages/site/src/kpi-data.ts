@@ -118,9 +118,8 @@ export function aggregateByQuartal(rows: KpiRow[]): QuartalWerte[] {
 export interface QuartalSnapshot {
   quartal: string;
   ist: Record<NumericKey, number>;
-  forecast: Record<NumericKey, number | null>;
+  budget: Record<NumericKey, number | null>;
   istYtd: Record<NumericKey, number>;
-  forecastYtd: Record<NumericKey, number | null>;
   budgetYtd: Record<NumericKey, number | null>;
 }
 
@@ -132,8 +131,8 @@ function ytdCombine(nums: number[], mode: YtdMode): number {
 
 /**
  * Baut die Quartals-/YTD-Ansicht für genau ein ausgewähltes Quartal:
- * Ist/Forecast dieses Quartals, plus Ist/Forecast/Budget-YTD (kumuliert über
- * alle Quartale desselben Jahres bis einschließlich des gewählten Quartals).
+ * Ist/Budget dieses Quartals, plus Ist/Budget-YTD (kumuliert über alle
+ * Quartale desselben Jahres bis einschließlich des gewählten Quartals).
  */
 export function buildQuartalSnapshot(alleQuartale: QuartalWerte[], zielQuartal: string): QuartalSnapshot | null {
   const ziel = alleQuartale.find((q) => q.quartal === zielQuartal);
@@ -146,7 +145,6 @@ export function buildQuartalSnapshot(alleQuartale: QuartalWerte[], zielQuartal: 
   });
 
   const istYtd = {} as Record<NumericKey, number>;
-  const forecastYtd = {} as Record<NumericKey, number | null>;
   const budgetYtd = {} as Record<NumericKey, number | null>;
 
   for (const d of KPI_DEFS) {
@@ -155,12 +153,9 @@ export function buildQuartalSnapshot(alleQuartale: QuartalWerte[], zielQuartal: 
       d.ytdMode,
     );
 
-    const fc = ytdQuartale.map((q) => q.forecast[d.key]).filter((n): n is number => n !== null);
-    forecastYtd[d.key] = fc.length === 0 ? null : ytdCombine(fc, d.ytdMode);
-
     const bu = ytdQuartale.map((q) => q.budget[d.key]).filter((n): n is number => n !== null);
     budgetYtd[d.key] = bu.length === 0 ? null : ytdCombine(bu, d.ytdMode);
   }
 
-  return { quartal: zielQuartal, ist: ziel.values, forecast: ziel.forecast, istYtd, forecastYtd, budgetYtd };
+  return { quartal: zielQuartal, ist: ziel.values, budget: ziel.budget, istYtd, budgetYtd };
 }
