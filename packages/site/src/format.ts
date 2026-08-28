@@ -18,18 +18,16 @@ export function formatNumber(n: number): string {
   return numberFormatter.format(n);
 }
 
-export function formatMonat(monat: string): string {
-  const [year, month] = monat.split("-");
-  const date = new Date(Number(year), Number(month) - 1, 1);
-  return date.toLocaleDateString("de-DE", { month: "short", year: "numeric" });
+/** z.B. "2026-Q3" -> "Q3 26" – für Tabellen-/Chart-Beschriftungen. */
+export function formatQuartalKurz(quartal: string): string {
+  const [year, q] = quartal.split("-Q");
+  return `${q ? `Q${q}` : quartal} ${year.slice(2)}`;
 }
 
-const MONATE_KURZ = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
-
-/** z.B. "2026-09" -> "Sep 26" – für Tabellen-Spaltenköpfe (kompakter als formatMonat). */
-export function formatMonatKurz(monat: string): string {
-  const [year, month] = monat.split("-");
-  return `${MONATE_KURZ[Number(month) - 1]} ${year.slice(2)}`;
+/** z.B. "2026-Q3" -> "Q3 2026" – ausführlicher, für Auswahl/Überschriften. */
+export function formatQuartal(quartal: string): string {
+  const [year, q] = quartal.split("-Q");
+  return `Q${q} ${year}`;
 }
 
 export function formatDatum(iso: string): string {

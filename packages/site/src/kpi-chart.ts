@@ -1,7 +1,7 @@
 import type { KpiRow } from "@tacto/csv";
 import { Chart } from "chart.js/auto";
-import { formatMonatKurz } from "./format";
-import { KPI_DEFS, aggregateByMonat, type NumericKey } from "./kpi-data";
+import { formatQuartalKurz } from "./format";
+import { KPI_DEFS, aggregateByQuartal, type NumericKey } from "./kpi-data";
 
 let chart: Chart | null = null;
 let selectedKey: NumericKey = KPI_DEFS[0].key;
@@ -9,22 +9,23 @@ let lastRows: KpiRow[] = [];
 
 function draw(canvas: HTMLCanvasElement): void {
   const def = KPI_DEFS.find((d) => d.key === selectedKey) ?? KPI_DEFS[0];
-  const monatsWerte = aggregateByMonat(lastRows);
+  const quartalsWerte = aggregateByQuartal(lastRows);
 
   chart?.destroy();
   chart = null;
-  if (monatsWerte.length === 0) return;
+  if (quartalsWerte.length === 0) return;
 
-  const hasPlan = monatsWerte.some((m) => m.planValues[def.key] !== null);
+  const hasForecast = quartalsWerte.some((q) => q.forecast[def.key] !== null);
+  const hasBudget = quartalsWerte.some((q) => q.budget[def.key] !== null);
 
   chart = new Chart(canvas, {
     type: "line",
     data: {
-      labels: monatsWerte.map((m) => formatMonatKurz(m.monat)),
+      labels: quartalsWerte.map((q) => formatQuartalKurz(q.quartal)),
       datasets: [
         {
           label: "Ist",
-          data: monatsWerte.map((m) => m.values[def.key]),
+          data: quartalsWerte.map((q) => q.values[def.key]),
           borderColor: "#2563c9",
           backgroundColor: "rgba(37, 99, 201, 0.1)",
           fill: true,
@@ -32,11 +33,11 @@ function draw(canvas: HTMLCanvasElement): void {
           pointRadius: 3,
           pointBackgroundColor: "#2563c9",
         },
-        ...(hasPlan
+        ...(hasForecast
           ? [
               {
-                label: "Plan",
-                data: monatsWerte.map((m) => m.planValues[def.key]),
+                label: "Forecast",
+                data: quartalsWerte.map((q) => q.forecast[def.key]),
                 borderColor: "#94a3b8",
                 borderDash: [6, 4],
                 backgroundColor: "transparent",
@@ -47,6 +48,21 @@ function draw(canvas: HTMLCanvasElement): void {
               },
             ]
           : []),
+        ...(hasBudget
+          ? [
+              {
+                label: "Budget",
+                data: quartalsWerte.map((q) => q.budget[def.key]),
+                borderColor: "#c9922c",
+                borderDash: [2, 3],
+                backgroundColor: "transparent",
+                fill: false,
+                tension: 0.3,
+                pointRadius: 2,
+                pointBackgroundColor: "#c9922c",
+              },
+            ]
+          : []),
       ],
     },
     options: {
@@ -54,7 +70,7 @@ function draw(canvas: HTMLCanvasElement): void {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          display: hasPlan,
+          display: hasForecast || hasBudget,
           position: "top",
           align: "end",
           labels: { boxWidth: 16, font: { family: "'JetBrains Mono', monospace", size: 11 }, color: "#5a6577" },

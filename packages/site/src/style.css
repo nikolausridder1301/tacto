@@ -244,16 +244,11 @@ main section {
   font-variant-numeric: tabular-nums;
 }
 
-.kpi-ist {
-  display: block;
-}
-
-.kpi-plan {
-  display: block;
-  margin-top: 0.1rem;
-  font-size: 0.72rem;
-  font-family: var(--font-mono);
-  color: var(--text-muted);
+/* Delta-Spalten (Ist minus Forecast/Budget) optisch abgesetzt, wie in der
+   Vorlage: dezenter grauer Hintergrund statt eigener Farbe/Fettung. */
+.kpi-table th.kpi-delta,
+.kpi-table td.kpi-delta {
+  background: var(--bg);
 }
 
 .kpi-table thead th:first-child,
@@ -265,12 +260,12 @@ main section {
    Filters nicht durch unterschiedlich lange Werte "springt". */
 .kpi-table th:first-child,
 .kpi-table td:first-child {
-  width: 220px;
+  width: 200px;
 }
 
 .kpi-table th:not(:first-child),
 .kpi-table td:not(:first-child) {
-  width: 130px;
+  width: 115px;
 }
 
 .status-matrix th:first-child,

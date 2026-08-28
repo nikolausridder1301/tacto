@@ -1,8 +1,8 @@
 import { GESELLSCHAFTEN, parseKpiCsv, parseStatusCsv, type Gesellschaft, type KpiRow, type StatusRow } from "@tacto/csv";
 import { initPasswordGate } from "./auth";
-import { formatDatum } from "./format";
+import { formatQuartal } from "./format";
 import { renderKpiChart } from "./kpi-chart";
-import { renderKpiTable } from "./kpi-table";
+import { renderKpiTable, verfuegbareQuartale } from "./kpi-table";
 import { renderStatusTable } from "./status-board";
 import "./style.css";
 
@@ -25,6 +25,17 @@ function populateFilter(select: HTMLSelectElement): void {
   }
 }
 
+function populateQuartalFilter(select: HTMLSelectElement, quartale: string[]): void {
+  select.innerHTML = "";
+  for (const q of quartale) {
+    const el = document.createElement("option");
+    el.value = q;
+    el.textContent = formatQuartal(q);
+    select.appendChild(el);
+  }
+  if (quartale.length > 0) select.value = quartale[quartale.length - 1];
+}
+
 async function init(): Promise<void> {
   const gate = document.getElementById("gate")!;
   const app = document.getElementById("app")!;
@@ -37,6 +48,7 @@ async function init(): Promise<void> {
   const filterSelect = document.getElementById("gesellschaft-filter") as HTMLSelectElement;
   populateFilter(filterSelect);
 
+  const quartalSelect = document.getElementById("quartal-filter") as HTMLSelectElement;
   const standEl = document.getElementById("stand")!;
   const emptyState = document.getElementById("empty-state")!;
   const content = document.getElementById("content")!;
@@ -69,18 +81,21 @@ async function init(): Promise<void> {
     return;
   }
 
-  const letzteDaten = [...kpiRows.map((r) => r.monat)].sort().at(-1);
-  standEl.textContent = letzteDaten ? `Stand: ${formatDatum(`${letzteDaten}-01`)}` : "";
+  const quartale = verfuegbareQuartale(kpiRows);
+  populateQuartalFilter(quartalSelect, quartale);
+  const letztesQuartal = quartale.at(-1);
+  standEl.textContent = letztesQuartal ? `Stand: ${formatQuartal(letztesQuartal)}` : "";
 
   const render = () => {
     const filter = filterSelect.value as Filter;
     const gefilterteKpis = filter === ALLE ? kpiRows : kpiRows.filter((r) => r.gesellschaft === filter);
-    renderKpiTable(kpiTable, gefilterteKpis);
+    renderKpiTable(kpiTable, gefilterteKpis, quartalSelect.value || null);
     renderKpiChart(kpiChartSelect, kpiChartCanvas, gefilterteKpis);
     renderStatusTable(statusTable, statusRows, filter);
   };
 
   filterSelect.addEventListener("change", render);
+  quartalSelect.addEventListener("change", render);
   render();
 }
 

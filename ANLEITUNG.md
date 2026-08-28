@@ -18,9 +18,9 @@ Beide Seiten sind mit demselben Passwort geschützt.
 
 **Wenn eine Fehlermeldung erscheint:** Die Datei wurde noch NICHT übernommen – die aktuell sichtbaren Daten bleiben unverändert. Meist steht in der Meldung, welche Zeile/Spalte das Problem hat (z.B. falsches Datumsformat, unbekannte Gesellschaft, doppelte Zeile). Datei korrigieren und erneut hochladen.
 
-**Erwartetes Format:** UTF-8-CSV, egal ob mit Komma oder Semikolon getrennt (deutsches Excel-Format wird automatisch erkannt). Jede Zeile in `kpis.csv` braucht eine eindeutige Kombination aus Monat und Gesellschaft; jede Zeile in `status.csv` eine eindeutige Kombination aus Gesellschaft und Thema. Gültige Gesellschaften: `HAZEMAG`, `Allmineral`, `Hazemag Systems`, `Maximator`, `Maximator Hydrogen`, `FEST`.
+**Erwartetes Format:** UTF-8-CSV, egal ob mit Komma oder Semikolon getrennt (deutsches Excel-Format wird automatisch erkannt). Jede Zeile in `kpis.csv` braucht eine eindeutige Kombination aus Quartal (Format `YYYY-Qn`, z.B. `2026-Q3`) und Gesellschaft; jede Zeile in `status.csv` eine eindeutige Kombination aus Gesellschaft und Thema. Gültige Gesellschaften: `HAZEMAG`, `Allmineral`, `Hazemag Systems`, `Maximator`, `Maximator Hydrogen`, `FEST`.
 
-**Plan-Werte (optional):** Sobald ihr Zielwerte je KPI habt, könnt ihr sie in `kpis.csv` als zusätzliche `..._Plan`-Spalten ergänzen (z.B. `KPI_Einkaufsvolumen_EUR_Plan`, siehe Vorlage in [templates/kpis.csv](templates/kpis.csv)). Das Dashboard zeigt Ist und Plan dann automatisch nebeneinander – in der Tabelle als kleine Zusatzzeile, im Chart als zweite gestrichelte Linie. Ohne diese Spalten funktioniert alles wie bisher, nur ohne Plan-Vergleich.
+**Forecast-/Budget-Werte (optional):** Sobald ihr Hochrechnungs- bzw. Budget-Werte je KPI habt, könnt ihr sie in `kpis.csv` als zusätzliche `..._Forecast`- und `..._Budget`-Spalten ergänzen (z.B. `KPI_Einkaufsvolumen_EUR_Forecast`, `KPI_Einkaufsvolumen_EUR_Budget`, siehe Vorlage in [templates/kpis.csv](templates/kpis.csv)). Das Dashboard stellt Ist, Forecast und Budget dann automatisch gegenüber – in der Tabelle als eigene Spalten (inkl. Delta), im Chart als zusätzliche gestrichelte/gepunktete Linien. Ohne diese Spalten funktioniert alles wie bisher, nur ohne Forecast-/Budget-Vergleich.
 
 ## Passwort ändern
 

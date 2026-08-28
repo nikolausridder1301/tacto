@@ -3,8 +3,7 @@ import { formatEur, formatNumber, formatPercent } from "./format";
 
 export type NumericKey =
   | "einkaufsvolumenEur"
-  | "einsparungMonatEur"
-  | "einsparungKumulativEur"
+  | "einsparungQuartalEur"
   | "einsparquoteProzent"
   | "zeitersparnisStd"
   | "rfqsAbgeschlossen"
@@ -12,73 +11,156 @@ export type NumericKey =
   | "datenqualitaetProzent"
   | "aktiveNutzer";
 
-/** Plan-Gegenstück eines KPI-Felds, z.B. "einkaufsvolumenEur" -> "einkaufsvolumenEurPlan". */
-export type PlanKey = `${NumericKey}Plan`;
+export type ForecastKey = `${NumericKey}Forecast`;
+export type BudgetKey = `${NumericKey}Budget`;
 
-function planKeyOf(key: NumericKey): PlanKey {
-  return `${key}Plan` as PlanKey;
-}
+/** Wie Werte über mehrere Gesellschaften hinweg kombiniert werden (Filter "Alle"). */
+type CompanyAggregate = "sum" | "avg";
+
+/**
+ * Wie Werte über mehrere Quartale hinweg kombiniert werden (YTD):
+ * "sum"    – Flussgröße, addiert sich über das Jahr (z.B. Einsparung).
+ * "avg"    – Durchschnitt über die bisherigen Quartale (z.B. Einsparquote).
+ * "latest" – Bestandsgröße, YTD = aktuellster Quartalswert (z.B. Aktive Nutzer).
+ */
+type YtdMode = "sum" | "avg" | "latest";
 
 export interface KpiDef {
   key: NumericKey;
-  planKey: PlanKey;
+  forecastKey: ForecastKey;
+  budgetKey: BudgetKey;
   label: string;
-  aggregate: "sum" | "avg";
+  companyAggregate: CompanyAggregate;
+  ytdMode: YtdMode;
   format: (n: number) => string;
 }
 
-function def(key: NumericKey, label: string, aggregate: "sum" | "avg", format: (n: number) => string): KpiDef {
-  return { key, planKey: planKeyOf(key), label, aggregate, format };
+function def(
+  key: NumericKey,
+  label: string,
+  companyAggregate: CompanyAggregate,
+  ytdMode: YtdMode,
+  format: (n: number) => string,
+): KpiDef {
+  return {
+    key,
+    forecastKey: `${key}Forecast` as ForecastKey,
+    budgetKey: `${key}Budget` as BudgetKey,
+    label,
+    companyAggregate,
+    ytdMode,
+    format,
+  };
 }
 
 export const KPI_DEFS: KpiDef[] = [
-  def("einkaufsvolumenEur", "Einkaufsvolumen gesamt", "sum", formatEur),
-  def("einsparungMonatEur", "Einsparung (Monat)", "sum", formatEur),
-  def("einsparungKumulativEur", "Einsparung (kumulativ)", "sum", formatEur),
-  def("einsparquoteProzent", "Einsparquote", "avg", formatPercent),
-  def("zeitersparnisStd", "Zeitersparnis", "sum", (n) => `${formatNumber(n)} Std.`),
-  def("rfqsAbgeschlossen", "RFQs abgeschlossen", "sum", formatNumber),
-  def("aktiveLieferanten", "Aktive Lieferanten", "sum", formatNumber),
-  def("datenqualitaetProzent", "Datenqualität", "avg", formatPercent),
-  def("aktiveNutzer", "Aktive Nutzer", "sum", formatNumber),
+  def("einkaufsvolumenEur", "Einkaufsvolumen gesamt", "sum", "sum", formatEur),
+  def("einsparungQuartalEur", "Einsparung (Quartal)", "sum", "sum", formatEur),
+  def("einsparquoteProzent", "Einsparquote", "avg", "avg", formatPercent),
+  def("zeitersparnisStd", "Zeitersparnis", "sum", "sum", (n) => `${formatNumber(n)} Std.`),
+  def("rfqsAbgeschlossen", "RFQs abgeschlossen", "sum", "sum", formatNumber),
+  def("aktiveLieferanten", "Aktive Lieferanten", "sum", "latest", formatNumber),
+  def("datenqualitaetProzent", "Datenqualität", "avg", "latest", formatPercent),
+  def("aktiveNutzer", "Aktive Nutzer", "sum", "latest", formatNumber),
 ];
 
-export interface MonatAggregat {
-  monat: string;
-  values: Record<NumericKey, number>;
-  /** null = für diesen Monat/diese Auswahl liegt kein Plan-Wert vor. */
-  planValues: Record<NumericKey, number | null>;
-}
-
-function aggregate(nums: number[], mode: "sum" | "avg"): number {
+function combine(nums: number[], mode: CompanyAggregate): number {
   const sum = nums.reduce((a, b) => a + b, 0);
   return mode === "sum" ? sum : sum / nums.length;
 }
 
-export function aggregateByMonat(rows: KpiRow[]): MonatAggregat[] {
-  const byMonat = new Map<string, KpiRow[]>();
+/** Jahr und Quartalsnummer aus "YYYY-Qn". */
+function splitQuartal(quartal: string): { jahr: number; q: number } {
+  const [jahr, q] = quartal.split("-Q");
+  return { jahr: Number(jahr), q: Number(q) };
+}
+
+export interface QuartalWerte {
+  quartal: string;
+  values: Record<NumericKey, number>;
+  forecast: Record<NumericKey, number | null>;
+  budget: Record<NumericKey, number | null>;
+}
+
+/** Aggregiert Rohzeilen (ggf. mehrere Gesellschaften) je Quartal, über alle drei Wertreihen (Ist/Forecast/Budget). */
+export function aggregateByQuartal(rows: KpiRow[]): QuartalWerte[] {
+  const byQuartal = new Map<string, KpiRow[]>();
   for (const row of rows) {
-    const list = byMonat.get(row.monat) ?? [];
+    const list = byQuartal.get(row.quartal) ?? [];
     list.push(row);
-    byMonat.set(row.monat, list);
+    byQuartal.set(row.quartal, list);
   }
 
-  return Array.from(byMonat.entries())
+  return Array.from(byQuartal.entries())
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([monat, monatsRows]) => {
+    .map(([quartal, quartalsRows]) => {
       const values = {} as Record<NumericKey, number>;
-      const planValues = {} as Record<NumericKey, number | null>;
+      const forecast = {} as Record<NumericKey, number | null>;
+      const budget = {} as Record<NumericKey, number | null>;
 
       for (const d of KPI_DEFS) {
-        values[d.key] = aggregate(
-          monatsRows.map((r) => r[d.key]),
-          d.aggregate,
+        values[d.key] = combine(
+          quartalsRows.map((r) => r[d.key]),
+          d.companyAggregate,
         );
 
-        const planNums = monatsRows.map((r) => r[d.planKey]).filter((n): n is number => n !== null);
-        planValues[d.key] = planNums.length === 0 ? null : aggregate(planNums, d.aggregate);
+        const fc = quartalsRows.map((r) => r[d.forecastKey]).filter((n): n is number => n !== null);
+        forecast[d.key] = fc.length === 0 ? null : combine(fc, d.companyAggregate);
+
+        const bu = quartalsRows.map((r) => r[d.budgetKey]).filter((n): n is number => n !== null);
+        budget[d.key] = bu.length === 0 ? null : combine(bu, d.companyAggregate);
       }
 
-      return { monat, values, planValues };
+      return { quartal, values, forecast, budget };
     });
+}
+
+export interface QuartalSnapshot {
+  quartal: string;
+  ist: Record<NumericKey, number>;
+  forecast: Record<NumericKey, number | null>;
+  istYtd: Record<NumericKey, number>;
+  forecastYtd: Record<NumericKey, number | null>;
+  budgetYtd: Record<NumericKey, number | null>;
+}
+
+function ytdCombine(nums: number[], mode: YtdMode): number {
+  if (mode === "latest") return nums[nums.length - 1];
+  if (mode === "sum") return nums.reduce((a, b) => a + b, 0);
+  return nums.reduce((a, b) => a + b, 0) / nums.length;
+}
+
+/**
+ * Baut die Quartals-/YTD-Ansicht für genau ein ausgewähltes Quartal:
+ * Ist/Forecast dieses Quartals, plus Ist/Forecast/Budget-YTD (kumuliert über
+ * alle Quartale desselben Jahres bis einschließlich des gewählten Quartals).
+ */
+export function buildQuartalSnapshot(alleQuartale: QuartalWerte[], zielQuartal: string): QuartalSnapshot | null {
+  const ziel = alleQuartale.find((q) => q.quartal === zielQuartal);
+  if (!ziel) return null;
+
+  const { jahr, q: zielQ } = splitQuartal(zielQuartal);
+  const ytdQuartale = alleQuartale.filter((qw) => {
+    const { jahr: j, q } = splitQuartal(qw.quartal);
+    return j === jahr && q <= zielQ;
+  });
+
+  const istYtd = {} as Record<NumericKey, number>;
+  const forecastYtd = {} as Record<NumericKey, number | null>;
+  const budgetYtd = {} as Record<NumericKey, number | null>;
+
+  for (const d of KPI_DEFS) {
+    istYtd[d.key] = ytdCombine(
+      ytdQuartale.map((q) => q.values[d.key]),
+      d.ytdMode,
+    );
+
+    const fc = ytdQuartale.map((q) => q.forecast[d.key]).filter((n): n is number => n !== null);
+    forecastYtd[d.key] = fc.length === 0 ? null : ytdCombine(fc, d.ytdMode);
+
+    const bu = ytdQuartale.map((q) => q.budget[d.key]).filter((n): n is number => n !== null);
+    budgetYtd[d.key] = bu.length === 0 ? null : ytdCombine(bu, d.ytdMode);
+  }
+
+  return { quartal: zielQuartal, ist: ziel.values, forecast: ziel.forecast, istYtd, forecastYtd, budgetYtd };
 }

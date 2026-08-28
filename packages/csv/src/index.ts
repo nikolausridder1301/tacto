@@ -15,28 +15,67 @@ export const GESELLSCHAFTEN = [
 
 export type Gesellschaft = (typeof GESELLSCHAFTEN)[number];
 
+const KPI_BASE_FIELDS = [
+  "KPI_Einkaufsvolumen_EUR",
+  "KPI_Einsparung_Quartal_EUR",
+  "KPI_Einsparquote_Prozent",
+  "KPI_Zeitersparnis_Std",
+  "KPI_RFQs_Abgeschlossen",
+  "KPI_Aktive_Lieferanten",
+  "KPI_Datenqualitaet_Prozent",
+  "KPI_Aktive_Nutzer",
+] as const;
+
+type KpiBaseField = (typeof KPI_BASE_FIELDS)[number];
+
+function forecastColumn(field: KpiBaseField): string {
+  return `${field}_Forecast`;
+}
+function budgetColumn(field: KpiBaseField): string {
+  return `${field}_Budget`;
+}
+
 export interface KpiRow {
-  monat: string; // "YYYY-MM"
+  quartal: string; // "YYYY-Qn", z.B. "2026-Q3"
   gesellschaft: Gesellschaft;
   einkaufsvolumenEur: number;
-  einkaufsvolumenEurPlan: number | null;
-  einsparungMonatEur: number;
-  einsparungMonatEurPlan: number | null;
-  einsparungKumulativEur: number;
-  einsparungKumulativEurPlan: number | null;
+  einkaufsvolumenEurForecast: number | null;
+  einkaufsvolumenEurBudget: number | null;
+  einsparungQuartalEur: number;
+  einsparungQuartalEurForecast: number | null;
+  einsparungQuartalEurBudget: number | null;
   einsparquoteProzent: number;
-  einsparquoteProzentPlan: number | null;
+  einsparquoteProzentForecast: number | null;
+  einsparquoteProzentBudget: number | null;
   zeitersparnisStd: number;
-  zeitersparnisStdPlan: number | null;
+  zeitersparnisStdForecast: number | null;
+  zeitersparnisStdBudget: number | null;
   rfqsAbgeschlossen: number;
-  rfqsAbgeschlossenPlan: number | null;
+  rfqsAbgeschlossenForecast: number | null;
+  rfqsAbgeschlossenBudget: number | null;
   aktiveLieferanten: number;
-  aktiveLieferantenPlan: number | null;
+  aktiveLieferantenForecast: number | null;
+  aktiveLieferantenBudget: number | null;
   datenqualitaetProzent: number;
-  datenqualitaetProzentPlan: number | null;
+  datenqualitaetProzentForecast: number | null;
+  datenqualitaetProzentBudget: number | null;
   aktiveNutzer: number;
-  aktiveNutzerPlan: number | null;
+  aktiveNutzerForecast: number | null;
+  aktiveNutzerBudget: number | null;
 }
+
+// Mapping CSV-Basisspalte -> KpiRow-Feldname (camelCase), damit die
+// Parse-Schleife unten nicht neunmal denselben Code wiederholt.
+const FIELD_MAP: Record<KpiBaseField, keyof KpiRow> = {
+  KPI_Einkaufsvolumen_EUR: "einkaufsvolumenEur",
+  KPI_Einsparung_Quartal_EUR: "einsparungQuartalEur",
+  KPI_Einsparquote_Prozent: "einsparquoteProzent",
+  KPI_Zeitersparnis_Std: "zeitersparnisStd",
+  KPI_RFQs_Abgeschlossen: "rfqsAbgeschlossen",
+  KPI_Aktive_Lieferanten: "aktiveLieferanten",
+  KPI_Datenqualitaet_Prozent: "datenqualitaetProzent",
+  KPI_Aktive_Nutzer: "aktiveNutzer",
+};
 
 export type Status = "Rot" | "Gelb" | "Gruen";
 export type Prioritaet = "Hoch" | "Mittel" | "Niedrig";
@@ -56,29 +95,7 @@ export interface ParseResult<T> {
   errors: string[];
 }
 
-const KPI_NUMERIC_FIELDS = [
-  "KPI_Einkaufsvolumen_EUR",
-  "KPI_Einsparung_Monat_EUR",
-  "KPI_Einsparung_Kumulativ_EUR",
-  "KPI_Einsparquote_Prozent",
-  "KPI_Zeitersparnis_Std",
-  "KPI_RFQs_Abgeschlossen",
-  "KPI_Aktive_Lieferanten",
-  "KPI_Datenqualitaet_Prozent",
-  "KPI_Aktive_Nutzer",
-] as const;
-
-/**
- * Plan-Gegenstück je KPI-Spalte, z.B. "KPI_Einkaufsvolumen_EUR_Plan".
- * Optional: fehlt die Spalte komplett, wird kein Plan-Wert erwartet. Ist sie
- * vorhanden, ist die Zelle pro Zeile trotzdem optional (leer = kein Plan-Wert
- * für diesen Monat/diese Gesellschaft).
- */
-function planColumn(field: (typeof KPI_NUMERIC_FIELDS)[number]): string {
-  return `${field}_Plan`;
-}
-
-const KPI_REQUIRED_COLUMNS = ["Monat", "Gesellschaft", ...KPI_NUMERIC_FIELDS];
+const KPI_REQUIRED_COLUMNS = ["Quartal", "Gesellschaft", ...KPI_BASE_FIELDS];
 const STATUS_REQUIRED_COLUMNS = [
   "Gesellschaft",
   "Thema",
@@ -89,7 +106,7 @@ const STATUS_REQUIRED_COLUMNS = [
   "Zieltermin",
 ];
 
-const MONAT_PATTERN = /^\d{4}-\d{2}$/;
+const QUARTAL_PATTERN = /^\d{4}-Q[1-4]$/;
 const DATUM_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
@@ -118,6 +135,32 @@ function parseCsv(csvText: string): { data: Record<string, string>[]; fields: st
   return { data: result.data, fields, commaAsDecimal, errors };
 }
 
+/**
+ * Parst eine optionale Zusatzspalte (Forecast/Budget) für eine Zeile. Fehlt
+ * die Spalte komplett in der Datei, wird kein Wert erwartet (null). Ist sie
+ * vorhanden, darf die einzelne Zelle trotzdem leer bleiben (null, kein
+ * Validierungsfehler) – nur ein tatsächlich vorhandener, aber nicht-
+ * numerischer Wert ist ein Fehler.
+ */
+function parseOptionalColumn(
+  raw: Record<string, string>,
+  fields: string[],
+  column: string,
+  commaAsDecimal: boolean,
+  lineNo: number,
+  errors: string[],
+): { value: number | null; ok: boolean } {
+  if (!fields.includes(column)) return { value: null, ok: true };
+  const rawValue = (raw[column] ?? "").trim();
+  if (rawValue === "") return { value: null, ok: true };
+  const n = parseLocaleNumber(rawValue, commaAsDecimal);
+  if (!Number.isFinite(n)) {
+    errors.push(`Zeile ${lineNo}: Spalte "${column}" ist kein gültiger Zahlenwert ("${raw[column]}")`);
+    return { value: null, ok: false };
+  }
+  return { value: n, ok: true };
+}
+
 export function parseKpiCsv(csvText: string): ParseResult<KpiRow> {
   const { data, fields, commaAsDecimal, errors } = parseCsv(csvText);
 
@@ -131,11 +174,11 @@ export function parseKpiCsv(csvText: string): ParseResult<KpiRow> {
 
   data.forEach((raw, i) => {
     const lineNo = i + 2; // Zeile 1 = Header
-    const monat = raw["Monat"]?.trim() ?? "";
+    const quartal = raw["Quartal"]?.trim() ?? "";
     const gesellschaft = raw["Gesellschaft"]?.trim() ?? "";
 
-    if (!MONAT_PATTERN.test(monat)) {
-      errors.push(`Zeile ${lineNo}: ungültiger Monat "${monat}" (erwartet YYYY-MM)`);
+    if (!QUARTAL_PATTERN.test(quartal)) {
+      errors.push(`Zeile ${lineNo}: ungültiges Quartal "${quartal}" (erwartet YYYY-Q1..YYYY-Q4)`);
       return;
     }
     if (!GESELLSCHAFTEN.includes(gesellschaft as Gesellschaft)) {
@@ -143,67 +186,37 @@ export function parseKpiCsv(csvText: string): ParseResult<KpiRow> {
       return;
     }
 
-    const key = `${monat}|${gesellschaft}`;
+    const key = `${quartal}|${gesellschaft}`;
     if (seen.has(key)) {
-      errors.push(`Zeile ${lineNo}: doppelte Kombination Monat+Gesellschaft (${monat}, ${gesellschaft})`);
+      errors.push(`Zeile ${lineNo}: doppelte Kombination Quartal+Gesellschaft (${quartal}, ${gesellschaft})`);
       return;
     }
 
-    const values: Partial<Record<(typeof KPI_NUMERIC_FIELDS)[number], number>> = {};
-    const planValues: Partial<Record<(typeof KPI_NUMERIC_FIELDS)[number], number | null>> = {};
+    const row: Partial<KpiRow> = { quartal, gesellschaft: gesellschaft as Gesellschaft };
     let rowValid = true;
-    for (const field of KPI_NUMERIC_FIELDS) {
+
+    for (const field of KPI_BASE_FIELDS) {
+      const baseKey = FIELD_MAP[field];
       const n = parseLocaleNumber(raw[field] ?? "", commaAsDecimal);
       if (!Number.isFinite(n)) {
         errors.push(`Zeile ${lineNo}: Spalte "${field}" ist kein gültiger Zahlenwert ("${raw[field]}")`);
         rowValid = false;
-        continue;
-      }
-      values[field] = n;
-
-      const planField = planColumn(field);
-      if (fields.includes(planField)) {
-        const rawPlan = (raw[planField] ?? "").trim();
-        if (rawPlan === "") {
-          planValues[field] = null;
-        } else {
-          const p = parseLocaleNumber(rawPlan, commaAsDecimal);
-          if (!Number.isFinite(p)) {
-            errors.push(`Zeile ${lineNo}: Spalte "${planField}" ist kein gültiger Zahlenwert ("${raw[planField]}")`);
-            rowValid = false;
-          } else {
-            planValues[field] = p;
-          }
-        }
       } else {
-        planValues[field] = null;
+        (row as Record<string, unknown>)[baseKey] = n;
       }
+
+      const forecast = parseOptionalColumn(raw, fields, forecastColumn(field), commaAsDecimal, lineNo, errors);
+      if (!forecast.ok) rowValid = false;
+      (row as Record<string, unknown>)[`${baseKey}Forecast`] = forecast.value;
+
+      const budget = parseOptionalColumn(raw, fields, budgetColumn(field), commaAsDecimal, lineNo, errors);
+      if (!budget.ok) rowValid = false;
+      (row as Record<string, unknown>)[`${baseKey}Budget`] = budget.value;
     }
     if (!rowValid) return;
 
     seen.add(key);
-    rows.push({
-      monat,
-      gesellschaft: gesellschaft as Gesellschaft,
-      einkaufsvolumenEur: values["KPI_Einkaufsvolumen_EUR"]!,
-      einkaufsvolumenEurPlan: planValues["KPI_Einkaufsvolumen_EUR"] ?? null,
-      einsparungMonatEur: values["KPI_Einsparung_Monat_EUR"]!,
-      einsparungMonatEurPlan: planValues["KPI_Einsparung_Monat_EUR"] ?? null,
-      einsparungKumulativEur: values["KPI_Einsparung_Kumulativ_EUR"]!,
-      einsparungKumulativEurPlan: planValues["KPI_Einsparung_Kumulativ_EUR"] ?? null,
-      einsparquoteProzent: values["KPI_Einsparquote_Prozent"]!,
-      einsparquoteProzentPlan: planValues["KPI_Einsparquote_Prozent"] ?? null,
-      zeitersparnisStd: values["KPI_Zeitersparnis_Std"]!,
-      zeitersparnisStdPlan: planValues["KPI_Zeitersparnis_Std"] ?? null,
-      rfqsAbgeschlossen: values["KPI_RFQs_Abgeschlossen"]!,
-      rfqsAbgeschlossenPlan: planValues["KPI_RFQs_Abgeschlossen"] ?? null,
-      aktiveLieferanten: values["KPI_Aktive_Lieferanten"]!,
-      aktiveLieferantenPlan: planValues["KPI_Aktive_Lieferanten"] ?? null,
-      datenqualitaetProzent: values["KPI_Datenqualitaet_Prozent"]!,
-      datenqualitaetProzentPlan: planValues["KPI_Datenqualitaet_Prozent"] ?? null,
-      aktiveNutzer: values["KPI_Aktive_Nutzer"]!,
-      aktiveNutzerPlan: planValues["KPI_Aktive_Nutzer"] ?? null,
-    });
+    rows.push(row as KpiRow);
   });
 
   return { rows, errors };
