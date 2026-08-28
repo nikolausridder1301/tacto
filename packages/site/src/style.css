@@ -5,14 +5,14 @@
   --border: #dce1ea;
   --text: #161b26;
   --text-muted: #5a6577;
-  --accent: #d8901f;
-  --accent-bg: #fbefd6;
+  --accent: #2563c9;
+  --accent-bg: #e7f0ff;
   --dark: #161b26;
   --dark-surface: #222b3a;
   --dark-border: rgba(52, 64, 83, 0.4);
   --dark-text: #c7d2e4;
   --rot: #dc2626;
-  --gelb: #d8901f;
+  --gelb: #f59e0b;
   --gruen: #16a34a;
   --radius-card: 16px;
   --radius-sm: 8px;
@@ -270,15 +270,6 @@ main section {
 
 .status-matrix td {
   text-align: center;
-}
-
-.status-matrix-aggregate {
-  font-weight: 700;
-}
-
-.status-matrix-aggregate th,
-.status-matrix-aggregate td {
-  background: var(--accent-bg);
 }
 
 .status-cell-empty {
