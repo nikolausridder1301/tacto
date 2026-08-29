@@ -20,6 +20,19 @@ function draw(canvas: HTMLCanvasElement): void {
 
   const hasForecast = monatsWerte.some((m) => m.forecast[def.key] !== null);
 
+  // Millionen-Rundung auf der Y-Achse nur für KPIs, die tatsächlich im
+  // Millionenbereich liegen (z.B. Einkaufsvolumen) – bei kleineren
+  // EUR-Werten (z.B. Einsparung) wäre "0 Mio. €" auf jeder Gitterlinie
+  // sinnlos.
+  const alleWerte = monatsWerte.flatMap((m) => [m.values[def.key], m.forecast[def.key]]).filter((v): v is number => v !== null);
+  const maxWert = Math.max(0, ...alleWerte);
+  const zeigeMio = def.format === formatEur && maxWert >= 1_000_000;
+  // Chart.js' "nice number"-Automatik ignoriert stepSize teilweise, wenn
+  // Achsen-Min/Max nicht selbst schon auf ganze Millionen fallen – deshalb
+  // Achsengrenzen hier explizit auf ganze Millionen runden.
+  const yMin = zeigeMio ? Math.floor(Math.min(...alleWerte) / 1_000_000) * 1_000_000 : undefined;
+  const yMax = zeigeMio ? Math.ceil(Math.max(...alleWerte) / 1_000_000) * 1_000_000 : undefined;
+
   chart = new Chart(canvas, {
     type: "line",
     data: {
@@ -70,8 +83,11 @@ function draw(canvas: HTMLCanvasElement): void {
         },
         y: {
           grid: { color: "#dce1ea" },
+          min: yMin,
+          max: yMax,
           ticks: {
-            callback: (value) => (def.format === formatEur ? formatEurMio(Number(value)) : def.format(Number(value))),
+            callback: (value) => (zeigeMio ? formatEurMio(Number(value)) : def.format(Number(value))),
+            stepSize: zeigeMio ? 1_000_000 : undefined,
             font: { family: "'JetBrains Mono', monospace", size: 11 },
             color: "#5a6577",
           },

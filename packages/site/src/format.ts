@@ -6,7 +6,7 @@ const eurFormatter = new Intl.NumberFormat("de-DE", {
 
 const numberFormatter = new Intl.NumberFormat("de-DE", { maximumFractionDigits: 1 });
 
-const millionenFormatter = new Intl.NumberFormat("de-DE", { maximumFractionDigits: 1 });
+const millionenFormatter = new Intl.NumberFormat("de-DE", { maximumFractionDigits: 0 });
 
 export function formatEur(n: number): string {
   return eurFormatter.format(n);
