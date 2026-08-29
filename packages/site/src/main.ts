@@ -2,7 +2,7 @@ import { GESELLSCHAFTEN, parseKpiCsv, parseStatusCsv, type Gesellschaft, type Kp
 import { initPasswordGate } from "./auth";
 import { exportToExcel } from "./export";
 import { formatQuartal } from "./format";
-import { renderKpiChart } from "./kpi-chart";
+import { renderKpiChart, resizeKpiChart } from "./kpi-chart";
 import { verfuegbareQuartale } from "./kpi-data";
 import { renderKpiMonatTable, renderKpiTable } from "./kpi-table";
 import { gesellschaftLogo, SK_LOGO } from "./logos";
@@ -116,6 +116,12 @@ async function init(): Promise<void> {
   quartalSelect.addEventListener("change", render);
   monatDetailToggle.addEventListener("change", render);
   render();
+
+  // Chart.js reagiert nicht zuverlässig auf den Layoutwechsel durch
+  // @media print – ohne diesen Resize bleibt die Canvas auf der zuletzt am
+  // Bildschirm gerenderten Größe und ragt im PDF-Export über den Rahmen hinaus.
+  window.addEventListener("beforeprint", resizeKpiChart);
+  window.addEventListener("afterprint", resizeKpiChart);
 }
 
 init();

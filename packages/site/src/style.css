@@ -301,6 +301,13 @@ h3 {
   z-index: 30;
 }
 
+/* "display: flex" oben gewinnt sonst gegen die UA-Default-Regel für
+   [hidden] (beide gleich spezifisch, Autoren-Stylesheet gewinnt) – das
+   Menü wäre dadurch dauerhaft sichtbar statt nur nach Klick. */
+.menu-button-menu[hidden] {
+  display: none;
+}
+
 .menu-button-item {
   display: block;
   width: 100%;
@@ -527,6 +534,14 @@ main section {
 .kpi-table th:not(:first-child),
 .kpi-table td:not(:first-child) {
   width: 115px;
+}
+
+/* Monatsdetail hat deutlich mehr Spalten (eine je Monat) als die
+   Quartalsansicht – etwas breiter, damit die Werte nicht gedrängt wirken;
+   dafür wird die Tabelle insgesamt breiter und mehr horizontal gescrollt. */
+.kpi-table--monat th:not(:first-child),
+.kpi-table--monat td:not(:first-child) {
+  width: 135px;
 }
 
 .status-matrix th:first-child,

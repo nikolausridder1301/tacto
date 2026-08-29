@@ -73,7 +73,7 @@ export function renderKpiMonatTable(container: HTMLElement, rows: KpiRow[]): voi
   if (monatsWerte.length === 0) return;
 
   const table = document.createElement("table");
-  table.className = "kpi-table";
+  table.className = "kpi-table kpi-table--monat";
 
   const headerCells = monatsWerte.map((m) => `<th>${formatMonatKurz(m.monat)}</th>`).join("");
   table.innerHTML = `

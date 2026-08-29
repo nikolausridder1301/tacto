@@ -97,3 +97,13 @@ export function renderKpiChart(selectEl: HTMLSelectElement, canvas: HTMLCanvasEl
   selectEl.value = selectedKey;
   draw(canvas);
 }
+
+/**
+ * Erzwingt eine Neuberechnung der Canvas-Größe. Nötig rund um den Druck/PDF-
+ * Export: Chart.js reagiert nicht zuverlässig auf den Layoutwechsel durch
+ * @media print, wodurch die zuletzt am Bildschirm gerenderte Canvas-Größe
+ * über die Druckseite hinausragen kann.
+ */
+export function resizeKpiChart(): void {
+  chart?.resize();
+}
