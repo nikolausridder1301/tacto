@@ -1,10 +1,12 @@
 import { GESELLSCHAFTEN, parseKpiCsv, parseStatusCsv, type Gesellschaft, type KpiRow, type StatusRow } from "@tacto/csv";
 import { initPasswordGate } from "./auth";
+import { exportToExcel } from "./export";
 import { formatQuartal } from "./format";
 import { renderKpiChart } from "./kpi-chart";
 import { verfuegbareQuartale } from "./kpi-data";
-import { renderKpiTable } from "./kpi-table";
+import { renderKpiMonatTable, renderKpiTable } from "./kpi-table";
 import { gesellschaftLogo, SK_LOGO } from "./logos";
+import { createMenuButton } from "./menu-button";
 import { createPillSelect } from "./pill-select";
 import { renderStatusTable } from "./status-board";
 import "./style.css";
@@ -41,6 +43,7 @@ async function init(): Promise<void> {
   const headerLogo = document.getElementById("header-logo") as HTMLImageElement;
 
   const quartalSelect = document.getElementById("quartal-filter") as HTMLSelectElement;
+  const monatDetailToggle = document.getElementById("monat-detail-toggle") as HTMLInputElement;
   const standEl = document.getElementById("stand")!;
   const emptyState = document.getElementById("empty-state")!;
   const content = document.getElementById("content")!;
@@ -81,7 +84,15 @@ async function init(): Promise<void> {
   function render(): void {
     const filter = filterSelect.getValue() as Filter;
     const gefilterteKpis = filter === ALLE ? kpiRows : kpiRows.filter((r) => r.gesellschaft === filter);
-    renderKpiTable(kpiTable, gefilterteKpis, quartalSelect.value || null);
+
+    if (monatDetailToggle.checked) {
+      quartalSelect.hidden = true;
+      renderKpiMonatTable(kpiTable, gefilterteKpis);
+    } else {
+      quartalSelect.hidden = false;
+      renderKpiTable(kpiTable, gefilterteKpis, quartalSelect.value || null);
+    }
+
     renderKpiChart(kpiChartSelect, kpiChartCanvas, gefilterteKpis);
     renderStatusTable(statusTable, statusRows, filter);
 
@@ -97,7 +108,13 @@ async function init(): Promise<void> {
   const filterOptions = [ALLE, ...GESELLSCHAFTEN].map((g) => ({ value: g, label: g === ALLE ? "Gruppenebene" : g }));
   const filterSelect = createPillSelect(document.getElementById("gesellschaft-filter")!, filterOptions, render);
 
+  createMenuButton(document.getElementById("export-menu")!, "Export", [
+    { label: "Als PDF exportieren", onSelect: () => window.print() },
+    { label: "Als Excel exportieren", onSelect: () => void exportToExcel(kpiCsv, statusCsv) },
+  ]);
+
   quartalSelect.addEventListener("change", render);
+  monatDetailToggle.addEventListener("change", render);
   render();
 }
 

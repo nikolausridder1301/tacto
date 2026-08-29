@@ -1,5 +1,6 @@
 import type { KpiRow } from "@tacto/csv";
-import { KPI_DEFS, buildQuartalSnapshot } from "./kpi-data";
+import { formatMonatKurz } from "./format";
+import { aggregateByMonat, buildQuartalSnapshot, KPI_DEFS } from "./kpi-data";
 
 const EMPTY = `<td class="kpi-delta">–</td>`;
 
@@ -53,6 +54,42 @@ export function renderKpiTable(container: HTMLElement, rows: KpiRow[], zielQuart
       valueCell(istYtd, def.format) +
       valueCell(buYtd, def.format) +
       deltaCell(istYtd, buYtd, def.format);
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+
+  const wrap = document.createElement("div");
+  wrap.className = "table-wrap";
+  wrap.appendChild(table);
+  container.appendChild(wrap);
+}
+
+/** Detailansicht: reine Ist-Werte je Monat (ohne Budget/Forecast), eine Spalte pro Monat. */
+export function renderKpiMonatTable(container: HTMLElement, rows: KpiRow[]): void {
+  container.innerHTML = "";
+  if (rows.length === 0) return;
+
+  const monatsWerte = aggregateByMonat(rows);
+  if (monatsWerte.length === 0) return;
+
+  const table = document.createElement("table");
+  table.className = "kpi-table";
+
+  const headerCells = monatsWerte.map((m) => `<th>${formatMonatKurz(m.monat)}</th>`).join("");
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>KPI</th>
+        ${headerCells}
+      </tr>
+    </thead>
+  `;
+
+  const tbody = document.createElement("tbody");
+  for (const def of KPI_DEFS) {
+    const tr = document.createElement("tr");
+    const cells = monatsWerte.map((m) => valueCell(m.values[def.key], def.format)).join("");
+    tr.innerHTML = `<th scope="row">${def.label}</th>${cells}`;
     tbody.appendChild(tr);
   }
   table.appendChild(tbody);

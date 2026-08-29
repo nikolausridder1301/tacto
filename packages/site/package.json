@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@tacto/csv": "*",
-    "chart.js": "^4.4.4"
+    "chart.js": "^4.4.4",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "typescript": "^5.6.0",

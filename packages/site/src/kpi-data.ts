@@ -56,7 +56,7 @@ function def(
 
 export const KPI_DEFS: KpiDef[] = [
   def("einkaufsvolumenEur", "Einkaufsvolumen gesamt", "sum", "sum", formatEur),
-  def("einsparungMonatEur", "Einsparung (Quartal)", "sum", "sum", formatEur),
+  def("einsparungMonatEur", "Einsparung", "sum", "sum", formatEur),
   def("einsparquoteProzent", "Einsparquote", "avg", "avg", formatPercent),
   def("zeitersparnisStd", "Zeitersparnis", "sum", "sum", (n) => `${formatNumber(n)} Std.`),
   def("rfqsAbgeschlossen", "RFQs abgeschlossen", "sum", "sum", formatNumber),

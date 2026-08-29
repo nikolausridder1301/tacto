@@ -25,16 +25,15 @@
 
     <div id="app" class="app" hidden>
       <header class="app-header panel">
-        <div class="app-header-row">
-          <div class="header-title">
-            <img id="header-logo" class="header-logo" alt="Schmidt, Kranz &amp; Co." />
-            <h1>Tacto Reporting</h1>
-          </div>
-          <div class="header-controls">
-            <div id="gesellschaft-filter"></div>
-          </div>
+        <div class="header-title">
+          <img id="header-logo" class="header-logo" alt="Schmidt, Kranz &amp; Co." />
+          <h1>Tacto Reporting</h1>
+          <p id="stand" class="stand"></p>
         </div>
-        <p id="stand" class="stand"></p>
+        <div class="header-controls">
+          <div id="export-menu"></div>
+          <div id="gesellschaft-filter"></div>
+        </div>
       </header>
 
       <section id="empty-state" class="empty-state" hidden>
@@ -45,7 +44,14 @@
         <section class="panel">
           <div class="panel-header">
             <h2>KPIs</h2>
-            <select id="quartal-filter" aria-label="Quartal auswählen"></select>
+            <div class="panel-header-controls">
+              <label class="toggle">
+                <input type="checkbox" id="monat-detail-toggle" />
+                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                <span class="toggle-label">Monatsdetail</span>
+              </label>
+              <select id="quartal-filter" aria-label="Quartal auswählen"></select>
+            </div>
           </div>
           <div id="kpi-table"></div>
         </section>
