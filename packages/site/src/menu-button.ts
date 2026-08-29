@@ -1,13 +1,19 @@
-// Kleiner Aktions-Button mit Popup-Menü (z.B. "Export ▾"), optisch als
+// Kleiner Aktions-Button mit Popup-Menü (Kebab-Icon), optisch als
 // unaufdringlicher Sekundär-Button gehalten (siehe pill-select.ts für den
 // wichtigeren, auffälligen Gesellschafts-Filter).
+
+const KEBAB_ICON =
+  '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">' +
+  '<circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/>' +
+  "</svg>";
 
 export interface MenuAction {
   label: string;
   onSelect: () => void;
 }
 
-export function createMenuButton(container: HTMLElement, triggerLabel: string, actions: MenuAction[]): void {
+/** `accessibleLabel` wird nicht angezeigt (der Button zeigt nur das Icon), sondern als aria-label gesetzt. */
+export function createMenuButton(container: HTMLElement, accessibleLabel: string, actions: MenuAction[]): void {
   container.innerHTML = "";
   container.classList.add("menu-button");
 
@@ -16,7 +22,8 @@ export function createMenuButton(container: HTMLElement, triggerLabel: string, a
   trigger.className = "menu-button-trigger";
   trigger.setAttribute("aria-haspopup", "menu");
   trigger.setAttribute("aria-expanded", "false");
-  trigger.textContent = triggerLabel;
+  trigger.setAttribute("aria-label", accessibleLabel);
+  trigger.innerHTML = KEBAB_ICON;
 
   const menu = document.createElement("div");
   menu.className = "menu-button-menu";

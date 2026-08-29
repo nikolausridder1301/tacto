@@ -262,23 +262,25 @@ h3 {
 .menu-button-trigger {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--surface);
-  color: var(--text);
-  padding: 0.55rem 1rem;
-  font-family: var(--font-body);
-  font-size: 0.875rem;
-  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0;
   cursor: pointer;
   transition:
     background-color 0.15s ease,
-    border-color 0.15s ease;
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .menu-button-trigger:hover {
   background: var(--accent-bg);
   border-color: var(--accent);
+  color: var(--accent);
 }
 
 .menu-button-trigger:focus-visible {
