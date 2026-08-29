@@ -3,10 +3,16 @@ import { escapeHtml, formatDatum } from "./format";
 
 type Status = StatusRow["status"];
 
+const STATUS_LABEL: Record<Status, string> = {
+  Rot: "Delayed",
+  Gelb: "In Progress",
+  Gruen: "Done",
+};
+
 const STATUS_CLASS: Record<Status, string> = {
-  Rot: "ampel ampel-rot",
-  Gelb: "ampel ampel-gelb",
-  Gruen: "ampel ampel-gruen",
+  Rot: "status-badge status-badge-rot",
+  Gelb: "status-badge status-badge-gelb",
+  Gruen: "status-badge status-badge-gruen",
 };
 
 // Module stehen fachlich für sich (Tacto-Funktionsbereiche) und werden vor
@@ -20,8 +26,8 @@ function sortiereBereiche(bereiche: string[]): string[] {
   return [...module, ...themen];
 }
 
-function ampelCell(status: Status, title: string): string {
-  return `<td><span class="${STATUS_CLASS[status]}" title="${escapeHtml(title)}"></span></td>`;
+function statusCell(status: Status, title: string): string {
+  return `<td><span class="${STATUS_CLASS[status]}" title="${escapeHtml(title)}">${STATUS_LABEL[status]}</span></td>`;
 }
 
 const EMPTY_CELL = `<td class="status-cell-empty">–</td>`;
@@ -45,7 +51,7 @@ export function renderStatusTable(container: HTMLElement, rows: StatusRow[], fil
       const entry = rowsForBereich.find((r) => r.gesellschaft === g);
       if (!entry) return EMPTY_CELL;
       const termin = entry.zieltermin ? ` (bis ${formatDatum(entry.zieltermin)})` : "";
-      return ampelCell(entry.status, `${entry.status} – ${entry.verantwortlicher}: ${entry.naechsterSchritt}${termin}`);
+      return statusCell(entry.status, `${entry.status} – ${entry.verantwortlicher}: ${entry.naechsterSchritt}${termin}`);
     });
     return `<tr><th scope="row">${escapeHtml(bereich)}</th>${cells.join("")}</tr>`;
   });

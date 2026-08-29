@@ -30,7 +30,7 @@ Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in
 - **Export:** Button mit zwei Optionen – "Als PDF exportieren" (Druckansicht der aktuellen Seite inkl. aktuell gewählter Ansicht/Filter, über den Browser-Druckdialog) und "Als Excel exportieren" (lädt die zwei hochgeladenen Rohdateien – KPIs auf Monatsbasis und Status – als eine `.xlsx`-Datei mit zwei Tabellenblättern herunter).
 - **KPI-Bereich:** Tabelle mit einer Zeile je KPI (siehe Abschnitt 4.1) und einem Quartals-Filter (Dropdown, Default: neuestes vorhandenes Quartal). Die Quartalswerte sind aus den zugehörigen Monatsdaten **konsolidiert** (Summe/Ø/aktuellster Wert je nach KPI-Typ über die 3 Monate des Quartals). Für das gewählte Quartal je KPI: Ist Quartal, Budget Quartal, Delta Quartal, Ist Year to Date, Budget Year to Date, Delta Year to Date. YTD = dieselbe Konsolidierung über alle Monate desselben Jahres bis einschließlich des gewählten Quartals. Ein Toggle "Monatsdetail" blendet stattdessen eine einfache Detailtabelle ein: nur die reinen Ist-Werte, eine Spalte je vorhandenem Monat (ohne Budget/Forecast/Delta).
 - **KPI-Verlauf:** Chart mit Ist-Linie (durchgezogen) sowie optional Forecast-Linie (gestrichelt) über die letzten 6 vorhandenen **Monate** (kein Budget im Chart – das steht bereits in der Tabelle und würde den Trendverlauf unnötig überladen), KPI wählbar per Dropdown. Y-Achse bei Euro-KPIs kompakt in Millionen (z.B. "17 Mio. €").
-- **Status-Bereich:** Matrix, Themen/Module als Zeilen, Gesellschaften als Spalten, mit Ampel-Farbe (Rot/Gelb/Grün); Verantwortlicher/nächster Schritt/Priorität/Zieltermin als Tooltip.
+- **Status-Bereich:** Matrix, Themen/Module als Zeilen, Gesellschaften als Spalten, je Zelle ein zentrierter Text-Badge (Rot → "Delayed", Gelb → "In Progress", Grün → "Done"); Verantwortlicher/nächster Schritt/Priorität/Zieltermin als Tooltip.
 - Leerzustand vor dem ersten Upload: Hinweistext "Noch keine Daten hochgeladen."
 
 ### 3.2 Upload-Seite (`/upload`)
@@ -170,7 +170,7 @@ GitHub Pages (öffentlich erreichbar, Passwort-Gate im Frontend)
 
 - [ ] Dashboard zeigt nach Eingabe des korrekten Passworts alle KPIs mit aktuellem Quartalswert (konsolidiert aus `kpis.csv`) und Trendlinie über die letzten Monate.
 - [ ] Gesellschafts-Filter schränkt sowohl KPI- als auch Status-Bereich korrekt ein.
-- [ ] Status-Bereich zeigt alle Zeilen aus `status.csv`, gruppiert nach Gesellschaft, mit korrekter Ampel-Farbe.
+- [ ] Status-Bereich zeigt alle Zeilen aus `status.csv`, gruppiert nach Gesellschaft, mit korrektem Status-Badge (Delayed/In Progress/Done).
 - [ ] Upload-Seite akzeptiert `kpis.csv` und/oder `status.csv`, prüft Passwort serverseitig, validiert Inhalt und committet nur bei vollständig gültigen Daten.
 - [ ] Nach erfolgreichem Upload aktualisiert sich die öffentliche Seite innerhalb von ca. 1–2 Minuten automatisch (GitHub Actions Build).
 - [ ] Fehlerhafte Uploads (falsches Format, fehlende Spalten, doppelte Zeilen) werden mit konkreter, verständlicher Fehlermeldung abgelehnt, ohne die bestehenden Live-Daten zu verändern.

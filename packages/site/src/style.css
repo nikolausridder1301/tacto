@@ -551,7 +551,7 @@ main section {
 
 .status-matrix th:not(:first-child),
 .status-matrix td:not(:first-child) {
-  width: 110px;
+  width: 130px;
 }
 
 .kpi-table tbody th,
@@ -578,23 +578,27 @@ main section {
   color: var(--text-muted);
 }
 
-.ampel {
+.status-badge {
   display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: #fff;
 }
 
-.ampel-rot {
+.status-badge-rot {
   background: var(--rot);
 }
 
-.ampel-gelb {
+.status-badge-gelb {
   background: var(--gelb);
 }
 
-.ampel-gruen {
+.status-badge-gruen {
   background: var(--gruen);
 }
 
@@ -721,7 +725,7 @@ main section {
 
   .status-matrix th:not(:first-child),
   .status-matrix td:not(:first-child) {
-    width: 90px;
+    width: 110px;
   }
 
   .panel {
