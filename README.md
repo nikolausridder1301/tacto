@@ -35,7 +35,7 @@ npm run build    # Produktions-Build der Site
 Automatisch über `.github/workflows/deploy.yml` bei jedem Push auf `main` → GitHub Pages. Braucht ein Repo-Secret und optional eine Repo-Variable (Settings → Secrets and variables → Actions):
 
 - **Secret** `SITE_PASSWORD_HASH` – SHA-256-Hash des gemeinsamen Seiten-Passworts (siehe [ANLEITUNG.md](ANLEITUNG.md#passwort-ändern) zum Setzen/Ändern).
-- **Variable** `WORKER_URL` – die deployte Worker-URL (siehe unten). Ohne diese Variable läuft das Dashboard normal, die Upload-Seite zeigt aber "Kein Upload-Endpunkt konfiguriert".
+- **Variable** `WORKER_URL` – die deployte Worker-URL (siehe unten). Ohne diese Variable läuft das Dashboard normal, das Upload-Dialogfenster zeigt aber "Kein Upload-Endpunkt konfiguriert".
 
 ### Worker (Cloudflare)
 

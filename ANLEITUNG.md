@@ -4,14 +4,12 @@ Für die Bedienung der laufenden Seite. Technischer Hintergrund: [SPEC.md](SPEC.
 
 ## Wo ist was?
 
-- **Dashboard:** die Hauptseite, z.B. `https://nikolausridder1301.github.io/tacto/`
-- **Daten aktualisieren:** über den Link "Daten aktualisieren →" unten auf dem Dashboard, oder direkt `.../tacto/upload.html`
-
-Beide Seiten sind mit demselben Passwort geschützt.
+- **Dashboard:** die einzige Seite, z.B. `https://nikolausridder1301.github.io/tacto/`
+- **Daten aktualisieren:** über den Link "Daten aktualisieren →" unten auf dem Dashboard – öffnet ein Dialogfenster direkt auf der Seite, kein Seitenwechsel.
 
 ## Daten aktualisieren
 
-1. Upload-Seite öffnen, Passwort eingeben.
+1. Auf dem (bereits mit Passwort entsperrten) Dashboard unten auf "Daten aktualisieren →" klicken – das Upload-Dialogfenster öffnet sich.
 2. Eine oder beide Dateien auswählen: `kpis.csv` (KPI-Zahlen) und/oder `status.csv` (Implementierungs-Status). Vorlagen dafür liegen im Repo unter [templates/](templates/).
 3. Auf "Hochladen" klicken.
 4. Nach ein bis zwei Minuten ist die Änderung live (die Seite baut sich automatisch neu).
@@ -39,4 +37,4 @@ Nach ca. 1–2 Minuten gilt das neue Passwort.
 
 ## Upload-Funktion aktivieren (einmalig)
 
-Die Upload-Seite braucht einen einmalig eingerichteten Cloudflare Worker im Hintergrund (Details: [README.md](README.md#deployment)). Solange das nicht eingerichtet ist, zeigt die Upload-Seite die Meldung "Kein Upload-Endpunkt konfiguriert" – das Dashboard selbst funktioniert davon unabhängig.
+Der Upload-Dialog braucht einen einmalig eingerichteten Cloudflare Worker im Hintergrund (Details: [README.md](README.md#deployment)). Solange das nicht eingerichtet ist, zeigt der Dialog die Meldung "Kein Upload-Endpunkt konfiguriert" – das Dashboard selbst funktioniert davon unabhängig.

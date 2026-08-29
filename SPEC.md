@@ -15,7 +15,7 @@ Eine schlanke, öffentlich unter GitHub Pages gehostete Web-Anwendung, die zwei 
 
 Die App ist **kein** Analyse-Tool auf echten Tacto-/ERP-Procurement-Rohdaten und **keine** Live-Integration mit SharePoint, Tacto oder proALPHA. Sie ist ein eigenständiges, manuell gepflegtes Reporting-Werkzeug über den *Rollout* und die *Wirkung* von Tacto bei der SK Group.
 
-Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in Excel/CSV) und lädt sie regelmäßig (monatlich) über eine einfache Upload-Seite hoch.
+Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in Excel/CSV) und lädt sie regelmäßig (monatlich) über ein einfaches Upload-Dialogfenster im Dashboard hoch.
 
 ## 2. Zielgruppe
 
@@ -33,13 +33,16 @@ Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in
 - **Status-Bereich:** Matrix, Themen/Module als Zeilen, Gesellschaften als Spalten, je Zelle ein zentrierter Text-Badge (Rot → "Delayed", Gelb → "In Progress", Grün → "Done"); Verantwortlicher/nächster Schritt/Priorität/Zieltermin als Tooltip.
 - Leerzustand vor dem ersten Upload: Hinweistext "Noch keine Daten hochgeladen."
 
-### 3.2 Upload-Seite (`/upload`)
+### 3.2 Datenimport (Upload-Dialog)
+
+Kein eigener Seitenwechsel: Der Link "Daten aktualisieren →" unten auf dem Dashboard öffnet ein schwebendes Dialogfenster (natives `<dialog>`-Element) direkt auf derselben Seite.
 
 - Zwei Datei-Felder: KPI-CSV, Status-CSV (beide optional einzeln hochladbar, es kann auch nur eine der beiden Dateien aktualisiert werden).
 - Button "Hochladen".
 - Client-seitige Vorprüfung (Spaltennamen, Zeilenanzahl) vor dem Absenden, serverseitige Validierung im Upload-Endpunkt (siehe 7).
 - Erfolgs-/Fehlermeldung nach Upload, inkl. genauer Fehlerangabe bei ungültigen Daten (Zeile/Spalte).
 - Nach erfolgreichem Upload: Hinweis "Änderungen werden in ca. 1–2 Minuten live sein" (Bauzeit von GitHub Actions).
+- Schließen per ✕-Button, Klick außerhalb des Dialogs oder Escape-Taste.
 
 ### 3.3 Zugriffsschutz
 
@@ -112,7 +115,7 @@ Allmineral,Datenanbindung,Rot,N. Ridder,Workspace mit echten Daten befüllen,Hoc
 ## 5. Architektur
 
 ```
-Browser (Upload-Seite)
+Browser (Upload-Dialog im Dashboard)
    │  Passwort + CSV-Dateien
    ▼
 Cloudflare Worker (serverloser Endpunkt, kostenlos)
@@ -133,7 +136,7 @@ GitHub Pages (öffentlich erreichbar, Passwort-Gate im Frontend)
 
 ## 6. Sicherheit
 
-- **Zugriffsschutz der Seite:** ein gemeinsames Passwort für Dashboard und Upload-Seite. Es wird **client-seitig** abgefragt (kein echtes Login-System) – das ist bewusst kein starker Schutz, sondern verhindert zufälliges Auffinden/Indexierung und beiläufige Weiterverbreitung. Diese Einschränkung ist explizit akzeptiert (siehe Abschnitt 9, Risiken).
+- **Zugriffsschutz der Seite:** ein gemeinsames Passwort für das gesamte Dashboard (inkl. Upload-Dialog, da Teil derselben Seite). Es wird **client-seitig** abgefragt (kein echtes Login-System) – das ist bewusst kein starker Schutz, sondern verhindert zufälliges Auffinden/Indexierung und beiläufige Weiterverbreitung. Diese Einschränkung ist explizit akzeptiert (siehe Abschnitt 9, Risiken).
 - **Upload-Endpunkt zusätzlich serverseitig geschützt:** Der Cloudflare Worker prüft das Passwort selbst (Vergleich gegen den serverseitig gespeicherten Hash), bevor er irgendetwas ins Repo schreibt. Das verhindert, dass jemand den Passwortschutz der Weboberfläche umgeht, indem er direkt den Worker-Endpunkt anspricht.
 - **GitHub-Token:** fein-scoped (Fine-grained Personal Access Token), Berechtigung ausschließlich `contents:write` auf genau dieses eine Repository. Liegt ausschließlich als verschlüsseltes Secret im Cloudflare Worker, niemals im Client-Code oder im Git-Repo.
 - **Datensensitivität:** Die Daten (Einsparsummen, interner Rollout-Status) gelten als **intern, aber nicht hochvertraulich** – diese Einschätzung liegt bei Nikolaus und sollte im Zweifel nochmal bestätigt werden, da die Seite trotz Passwort technisch im offenen Internet liegt.
@@ -171,10 +174,10 @@ GitHub Pages (öffentlich erreichbar, Passwort-Gate im Frontend)
 - [ ] Dashboard zeigt nach Eingabe des korrekten Passworts alle KPIs mit aktuellem Quartalswert (konsolidiert aus `kpis.csv`) und Trendlinie über die letzten Monate.
 - [ ] Gesellschafts-Filter schränkt sowohl KPI- als auch Status-Bereich korrekt ein.
 - [ ] Status-Bereich zeigt alle Zeilen aus `status.csv`, gruppiert nach Gesellschaft, mit korrektem Status-Badge (Delayed/In Progress/Done).
-- [ ] Upload-Seite akzeptiert `kpis.csv` und/oder `status.csv`, prüft Passwort serverseitig, validiert Inhalt und committet nur bei vollständig gültigen Daten.
+- [ ] Upload-Dialog akzeptiert `kpis.csv` und/oder `status.csv`, prüft Passwort serverseitig, validiert Inhalt und committet nur bei vollständig gültigen Daten.
 - [ ] Nach erfolgreichem Upload aktualisiert sich die öffentliche Seite innerhalb von ca. 1–2 Minuten automatisch (GitHub Actions Build).
 - [ ] Fehlerhafte Uploads (falsches Format, fehlende Spalten, doppelte Zeilen) werden mit konkreter, verständlicher Fehlermeldung abgelehnt, ohne die bestehenden Live-Daten zu verändern.
-- [ ] Ohne korrektes Passwort ist weder das Dashboard noch die Upload-Seite inhaltlich einsehbar.
+- [ ] Ohne korrektes Passwort ist das Dashboard (inkl. Upload-Dialog) inhaltlich nicht einsehbar.
 - [ ] "Letztes Update: [Datum, Uhrzeit]"-Hinweis auf dem Dashboard entspricht dem Zeitpunkt des letzten erfolgreichen Uploads.
 - [ ] Vor dem ersten Upload zeigt das Dashboard einen klaren Leerzustand statt eines Fehlers oder leerer Diagramme.
 

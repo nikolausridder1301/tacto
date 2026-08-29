@@ -20,7 +20,7 @@ Drei Pakete, eine gemeinsame Datenlogik:
 - `packages/site` – statisches Dashboard (Vite), gebaut aus `/data/*.csv` und deployed auf GitHub Pages über `.github/workflows/deploy.yml`.
 - `packages/worker` – Cloudflare Worker, nimmt CSV-Uploads entgegen, validiert sie über `@tacto/csv` und committet sie ins Repo. Bewusst **kein** `wrangler` als Projektabhängigkeit – Deploy läuft ausschließlich über `.github/workflows/deploy-worker.yml`, das `wrangler` selbst per `cloudflare/wrangler-action` verwaltet. Das hält `npm install` plattformunabhängig (siehe unten).
 
-Datenfluss: Upload-Seite → Worker (prüft Passwort serverseitig, validiert CSV) → Commit nach `/data/` → GitHub Actions baut die Seite neu → GitHub Pages. Vollständige Beschreibung: [SPEC.md](SPEC.md).
+Datenfluss: Upload-Dialog im Dashboard (kein eigener Seitenwechsel, `<dialog>`-Element) → Worker (prüft Passwort serverseitig, validiert CSV) → Commit nach `/data/` → GitHub Actions baut die Seite neu → GitHub Pages. Vollständige Beschreibung: [SPEC.md](SPEC.md).
 
 ## Projektspezifischer Kontext (nicht aus dem Code ableitbar)
 

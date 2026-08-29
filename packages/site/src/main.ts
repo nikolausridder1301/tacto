@@ -9,6 +9,7 @@ import { gesellschaftLogo, SK_LOGO } from "./logos";
 import { createMenuButton } from "./menu-button";
 import { createPillSelect } from "./pill-select";
 import { renderStatusTable } from "./status-board";
+import { initUploadDialog } from "./upload-dialog";
 import "./style.css";
 
 const ALLE = "Alle" as const;
@@ -44,6 +45,7 @@ async function init(): Promise<void> {
   const error = document.getElementById("gate-error")!;
 
   initPasswordGate({ gate, app, form, input, error });
+  initUploadDialog();
 
   const headerLogo = document.getElementById("header-logo") as HTMLImageElement;
 
