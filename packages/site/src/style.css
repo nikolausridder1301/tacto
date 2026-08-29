@@ -524,6 +524,12 @@ main section {
   text-align: left;
 }
 
+/* Spaltenüberschriften über den zentrierten Status-Badges ebenfalls
+   zentrieren statt rechtsbündig (wie bei der KPI-Zahlentabelle). */
+.status-matrix thead th:not(:first-child) {
+  text-align: center;
+}
+
 /* Feste Spaltenbreiten, damit die Tabelle beim Wechseln des Gesellschafts-
    Filters nicht durch unterschiedlich lange Werte "springt". */
 .kpi-table th:first-child,
@@ -580,12 +586,14 @@ main section {
 
 .status-badge {
   display: inline-block;
-  padding: 0.3rem 0.75rem;
+  width: 100px;
+  padding: 0.3rem 0.5rem;
   border-radius: 999px;
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.02em;
+  text-align: center;
   white-space: nowrap;
   color: #fff;
 }
@@ -725,7 +733,7 @@ main section {
 
   .status-matrix th:not(:first-child),
   .status-matrix td:not(:first-child) {
-    width: 110px;
+    width: 120px;
   }
 
   .panel {
