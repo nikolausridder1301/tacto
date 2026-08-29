@@ -57,10 +57,7 @@ function draw(canvas: HTMLCanvasElement): void {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          display: hasForecast,
-          position: "top",
-          align: "end",
-          labels: { boxWidth: 16, font: { family: "'JetBrains Mono', monospace", size: 11 }, color: "#5a6577" },
+          display: false,
         },
         tooltip: {
           callbacks: { label: (ctx) => `${ctx.dataset.label}: ${def.format(ctx.parsed.y ?? 0)}` },
