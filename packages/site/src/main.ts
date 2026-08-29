@@ -1,8 +1,8 @@
 import { GESELLSCHAFTEN, parseKpiCsv, parseStatusCsv, type Gesellschaft, type KpiRow, type StatusRow } from "@tacto/csv";
 import { initPasswordGate } from "./auth";
 import { exportToExcel } from "./export";
-import { formatQuartal } from "./format";
-import { renderKpiChart, resizeKpiChart } from "./kpi-chart";
+import { formatDatumZeit, formatQuartal } from "./format";
+import { renderKpiChart } from "./kpi-chart";
 import { verfuegbareQuartale } from "./kpi-data";
 import { renderKpiMonatTable, renderKpiTable } from "./kpi-table";
 import { gesellschaftLogo, SK_LOGO } from "./logos";
@@ -14,10 +14,15 @@ import "./style.css";
 const ALLE = "Alle" as const;
 type Filter = Gesellschaft | typeof ALLE;
 
-async function fetchCsv(path: string): Promise<string | null> {
+interface CsvFetchResult {
+  text: string;
+  lastModified: string | null;
+}
+
+async function fetchCsv(path: string): Promise<CsvFetchResult | null> {
   const response = await fetch(path);
   if (!response.ok) return null;
-  return response.text();
+  return { text: await response.text(), lastModified: response.headers.get("last-modified") };
 }
 
 function populateQuartalFilter(select: HTMLSelectElement, quartale: string[]): void {
@@ -53,7 +58,9 @@ async function init(): Promise<void> {
   const statusTable = document.getElementById("status-table")!;
 
   const base = import.meta.env.BASE_URL;
-  const [kpiCsv, statusCsv] = await Promise.all([fetchCsv(`${base}kpis.csv`), fetchCsv(`${base}status.csv`)]);
+  const [kpiResult, statusResult] = await Promise.all([fetchCsv(`${base}kpis.csv`), fetchCsv(`${base}status.csv`)]);
+  const kpiCsv = kpiResult?.text ?? null;
+  const statusCsv = statusResult?.text ?? null;
 
   let kpiRows: KpiRow[] = [];
   let statusRows: StatusRow[] = [];
@@ -78,8 +85,12 @@ async function init(): Promise<void> {
 
   const quartale = verfuegbareQuartale(kpiRows);
   populateQuartalFilter(quartalSelect, quartale);
-  const letztesQuartal = quartale.at(-1);
-  standEl.textContent = letztesQuartal ? `Stand: ${formatQuartal(letztesQuartal)}` : "";
+
+  const letzteAenderung = [kpiResult?.lastModified, statusResult?.lastModified]
+    .filter((v): v is string => Boolean(v))
+    .map((v) => new Date(v))
+    .sort((a, b) => b.getTime() - a.getTime())[0];
+  standEl.textContent = letzteAenderung ? `Letztes Update: ${formatDatumZeit(letzteAenderung)}` : "";
 
   function render(): void {
     const filter = filterSelect.getValue() as Filter;
@@ -116,12 +127,6 @@ async function init(): Promise<void> {
   quartalSelect.addEventListener("change", render);
   monatDetailToggle.addEventListener("change", render);
   render();
-
-  // Chart.js reagiert nicht zuverlässig auf den Layoutwechsel durch
-  // @media print – ohne diesen Resize bleibt die Canvas auf der zuletzt am
-  // Bildschirm gerenderten Größe und ragt im PDF-Export über den Rahmen hinaus.
-  window.addEventListener("beforeprint", resizeKpiChart);
-  window.addEventListener("afterprint", resizeKpiChart);
 }
 
 init();

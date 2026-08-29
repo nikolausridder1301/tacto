@@ -50,6 +50,17 @@ export function formatDatum(iso: string): string {
   return date.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
+/** Datum und Uhrzeit, z.B. "29.08.2026, 09:22" – für den "Letztes Update"-Hinweis. */
+export function formatDatumZeit(date: Date): string {
+  return date.toLocaleString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 /** Escaped Text für sichere Verwendung in innerHTML-Strings (Daten kommen aus hochgeladenen CSVs). */
 export function escapeHtml(text: string): string {
   const div = document.createElement("div");

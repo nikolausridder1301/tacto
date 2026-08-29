@@ -748,7 +748,15 @@ main section {
   }
 }
 
-/* Druckansicht (PDF-Export über den "Export"-Button, window.print()) */
+/* Druckansicht (PDF-Export über den "Export"-Button, window.print()).
+   Querformat, damit die breiten Tabellen mehr Platz haben; Kopfzeile und
+   KPI-Verlauf-Chart werden weggelassen (Chart.js reagiert nicht zuverlässig
+   auf den Layoutwechsel und würde über den Seitenrand hinausragen) – übrig
+   bleiben KPI- und Status-Tabelle, möglichst kompakt auf einer Seite. */
+@page {
+  size: landscape;
+  margin: 1.2cm;
+}
 
 @media print {
   * {
@@ -758,22 +766,25 @@ main section {
 
   .gate,
   .upload-link,
-  .menu-button,
-  .pill-select-chevron,
-  .pill-select-menu,
-  .menu-button-menu {
+  .app-header,
+  .print-hide {
     display: none !important;
   }
 
-  .app-header {
-    position: static;
-    box-shadow: none;
+  .app {
+    padding: 0;
+    max-width: none;
+  }
+
+  main section {
+    margin-bottom: 0.75rem;
   }
 
   .panel,
   .empty-state {
     box-shadow: none;
     border: 1px solid #ccc;
+    padding: 0.75rem;
     break-inside: avoid;
   }
 
@@ -784,5 +795,13 @@ main section {
   .kpi-table,
   .status-matrix {
     table-layout: auto;
+    font-size: 0.75rem;
+  }
+
+  .kpi-table th,
+  .kpi-table td,
+  .status-matrix th,
+  .status-matrix td {
+    padding: 0.35rem 0.5rem;
   }
 }
