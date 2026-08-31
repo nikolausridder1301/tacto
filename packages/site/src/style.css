@@ -18,6 +18,17 @@
      sonst farblich wie der Gesellschafts-Filter im Header und würde optisch
      zu sehr hervorstechen. */
   --blau: #5a6577;
+  /* Soft-Badge-Farben für den Status-Bereich: heller getönter Hintergrund +
+     dunklerer, gesättigter Text derselben Farbe statt Volltonfläche mit
+     weißer Schrift. */
+  --rot-bg: #fde3e2;
+  --rot-text: #b3261e;
+  --gelb-bg: #fdecc8;
+  --gelb-text: #92580a;
+  --gruen-bg: #dcf3e2;
+  --gruen-text: #157a3d;
+  --blau-bg: #e4e7ec;
+  --blau-text: #454f5f;
   --radius-card: 16px;
   --radius-sm: 8px;
   --shadow-card:
@@ -595,27 +606,30 @@ main section {
   border-radius: 999px;
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.02em;
   text-align: center;
   white-space: nowrap;
-  color: #fff;
 }
 
 .status-badge-rot {
-  background: var(--rot);
+  background: var(--rot-bg);
+  color: var(--rot-text);
 }
 
 .status-badge-gelb {
-  background: var(--gelb);
+  background: var(--gelb-bg);
+  color: var(--gelb-text);
 }
 
 .status-badge-gruen {
-  background: var(--gruen);
+  background: var(--gruen-bg);
+  color: var(--gruen-text);
 }
 
 .status-badge-blau {
-  background: var(--blau);
+  background: var(--blau-bg);
+  color: var(--blau-text);
 }
 
 /* Kommentar-Spalte (nur Einzelansicht): Fließtext statt zentriertem Badge,
