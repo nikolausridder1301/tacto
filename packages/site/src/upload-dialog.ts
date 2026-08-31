@@ -2,6 +2,11 @@
 // eigenen Seite) – dasselbe Passwort-Gate der Hauptseite hat beim Entsperren
 // bereits das Klartext-Passwort in sessionStorage abgelegt (siehe auth.ts),
 // das hier für die Worker-Authentifizierung wiederverwendet wird.
+//
+// Geöffnet wird dieser Dialog aktuell nirgends mehr direkt aus der UI – der
+// "Admin"-Link öffnet vorerst nur das Passwort-Pop-up aus admin-gate.ts.
+// Das eigentliche Verdrahten (richtiges Passwort → showModal() hier) folgt
+// in einem späteren Schritt.
 
 const MAX_SIZE_BYTES = 2 * 1024 * 1024; // 2 MB, siehe SPEC.md Abschnitt 7
 
@@ -17,7 +22,6 @@ function validateFile(file: File | undefined): string | null {
 }
 
 export function initUploadDialog(): void {
-  const trigger = document.getElementById("upload-trigger") as HTMLButtonElement;
   const dialog = document.getElementById("upload-dialog") as HTMLDialogElement;
   const closeButton = document.getElementById("upload-dialog-close") as HTMLButtonElement;
   const form = document.getElementById("upload-form") as HTMLFormElement;
@@ -30,12 +34,6 @@ export function initUploadDialog(): void {
     message.hidden = false;
     message.textContent = text;
   }
-
-  trigger.addEventListener("click", () => {
-    message.hidden = true;
-    form.reset();
-    dialog.showModal();
-  });
 
   closeButton.addEventListener("click", () => dialog.close());
 

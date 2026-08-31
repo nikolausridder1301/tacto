@@ -24,6 +24,7 @@ const KPI_BASE_FIELDS = [
   "KPI_Aktive_Lieferanten",
   "KPI_Datenqualitaet_Prozent",
   "KPI_Aktive_Nutzer",
+  "KPI_Materialquote_Prozent",
 ] as const;
 
 type KpiBaseField = (typeof KPI_BASE_FIELDS)[number];
@@ -62,6 +63,9 @@ export interface KpiRow {
   aktiveNutzer: number;
   aktiveNutzerForecast: number | null;
   aktiveNutzerBudget: number | null;
+  materialquoteProzent: number;
+  materialquoteProzentForecast: number | null;
+  materialquoteProzentBudget: number | null;
 }
 
 // Mapping CSV-Basisspalte -> KpiRow-Feldname (camelCase), damit die
@@ -75,6 +79,7 @@ const FIELD_MAP: Record<KpiBaseField, keyof KpiRow> = {
   KPI_Aktive_Lieferanten: "aktiveLieferanten",
   KPI_Datenqualitaet_Prozent: "datenqualitaetProzent",
   KPI_Aktive_Nutzer: "aktiveNutzer",
+  KPI_Materialquote_Prozent: "materialquoteProzent",
 };
 
 export type Status = "Rot" | "Gelb" | "Gruen" | "Blau";

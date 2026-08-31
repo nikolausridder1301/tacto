@@ -75,8 +75,25 @@
       </main>
 
       <p class="upload-link">
-        <button type="button" id="upload-trigger" class="upload-link-button">Daten aktualisieren →</button>
+        <button type="button" id="admin-trigger" class="upload-link-button">Admin</button>
       </p>
+
+      <!-- Platzhalter: Klick auf "Admin" öffnet aktuell nur dieses Passwort-
+           Pop-up. Die eigentliche Prüfung (richtiges Passwort → Upload-Dialog
+           öffnen) folgt in einem späteren Schritt. -->
+      <dialog id="admin-password-dialog" class="upload-dialog print-hide">
+        <div class="upload-dialog-header">
+          <h2>Admin-Zugang</h2>
+          <button type="button" id="admin-password-dialog-close" class="upload-dialog-close" aria-label="Schließen">✕</button>
+        </div>
+        <form id="admin-password-form" class="upload-form">
+          <div class="upload-field">
+            <label for="admin-password">Passwort</label>
+            <input type="password" id="admin-password" name="password" autocomplete="current-password" />
+          </div>
+          <button type="submit">Entsperren</button>
+        </form>
+      </dialog>
 
       <dialog id="upload-dialog" class="upload-dialog print-hide">
         <div class="upload-dialog-header">

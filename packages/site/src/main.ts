@@ -1,4 +1,5 @@
 import { GESELLSCHAFTEN, parseKpiCsv, parseStatusCsv, type Gesellschaft, type KpiRow, type StatusRow } from "@tacto/csv";
+import { initAdminGate } from "./admin-gate";
 import { initPasswordGate } from "./auth";
 import { exportToExcel } from "./export";
 import { formatDatumZeit, formatQuartal } from "./format";
@@ -46,6 +47,7 @@ async function init(): Promise<void> {
 
   initPasswordGate({ gate, app, form, input, error });
   initUploadDialog();
+  initAdminGate();
 
   const headerLogo = document.getElementById("header-logo") as HTMLImageElement;
 

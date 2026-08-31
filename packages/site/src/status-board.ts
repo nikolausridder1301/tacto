@@ -87,7 +87,7 @@ export function renderStatusTable(container: HTMLElement, rows: StatusRow[], fil
   });
 
   const table = document.createElement("table");
-  table.className = "status-matrix";
+  table.className = einzelansicht ? "status-matrix status-matrix--single" : "status-matrix";
   table.innerHTML = `<thead><tr>${headCells.join("")}</tr></thead><tbody>${bodyRows.join("")}</tbody>`;
 
   const wrap = document.createElement("div");

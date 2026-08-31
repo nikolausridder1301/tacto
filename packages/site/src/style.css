@@ -14,7 +14,10 @@
   --rot: #dc2626;
   --gelb: #f59e0b;
   --gruen: #16a34a;
-  --blau: #2563eb;
+  /* Bewusst dezentes Grau statt Blau: der Status "Blau" (2. Welle) hieße
+     sonst farblich wie der Gesellschafts-Filter im Header und würde optisch
+     zu sehr hervorstechen. */
+  --blau: #5a6577;
   --radius-card: 16px;
   --radius-sm: 8px;
   --shadow-card:
@@ -616,14 +619,36 @@ main section {
 }
 
 /* Kommentar-Spalte (nur Einzelansicht): Fließtext statt zentriertem Badge,
-   deshalb eigene Ausrichtung/Breite/Zeilenumbruch. Selektor muss die feste
-   Spaltenbreite von ".status-matrix td:not(:first-child)" überschreiben,
-   daher hier bewusst höhere Spezifität. */
+   deshalb eigene Ausrichtung/Zeilenumbruch. */
 .status-matrix td.status-comment-cell {
   text-align: left;
   white-space: normal;
   color: var(--text-muted);
-  width: 320px;
+}
+
+/* Einzelansicht: nur 3 statt bis zu 7 Spalten (Thema, eine Firma, Kommentare).
+   Die generischen Breiten (200px/130px) wurden bei table-layout:fixed im
+   Verhältnis auf die volle Tabellenbreite hochskaliert – Thema- und
+   Status-Spalte wirkten dadurch unnötig breit mit viel Leerraum um Badge/
+   Text. Hier feste, knappe Breiten für Thema/Status, den Rest bekommt die
+   Kommentar-Spalte – dadurch mehr Platz und weniger Zeilenumbrüche im Text. */
+.status-matrix.status-matrix--single {
+  table-layout: auto;
+}
+
+.status-matrix.status-matrix--single th:first-child,
+.status-matrix.status-matrix--single td:first-child {
+  width: 190px;
+}
+
+.status-matrix.status-matrix--single th:nth-child(2),
+.status-matrix.status-matrix--single td:nth-child(2) {
+  width: 110px;
+}
+
+.status-matrix.status-matrix--single td.status-comment-cell,
+.status-matrix.status-matrix--single th:last-child {
+  width: auto;
 }
 
 /* KPI-Verlauf (Chart) */

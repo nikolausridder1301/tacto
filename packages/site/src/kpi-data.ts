@@ -9,7 +9,8 @@ export type NumericKey =
   | "rfqsAbgeschlossen"
   | "aktiveLieferanten"
   | "datenqualitaetProzent"
-  | "aktiveNutzer";
+  | "aktiveNutzer"
+  | "materialquoteProzent";
 
 export type ForecastKey = `${NumericKey}Forecast`;
 export type BudgetKey = `${NumericKey}Budget`;
@@ -63,6 +64,7 @@ export const KPI_DEFS: KpiDef[] = [
   def("aktiveLieferanten", "Aktive Lieferanten", "sum", "latest", formatNumber),
   def("datenqualitaetProzent", "Datenqualität", "avg", "latest", formatPercent),
   def("aktiveNutzer", "Aktive Nutzer", "sum", "latest", formatNumber),
+  def("materialquoteProzent", "Materialquote", "avg", "avg", formatPercent),
 ];
 
 function combine(nums: number[], mode: CompanyAggregate): number {

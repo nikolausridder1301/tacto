@@ -72,6 +72,7 @@ Pflichtspalten:
 | `KPI_Aktive_Lieferanten` | Ganzzahl | Anzahl aktiver Lieferanten in Tacto (Stand Monatsende) |
 | `KPI_Datenqualitaet_Prozent` | Zahl | Vollständigkeit/Qualität der Tacto-Daten, in % (Stand Monatsende) |
 | `KPI_Aktive_Nutzer` | Ganzzahl | Anzahl aktiver Nutzer (Stand Monatsende) |
+| `KPI_Materialquote_Prozent` | Zahl | Anteil Material am Einkaufsvolumen, in % (variiert je Gesellschaft, i.d.R. 30–50 %) |
 
 Eindeutigkeit: Kombination `Monat` + `Gesellschaft` muss eindeutig sein (keine doppelten Zeilen).
 
@@ -81,13 +82,13 @@ Eindeutigkeit: Kombination `Monat` + `Gesellschaft` muss eindeutig sein (keine d
 - **Quartal:** die 3 Monate des jeweiligen Quartals, kombiniert je nach KPI-Typ.
 - **Year-to-Date:** alle Monate desselben Jahres bis einschließlich des gewählten Quartals, mit derselben Kombinationslogik.
 
-Kombinationslogik je KPI-Typ: Summe bei Flussgrößen (Einkaufsvolumen, Einsparung, Zeitersparnis, RFQs), Durchschnitt bei der Einsparquote, aktuellster Monatswert bei Bestandsgrößen (Aktive Lieferanten, Datenqualität, Aktive Nutzer – diese lassen sich nicht sinnvoll über Monate aufsummieren).
+Kombinationslogik je KPI-Typ: Summe bei Flussgrößen (Einkaufsvolumen, Einsparung, Zeitersparnis, RFQs), Durchschnitt bei Quoten (Einsparquote, Materialquote), aktuellster Monatswert bei Bestandsgrößen (Aktive Lieferanten, Datenqualität, Aktive Nutzer – diese lassen sich nicht sinnvoll über Monate aufsummieren).
 
 Beispiel (mit Forecast-/Budget-Spalten):
 ```
-Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einkaufsvolumen_EUR_Forecast,KPI_Einkaufsvolumen_EUR_Budget,KPI_Einsparung_Monat_EUR,KPI_Einsparung_Monat_EUR_Forecast,KPI_Einsparung_Monat_EUR_Budget,KPI_Einsparquote_Prozent,KPI_Einsparquote_Prozent_Forecast,KPI_Einsparquote_Prozent_Budget,KPI_Zeitersparnis_Std,KPI_Zeitersparnis_Std_Forecast,KPI_Zeitersparnis_Std_Budget,KPI_RFQs_Abgeschlossen,KPI_RFQs_Abgeschlossen_Forecast,KPI_RFQs_Abgeschlossen_Budget,KPI_Aktive_Lieferanten,KPI_Aktive_Lieferanten_Forecast,KPI_Aktive_Lieferanten_Budget,KPI_Datenqualitaet_Prozent,KPI_Datenqualitaet_Prozent_Forecast,KPI_Datenqualitaet_Prozent_Budget,KPI_Aktive_Nutzer,KPI_Aktive_Nutzer_Forecast,KPI_Aktive_Nutzer_Budget
-2026-09,Maximator,8700000,8787000,9050610,12667,20000,23000,1.3,1.5,1.7,32,30,35,2,2,2,85,100,115,78,80,92,6,8,9
-2026-09,HAZEMAG,3600000,3636000,3745080,0,20000,23000,0,1.5,1.7,3,30,35,0,2,2,40,100,115,40,80,92,2,8,9
+Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einkaufsvolumen_EUR_Forecast,KPI_Einkaufsvolumen_EUR_Budget,KPI_Einsparung_Monat_EUR,KPI_Einsparung_Monat_EUR_Forecast,KPI_Einsparung_Monat_EUR_Budget,KPI_Einsparquote_Prozent,KPI_Einsparquote_Prozent_Forecast,KPI_Einsparquote_Prozent_Budget,KPI_Zeitersparnis_Std,KPI_Zeitersparnis_Std_Forecast,KPI_Zeitersparnis_Std_Budget,KPI_RFQs_Abgeschlossen,KPI_RFQs_Abgeschlossen_Forecast,KPI_RFQs_Abgeschlossen_Budget,KPI_Aktive_Lieferanten,KPI_Aktive_Lieferanten_Forecast,KPI_Aktive_Lieferanten_Budget,KPI_Datenqualitaet_Prozent,KPI_Datenqualitaet_Prozent_Forecast,KPI_Datenqualitaet_Prozent_Budget,KPI_Aktive_Nutzer,KPI_Aktive_Nutzer_Forecast,KPI_Aktive_Nutzer_Budget,KPI_Materialquote_Prozent,KPI_Materialquote_Prozent_Forecast,KPI_Materialquote_Prozent_Budget
+2026-09,Maximator,8700000,8787000,9050610,12667,20000,23000,1.3,1.5,1.7,32,30,35,2,2,2,85,100,115,78,80,92,6,8,9,30.3,30.2,30.0
+2026-09,HAZEMAG,3600000,3636000,3745080,0,20000,23000,0,1.5,1.7,3,30,35,0,2,2,40,100,115,40,80,92,2,8,9,41.7,41.5,42.0
 ```
 
 ### 4.2 `status.csv`
