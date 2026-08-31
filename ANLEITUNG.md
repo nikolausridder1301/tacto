@@ -16,7 +16,7 @@ Für die Bedienung der laufenden Seite. Technischer Hintergrund: [SPEC.md](SPEC.
 
 **Wenn eine Fehlermeldung erscheint:** Die Datei wurde noch NICHT übernommen – die aktuell sichtbaren Daten bleiben unverändert. Meist steht in der Meldung, welche Zeile/Spalte das Problem hat (z.B. falsches Datumsformat, unbekannte Gesellschaft, doppelte Zeile). Datei korrigieren und erneut hochladen.
 
-**Erwartetes Format:** UTF-8-CSV, egal ob mit Komma oder Semikolon getrennt (deutsches Excel-Format wird automatisch erkannt). Jede Zeile in `kpis.csv` braucht eine eindeutige Kombination aus Monat (Format `YYYY-MM`, z.B. `2026-09`) und Gesellschaft; jede Zeile in `status.csv` eine eindeutige Kombination aus Gesellschaft und Thema. Gültige Gesellschaften: `HAZEMAG`, `Allmineral`, `Hazemag Systems`, `Maximator`, `Maximator Hydrogen`, `FEST`.
+**Erwartetes Format:** UTF-8-CSV, egal ob mit Komma oder Semikolon getrennt (deutsches Excel-Format wird automatisch erkannt). Jede Zeile in `kpis.csv` braucht eine eindeutige Kombination aus Monat (Format `YYYY-MM`, z.B. `2026-09`) und Gesellschaft; jede Zeile in `status.csv` eine eindeutige Kombination aus Gesellschaft und Thema. Gültige Gesellschaften: `HAZEMAG`, `Allmineral`, `Maximator`, `Maximator Hydrogen`, `FEST`, `Perforator`.
 
 Die Zahlen kommen monatlich in die CSV – das Dashboard fasst sie selbst zu Quartals- und Year-to-Date-Werten zusammen (Tabelle) und zeigt zusätzlich die letzten 6 Monate im Zeitverlauf (Chart). Es muss also nichts manuell zu Quartalen aufsummiert werden.
 

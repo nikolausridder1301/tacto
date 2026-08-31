@@ -7,10 +7,10 @@ import Papa from "papaparse";
 export const GESELLSCHAFTEN = [
   "HAZEMAG",
   "Allmineral",
-  "Hazemag Systems",
   "Maximator",
   "Maximator Hydrogen",
   "FEST",
+  "Perforator",
 ] as const;
 
 export type Gesellschaft = (typeof GESELLSCHAFTEN)[number];
@@ -77,7 +77,7 @@ const FIELD_MAP: Record<KpiBaseField, keyof KpiRow> = {
   KPI_Aktive_Nutzer: "aktiveNutzer",
 };
 
-export type Status = "Rot" | "Gelb" | "Gruen";
+export type Status = "Rot" | "Gelb" | "Gruen" | "Blau";
 export type Prioritaet = "Hoch" | "Mittel" | "Niedrig";
 
 export interface StatusRow {
@@ -88,6 +88,7 @@ export interface StatusRow {
   naechsterSchritt: string;
   prioritaet: Prioritaet;
   zieltermin: string | null; // "YYYY-MM-DD" oder null
+  kommentar: string | null; // optionale Spalte "Kommentar"
 }
 
 export interface ParseResult<T> {
@@ -222,7 +223,7 @@ export function parseKpiCsv(csvText: string): ParseResult<KpiRow> {
   return { rows, errors };
 }
 
-const VALID_STATUS: Status[] = ["Rot", "Gelb", "Gruen"];
+const VALID_STATUS: Status[] = ["Rot", "Gelb", "Gruen", "Blau"];
 const VALID_PRIORITAET: Prioritaet[] = ["Hoch", "Mittel", "Niedrig"];
 
 export function parseStatusCsv(csvText: string): ParseResult<StatusRow> {
@@ -253,7 +254,7 @@ export function parseStatusCsv(csvText: string): ParseResult<StatusRow> {
       return;
     }
     if (!VALID_STATUS.includes(status as Status)) {
-      errors.push(`Zeile ${lineNo}: ungültiger Status "${status}" (erwartet Rot/Gelb/Gruen)`);
+      errors.push(`Zeile ${lineNo}: ungültiger Status "${status}" (erwartet Rot/Gelb/Gruen/Blau)`);
       return;
     }
     if (!VALID_PRIORITAET.includes(prioritaet as Prioritaet)) {
@@ -272,6 +273,8 @@ export function parseStatusCsv(csvText: string): ParseResult<StatusRow> {
     }
     seen.add(key);
 
+    const kommentarRaw = fields.includes("Kommentar") ? (raw["Kommentar"]?.trim() ?? "") : "";
+
     rows.push({
       gesellschaft: gesellschaft as Gesellschaft,
       thema,
@@ -280,6 +283,7 @@ export function parseStatusCsv(csvText: string): ParseResult<StatusRow> {
       naechsterSchritt: raw["Naechster_Schritt"]?.trim() ?? "",
       prioritaet: prioritaet as Prioritaet,
       zieltermin: zieltermin === "" ? null : zieltermin,
+      kommentar: kommentarRaw === "" ? null : kommentarRaw,
     });
   });
 

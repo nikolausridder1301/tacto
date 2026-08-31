@@ -7,18 +7,30 @@ const STATUS_LABEL: Record<Status, string> = {
   Rot: "Delayed",
   Gelb: "In Progress",
   Gruen: "Done",
+  Blau: "2. Welle",
 };
 
 const STATUS_CLASS: Record<Status, string> = {
   Rot: "status-badge status-badge-rot",
   Gelb: "status-badge status-badge-gelb",
   Gruen: "status-badge status-badge-gruen",
+  Blau: "status-badge status-badge-blau",
 };
 
-// Module stehen fachlich für sich (Tacto-Funktionsbereiche) und werden vor
-// den Rollout-Themen (z.B. Echtdatentransfer) einsortiert, wenn beide in den
-// Daten vorkommen.
-const MODUL_REIHENFOLGE = ["Analytics", "Automatisierung", "Agenten"];
+// Feste Reihenfolge der Themen (Rollout-Plan), unabhängig von der
+// Reihenfolge, in der sie in status.csv vorkommen.
+const MODUL_REIHENFOLGE = [
+  "Datentransfer: lesen",
+  "Datentransfer: schreiben",
+  "Warengruppen",
+  "Analytics",
+  "Einsparungen (Hinweise)",
+  "RFQs",
+  "Agenten",
+  "Lieferantenabfragen",
+  "Lieferantenbewertungen",
+  "Auftragsbestätigung",
+];
 
 function sortiereBereiche(bereiche: string[]): string[] {
   const module = MODUL_REIHENFOLGE.filter((m) => bereiche.includes(m));
@@ -32,7 +44,18 @@ function statusCell(status: Status, title: string): string {
 
 const EMPTY_CELL = `<td class="status-cell-empty">–</td>`;
 
-/** Status-Matrix: Themen/Module als Zeilen, Gesellschaften als Spalten. */
+function tooltipText(entry: StatusRow): string {
+  const termin = entry.zieltermin ? ` (bis ${formatDatum(entry.zieltermin)})` : "";
+  const basis = `${entry.status} – ${entry.verantwortlicher}: ${entry.naechsterSchritt}${termin}`;
+  return entry.kommentar ? `${basis}\nKommentar: ${entry.kommentar}` : basis;
+}
+
+/**
+ * Status-Matrix: Themen/Module als Zeilen, Gesellschaften als Spalten. In der
+ * Einzelansicht (eine konkrete Gesellschaft gefiltert) kommt zusätzlich eine
+ * Spalte "Kommentare" dazu, die den Excel-Kommentar je Thema ausgeschrieben
+ * zeigt (nicht nur im Hover wie in der Gruppenebene-Matrix).
+ */
 export function renderStatusTable(container: HTMLElement, rows: StatusRow[], filter: Gesellschaft | "Alle"): void {
   container.innerHTML = "";
   if (rows.length === 0) return;
@@ -42,18 +65,25 @@ export function renderStatusTable(container: HTMLElement, rows: StatusRow[], fil
   const bereiche = sortiereBereiche(gesehen);
 
   const gesellschaften: Gesellschaft[] = filter === "Alle" ? [...GESELLSCHAFTEN] : [filter];
+  const einzelansicht = filter !== "Alle";
 
-  const headCells = ["<th>Thema</th>", ...gesellschaften.map((g) => `<th>${escapeHtml(g)}</th>`)];
+  const headCells = [
+    "<th>Thema</th>",
+    ...gesellschaften.map((g) => `<th>${escapeHtml(g)}</th>`),
+    ...(einzelansicht ? ["<th>Kommentare</th>"] : []),
+  ];
 
   const bodyRows = bereiche.map((bereich) => {
     const rowsForBereich = rows.filter((r) => r.thema === bereich);
     const cells = gesellschaften.map((g) => {
       const entry = rowsForBereich.find((r) => r.gesellschaft === g);
       if (!entry) return EMPTY_CELL;
-      const termin = entry.zieltermin ? ` (bis ${formatDatum(entry.zieltermin)})` : "";
-      return statusCell(entry.status, `${entry.status} – ${entry.verantwortlicher}: ${entry.naechsterSchritt}${termin}`);
+      return statusCell(entry.status, tooltipText(entry));
     });
-    return `<tr><th scope="row">${escapeHtml(bereich)}</th>${cells.join("")}</tr>`;
+    const kommentarCell = einzelansicht
+      ? `<td class="status-comment-cell">${escapeHtml(rowsForBereich[0]?.kommentar ?? "")}</td>`
+      : "";
+    return `<tr><th scope="row">${escapeHtml(bereich)}</th>${cells.join("")}${kommentarCell}</tr>`;
   });
 
   const table = document.createElement("table");

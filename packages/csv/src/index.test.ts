@@ -127,7 +127,7 @@ describe("parseStatusCsv", () => {
   });
 
   it("lehnt ungültige Status-Werte ab", () => {
-    const csv = `${STATUS_HEADER}\nMaximator,Warengruppen,Blau,N. Ridder,x,Mittel,`;
+    const csv = `${STATUS_HEADER}\nMaximator,Warengruppen,Lila,N. Ridder,x,Mittel,`;
     const { rows, errors } = parseStatusCsv(csv);
     expect(rows).toEqual([]);
     expect(errors.some((e) => e.includes("ungültiger Status"))).toBe(true);
@@ -139,5 +139,37 @@ describe("parseStatusCsv", () => {
     const { rows, errors } = parseStatusCsv(csv);
     expect(rows).toHaveLength(1);
     expect(errors.some((e) => e.includes("doppelte Kombination"))).toBe(true);
+  });
+
+  it("akzeptiert den Status Blau (2. Welle)", () => {
+    const csv = `${STATUS_HEADER}\nPerforator,Analytics,Blau,N. Ridder,Noch nicht gestartet,Niedrig,`;
+    const { rows, errors } = parseStatusCsv(csv);
+    expect(errors).toEqual([]);
+    expect(rows[0]).toMatchObject({ gesellschaft: "Perforator", status: "Blau" });
+  });
+});
+
+describe("parseStatusCsv – optionale Kommentar-Spalte", () => {
+  const HEADER_WITH_KOMMENTAR = `${STATUS_HEADER},Kommentar`;
+
+  it("liest einen vorhandenen Kommentar", () => {
+    const csv = `${HEADER_WITH_KOMMENTAR}\nMaximator,Warengruppen,Gruen,N. Ridder,x,Mittel,,Läuft bei allen Einheiten.`;
+    const { rows, errors } = parseStatusCsv(csv);
+    expect(errors).toEqual([]);
+    expect(rows[0].kommentar).toBe("Läuft bei allen Einheiten.");
+  });
+
+  it("behandelt eine leere Kommentar-Zelle als null", () => {
+    const csv = `${HEADER_WITH_KOMMENTAR}\nMaximator,Warengruppen,Gruen,N. Ridder,x,Mittel,,`;
+    const { rows, errors } = parseStatusCsv(csv);
+    expect(errors).toEqual([]);
+    expect(rows[0].kommentar).toBeNull();
+  });
+
+  it("liefert null, wenn die Spalte komplett fehlt", () => {
+    const csv = `${STATUS_HEADER}\nMaximator,Warengruppen,Gruen,N. Ridder,x,Mittel,`;
+    const { rows, errors } = parseStatusCsv(csv);
+    expect(errors).toEqual([]);
+    expect(rows[0].kommentar).toBeNull();
   });
 });

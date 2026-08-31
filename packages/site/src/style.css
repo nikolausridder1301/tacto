@@ -14,6 +14,7 @@
   --rot: #dc2626;
   --gelb: #f59e0b;
   --gruen: #16a34a;
+  --blau: #2563eb;
   --radius-card: 16px;
   --radius-sm: 8px;
   --shadow-card:
@@ -608,6 +609,21 @@ main section {
 
 .status-badge-gruen {
   background: var(--gruen);
+}
+
+.status-badge-blau {
+  background: var(--blau);
+}
+
+/* Kommentar-Spalte (nur Einzelansicht): Fließtext statt zentriertem Badge,
+   deshalb eigene Ausrichtung/Breite/Zeilenumbruch. Selektor muss die feste
+   Spaltenbreite von ".status-matrix td:not(:first-child)" überschreiben,
+   daher hier bewusst höhere Spezifität. */
+.status-matrix td.status-comment-cell {
+  text-align: left;
+  white-space: normal;
+  color: var(--text-muted);
+  width: 320px;
 }
 
 /* KPI-Verlauf (Chart) */

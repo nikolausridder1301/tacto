@@ -20,17 +20,17 @@ Einzige Dateneingabe-Quelle ist Nikolaus. Er pflegt die Daten selbst (aktuell in
 ## 2. Zielgruppe
 
 - **Datenpfleger:** Nikolaus (einzige Person, die Daten hochlädt).
-- **Betrachter:** SteerCo / Ansprechpartner der Gesellschaften (HAZEMAG, Allmineral, Hazemag Systems, Maximator, Maximator Hydrogen, FEST) – lesender Zugriff auf das Dashboard, kein Login-Account, nur ein gemeinsames Passwort.
+- **Betrachter:** SteerCo / Ansprechpartner der Gesellschaften (HAZEMAG, Allmineral, Maximator, Maximator Hydrogen, FEST, Perforator) – lesender Zugriff auf das Dashboard, kein Login-Account, nur ein gemeinsames Passwort.
 
 ## 3. Funktionsumfang (MVP)
 
 ### 3.1 Dashboard (Hauptseite, `/`)
 
-- Kopfzeile (schwebt beim Scrollen oben, immer sichtbar): Schmidt-Kranz-Logo, Titel, "Letztes Update: [Datum, Uhrzeit]" in einer Zeile, dazu ein Export-Button und der Gesellschafts-Filter ("Gruppenebene" + je eine der 6 Gesellschaften). Der Zeitstempel stammt aus dem `Last-Modified`-Header der ausgelieferten `kpis.csv`/`status.csv` (der jüngere von beiden) – zeigt also, wann zuletzt tatsächlich neue Daten hochgeladen wurden, nicht nur das abgedeckte Quartal. Bei Auswahl einer konkreten Gesellschaft wird das Schmidt-Kranz-Logo durch deren Logo ersetzt (HAZEMAG und Hazemag Systems teilen sich dasselbe Logo).
+- Kopfzeile (schwebt beim Scrollen oben, immer sichtbar): Schmidt-Kranz-Logo, Titel, "Letztes Update: [Datum, Uhrzeit]" in einer Zeile, dazu ein Export-Button und der Gesellschafts-Filter ("Gruppenebene" + je eine der 6 Gesellschaften). Der Zeitstempel stammt aus dem `Last-Modified`-Header der ausgelieferten `kpis.csv`/`status.csv` (der jüngere von beiden) – zeigt also, wann zuletzt tatsächlich neue Daten hochgeladen wurden, nicht nur das abgedeckte Quartal. Bei Auswahl einer konkreten Gesellschaft wird das Schmidt-Kranz-Logo durch deren Logo ersetzt.
 - **Export:** Button mit zwei Optionen – "Als PDF exportieren" (Druckansicht der aktuellen Seite inkl. aktuell gewählter Ansicht/Filter, über den Browser-Druckdialog) und "Als Excel exportieren" (lädt die zwei hochgeladenen Rohdateien – KPIs auf Monatsbasis und Status – als eine `.xlsx`-Datei mit zwei Tabellenblättern herunter).
 - **KPI-Bereich:** Tabelle mit einer Zeile je KPI (siehe Abschnitt 4.1) und einem Quartals-Filter (Dropdown, Default: neuestes vorhandenes Quartal). Die Quartalswerte sind aus den zugehörigen Monatsdaten **konsolidiert** (Summe/Ø/aktuellster Wert je nach KPI-Typ über die 3 Monate des Quartals). Für das gewählte Quartal je KPI: Ist Quartal, Budget Quartal, Delta Quartal, Ist Year to Date, Budget Year to Date, Delta Year to Date. YTD = dieselbe Konsolidierung über alle Monate desselben Jahres bis einschließlich des gewählten Quartals. Ein Toggle "Monatsdetail" blendet stattdessen eine einfache Detailtabelle ein: nur die reinen Ist-Werte, eine Spalte je vorhandenem Monat (ohne Budget/Forecast/Delta).
 - **KPI-Verlauf:** Chart mit Ist-Linie (durchgezogen) sowie optional Forecast-Linie (gestrichelt) über die letzten 6 vorhandenen **Monate** (kein Budget im Chart – das steht bereits in der Tabelle und würde den Trendverlauf unnötig überladen), KPI wählbar per Dropdown. Y-Achse bei Euro-KPIs kompakt in Millionen (z.B. "17 Mio. €").
-- **Status-Bereich:** Matrix, Themen/Module als Zeilen, Gesellschaften als Spalten, je Zelle ein zentrierter Text-Badge (Rot → "Delayed", Gelb → "In Progress", Grün → "Done"); Verantwortlicher/nächster Schritt/Priorität/Zieltermin als Tooltip.
+- **Status-Bereich:** Matrix, Themen/Module als Zeilen, Gesellschaften als Spalten, je Zelle ein zentrierter Text-Badge (Rot → "Delayed", Gelb → "In Progress", Grün → "Done", Blau → "2. Welle" für noch nicht gestartete Themen); Verantwortlicher/nächster Schritt/Priorität/Zieltermin sowie ein optionaler Kommentar als Tooltip. In der Einzelansicht (eine Gesellschaft ausgewählt statt "Gruppenebene") kommt zusätzlich eine ausgeschriebene Spalte "Kommentare" dazu.
 - Leerzustand vor dem ersten Upload: Hinweistext "Noch keine Daten hochgeladen."
 
 ### 3.2 Datenimport (Upload-Dialog)
@@ -52,7 +52,7 @@ Kein eigener Seitenwechsel: Der Link "Daten aktualisieren →" unten auf dem Das
 
 Zwei CSV-Dateien, UTF-8 kodiert. Jeder Upload **ersetzt die jeweilige Datei vollständig** (kein Anhängen/Mergen). Historie bei den KPIs entsteht dadurch, dass Nikolaus in seiner eigenen Master-Datei alle bisherigen Monate mitführt und die komplette Historie bei jedem Upload mitschickt.
 
-Feste Gesellschaftswerte (exakt diese Schreibweisen, aus der Projektzusammenfassung): `HAZEMAG`, `Allmineral`, `Hazemag Systems`, `Maximator`, `Maximator Hydrogen`, `FEST`.
+Feste Gesellschaftswerte (exakt diese Schreibweisen, aus der Projektzusammenfassung): `HAZEMAG`, `Allmineral`, `Maximator`, `Maximator Hydrogen`, `FEST`, `Perforator`.
 
 ### 4.1 `kpis.csv`
 
@@ -95,21 +95,22 @@ Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einkaufsvolumen_EUR_Forecast,KPI_
 | Spalte | Typ | Beschreibung |
 |---|---|---|
 | `Gesellschaft` | Text | einer der 6 festen Werte |
-| `Thema` | Text | z.B. "Auftragsbestätigungen", "Warengruppen", "Echtdatentransfer" |
-| `Status` | Text | `Rot` / `Gelb` / `Grün` |
+| `Thema` | Text | z.B. "Analytics", "Warengruppen", "Datentransfer: lesen" |
+| `Status` | Text | `Rot` / `Gelb` / `Grün` / `Blau` (Blau = "2. Welle", noch nicht gestartet) |
 | `Verantwortlicher` | Text | Name/Rolle |
 | `Naechster_Schritt` | Text | Freitext |
 | `Prioritaet` | Text | `Hoch` / `Mittel` / `Niedrig` |
 | `Zieltermin` | `YYYY-MM-DD` | optional, kann leer sein |
+| `Kommentar` | Text | optionale Spalte, kann leer sein; wird im Status-Bereich als Tooltip auf dem Badge und (in der Einzelansicht) als eigene Spalte "Kommentare" angezeigt |
 
 Eindeutigkeit: Kombination `Gesellschaft` + `Thema` muss eindeutig sein.
 
 Beispiel:
 ```
-Gesellschaft,Thema,Status,Verantwortlicher,Naechster_Schritt,Prioritaet,Zieltermin
-HAZEMAG,Auftragsbestaetigungen,Gelb,N. Ridder,ERP-Integration mit proALPHA klären,Hoch,2026-10-15
-Maximator,Warengruppen,Gruen,N. Ridder,Fachliche Pflege abschliessen,Mittel,2026-09-30
-Allmineral,Datenanbindung,Rot,N. Ridder,Workspace mit echten Daten befüllen,Hoch,2026-10-01
+Gesellschaft,Thema,Status,Verantwortlicher,Naechster_Schritt,Prioritaet,Zieltermin,Kommentar
+HAZEMAG,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind.
+Maximator,Warengruppen,Gelb,N. Ridder,Fachliche Pflege abschliessen,Mittel,2026-09-30,Muss teilweise eingeführt bzw. geprüft werden.
+Perforator,Analytics,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,
 ```
 
 ## 5. Architektur
@@ -173,7 +174,7 @@ GitHub Pages (öffentlich erreichbar, Passwort-Gate im Frontend)
 
 - [ ] Dashboard zeigt nach Eingabe des korrekten Passworts alle KPIs mit aktuellem Quartalswert (konsolidiert aus `kpis.csv`) und Trendlinie über die letzten Monate.
 - [ ] Gesellschafts-Filter schränkt sowohl KPI- als auch Status-Bereich korrekt ein.
-- [ ] Status-Bereich zeigt alle Zeilen aus `status.csv`, gruppiert nach Gesellschaft, mit korrektem Status-Badge (Delayed/In Progress/Done).
+- [ ] Status-Bereich zeigt alle Zeilen aus `status.csv`, gruppiert nach Gesellschaft, mit korrektem Status-Badge (Delayed/In Progress/Done/2. Welle).
 - [ ] Upload-Dialog akzeptiert `kpis.csv` und/oder `status.csv`, prüft Passwort serverseitig, validiert Inhalt und committet nur bei vollständig gültigen Daten.
 - [ ] Nach erfolgreichem Upload aktualisiert sich die öffentliche Seite innerhalb von ca. 1–2 Minuten automatisch (GitHub Actions Build).
 - [ ] Fehlerhafte Uploads (falsches Format, fehlende Spalten, doppelte Zeilen) werden mit konkreter, verständlicher Fehlermeldung abgelehnt, ohne die bestehenden Live-Daten zu verändern.

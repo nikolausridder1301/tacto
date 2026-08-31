@@ -1,4 +1,4 @@
-Gesellschaft,Thema,Status,Verantwortlicher,Naechster_Schritt,Prioritaet,Zieltermin
-HAZEMAG,Auftragsbestaetigungen,Gelb,N. Ridder,ERP-Integration mit proALPHA klaeren,Hoch,2026-10-15
-Maximator,Warengruppen,Gruen,N. Ridder,Fachliche Pflege abschliessen,Mittel,2026-09-30
-Maximator,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,
+Gesellschaft,Thema,Status,Verantwortlicher,Naechster_Schritt,Prioritaet,Zieltermin,Kommentar
+HAZEMAG,Auftragsbestaetigungen,Gelb,N. Ridder,ERP-Integration mit proALPHA klaeren,Hoch,2026-10-15,
+Maximator,Warengruppen,Gruen,N. Ridder,Fachliche Pflege abschliessen,Mittel,2026-09-30,Laeuft bei allen Einheiten stabil.
+Maximator,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,,
