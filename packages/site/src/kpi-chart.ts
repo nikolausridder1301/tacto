@@ -26,12 +26,19 @@ function draw(canvas: HTMLCanvasElement): void {
   // sinnlos.
   const alleWerte = monatsWerte.flatMap((m) => [m.values[def.key], m.forecast[def.key]]).filter((v): v is number => v !== null);
   const maxWert = Math.max(0, ...alleWerte);
+  const minWert = Math.min(...alleWerte);
   const zeigeMio = def.format === formatEur && maxWert >= 1_000_000;
-  // Chart.js' "nice number"-Automatik ignoriert stepSize teilweise, wenn
-  // Achsen-Min/Max nicht selbst schon auf ganze Millionen fallen – deshalb
-  // Achsengrenzen hier explizit auf ganze Millionen runden.
-  const yMin = zeigeMio ? Math.floor(Math.min(...alleWerte) / 1_000_000) * 1_000_000 : undefined;
-  const yMax = zeigeMio ? Math.ceil(Math.max(...alleWerte) / 1_000_000) * 1_000_000 : undefined;
+  // Chart.js' "nice number"-Automatik ignoriert stepSize teilweise, wenn die
+  // Achsen-Untergrenze nicht selbst schon auf eine ganze Million fällt –
+  // deshalb bleibt yMin auf ganze Millionen abgerundet, damit die
+  // Gitterlinien darüber (16, 17, 18 Mio. …) sauber auf ganzen Millionen
+  // liegen. yMax dagegen NICHT mehr grundsätzlich auf die nächste volle
+  // Million aufrunden – das ließ oft fast eine ganze Million Leerraum über
+  // der höchsten Linie (meist der Forecast). Stattdessen nur ein kleiner
+  // Puffer (2 %, auf 100.000 gerundet), damit der oberste Punkt nicht direkt
+  // am Rand klebt.
+  const yMin = zeigeMio ? Math.floor(minWert / 1_000_000) * 1_000_000 : undefined;
+  const yMax = zeigeMio ? Math.ceil((maxWert * 1.02) / 100_000) * 100_000 : undefined;
 
   chart = new Chart(canvas, {
     type: "line",
