@@ -4,8 +4,8 @@ HAZEMAG,Datentransfer: schreiben,Rot,N. Ridder,Schreibfunktion je Firma fertigst
 HAZEMAG,Warengruppen,Gelb,N. Ridder,Konsolidierte Warengruppen auf Gruppenebene erstellen,Mittel,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.
 HAZEMAG,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
 HAZEMAG,Einsparungen (Hinweise),Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
-HAZEMAG,RFQs,Gelb,N. Ridder,"Rueckschreibfunktion ins ERP fertigstellen, Academy abschliessen",Mittel,,Modul bei allen Einheiten funktionsfaehig. Rueckschreibfunktions ins ERP ausstehend. Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
-HAZEMAG,Agenten,Gelb,N. Ridder,Preisabwehragent und weitere Agenten fertigstellen,Mittel,,Verhandlungsagent live. Preisabwehr nicht. Andere offen.
+HAZEMAG,RFQs,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
+HAZEMAG,Agenten,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Verhandlungsagent live. Preisabwehr live.
 HAZEMAG,Lieferantenabfragen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
 HAZEMAG,Lieferantenbewertungen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
 HAZEMAG,Auftragsbestaetigung,Rot,N. Ridder,Auftragsbestaetigungs-Funktion umsetzen,Hoch,,Bei allen Einheiten ausstehend.
@@ -14,8 +14,8 @@ Allmineral,Datentransfer: schreiben,Rot,N. Ridder,Schreibfunktion je Firma ferti
 Allmineral,Warengruppen,Gelb,N. Ridder,Konsolidierte Warengruppen auf Gruppenebene erstellen,Mittel,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.
 Allmineral,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
 Allmineral,Einsparungen (Hinweise),Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
-Allmineral,RFQs,Gelb,N. Ridder,"Rueckschreibfunktion ins ERP fertigstellen, Academy abschliessen",Mittel,,Modul bei allen Einheiten funktionsfaehig. Rueckschreibfunktions ins ERP ausstehend. Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
-Allmineral,Agenten,Gelb,N. Ridder,Preisabwehragent und weitere Agenten fertigstellen,Mittel,,Verhandlungsagent live. Preisabwehr nicht. Andere offen.
+Allmineral,RFQs,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
+Allmineral,Agenten,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Verhandlungsagent live. Preisabwehr live.
 Allmineral,Lieferantenabfragen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
 Allmineral,Lieferantenbewertungen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
 Allmineral,Auftragsbestaetigung,Rot,N. Ridder,Auftragsbestaetigungs-Funktion umsetzen,Hoch,,Bei allen Einheiten ausstehend.
@@ -24,8 +24,8 @@ Maximator,Datentransfer: schreiben,Rot,N. Ridder,Schreibfunktion je Firma fertig
 Maximator,Warengruppen,Gelb,N. Ridder,Konsolidierte Warengruppen auf Gruppenebene erstellen,Mittel,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.
 Maximator,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
 Maximator,Einsparungen (Hinweise),Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
-Maximator,RFQs,Gelb,N. Ridder,"Rueckschreibfunktion ins ERP fertigstellen, Academy abschliessen",Mittel,,Modul bei allen Einheiten funktionsfaehig. Rueckschreibfunktions ins ERP ausstehend. Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
-Maximator,Agenten,Gelb,N. Ridder,Preisabwehragent und weitere Agenten fertigstellen,Mittel,,Verhandlungsagent live. Preisabwehr nicht. Andere offen.
+Maximator,RFQs,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
+Maximator,Agenten,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Verhandlungsagent live. Preisabwehr live.
 Maximator,Lieferantenabfragen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
 Maximator,Lieferantenbewertungen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
 Maximator,Auftragsbestaetigung,Rot,N. Ridder,Auftragsbestaetigungs-Funktion umsetzen,Hoch,,Bei allen Einheiten ausstehend.
@@ -34,8 +34,8 @@ Maximator Hydrogen,Datentransfer: schreiben,Rot,N. Ridder,Schreibfunktion je Fir
 Maximator Hydrogen,Warengruppen,Gelb,N. Ridder,Konsolidierte Warengruppen auf Gruppenebene erstellen,Mittel,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.
 Maximator Hydrogen,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
 Maximator Hydrogen,Einsparungen (Hinweise),Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
-Maximator Hydrogen,RFQs,Gelb,N. Ridder,"Rueckschreibfunktion ins ERP fertigstellen, Academy abschliessen",Mittel,,Modul bei allen Einheiten funktionsfaehig. Rueckschreibfunktions ins ERP ausstehend. Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
-Maximator Hydrogen,Agenten,Gelb,N. Ridder,Preisabwehragent und weitere Agenten fertigstellen,Mittel,,Verhandlungsagent live. Preisabwehr nicht. Andere offen.
+Maximator Hydrogen,RFQs,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
+Maximator Hydrogen,Agenten,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Verhandlungsagent live. Preisabwehr live.
 Maximator Hydrogen,Lieferantenabfragen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
 Maximator Hydrogen,Lieferantenbewertungen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
 Maximator Hydrogen,Auftragsbestaetigung,Rot,N. Ridder,Auftragsbestaetigungs-Funktion umsetzen,Hoch,,Bei allen Einheiten ausstehend.
@@ -44,8 +44,8 @@ FEST,Datentransfer: schreiben,Rot,N. Ridder,Schreibfunktion je Firma fertigstell
 FEST,Warengruppen,Rot,N. Ridder,Warengruppen-Einfuehrung nachholen,Hoch,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.
 FEST,Analytics,Rot,N. Ridder,Nach Live-Gang aktivieren,Hoch,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
 FEST,Einsparungen (Hinweise),Rot,N. Ridder,Nach Live-Gang aktivieren,Hoch,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
-FEST,RFQs,Rot,N. Ridder,Modul nach Live-Gang aktivieren,Hoch,,Modul bei allen Einheiten funktionsfaehig. Rueckschreibfunktions ins ERP ausstehend. Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
-FEST,Agenten,Rot,N. Ridder,Verhandlungsagent nach Live-Gang aktivieren,Hoch,,Verhandlungsagent live. Preisabwehr nicht. Andere offen.
+FEST,RFQs,Rot,N. Ridder,Modul nach Live-Gang aktivieren,Hoch,,Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
+FEST,Agenten,Rot,N. Ridder,Verhandlungsagent nach Live-Gang aktivieren,Hoch,,Verhandlungsagent live. Preisabwehr live.
 FEST,Lieferantenabfragen,Rot,N. Ridder,Nach Live-Gang aktivieren,Hoch,,Modul bei allen Einheiten funktionsfaehig.
 FEST,Lieferantenbewertungen,Rot,N. Ridder,Nach Live-Gang aktivieren,Hoch,,Modul bei allen Einheiten funktionsfaehig.
 FEST,Auftragsbestaetigung,Rot,N. Ridder,Auftragsbestaetigungs-Funktion umsetzen,Hoch,,Bei allen Einheiten ausstehend.
@@ -54,8 +54,8 @@ Perforator,Datentransfer: schreiben,Blau,N. Ridder,Noch nicht gestartet,Niedrig,
 Perforator,Warengruppen,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.
 Perforator,Analytics,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
 Perforator,Einsparungen (Hinweise),Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
-Perforator,RFQs,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Modul bei allen Einheiten funktionsfaehig. Rueckschreibfunktions ins ERP ausstehend. Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
-Perforator,Agenten,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Verhandlungsagent live. Preisabwehr nicht. Andere offen.
+Perforator,RFQs,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
+Perforator,Agenten,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Verhandlungsagent live. Preisabwehr live.
 Perforator,Lieferantenabfragen,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
 Perforator,Lieferantenbewertungen,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
 Perforator,Auftragsbestaetigung,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Bei allen Einheiten ausstehend.
