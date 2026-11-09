@@ -9,8 +9,10 @@ import skLogo from "./assets/logos/sk.jpg";
 
 export const SK_LOGO = skLogo;
 
+/** HAZEMAG & EPR und HAZEMAG Systems teilen sich dasselbe Logo. */
 const GESELLSCHAFT_LOGOS: Record<Gesellschaft, string> = {
-  HAZEMAG: hazemagLogo,
+  "HAZEMAG & EPR": hazemagLogo,
+  "HAZEMAG Systems": hazemagLogo,
   Allmineral: allmineralLogo,
   Maximator: maximatorLogo,
   "Maximator Hydrogen": maximatorHydrogenLogo,

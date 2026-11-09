@@ -672,6 +672,21 @@ main section {
   height: 320px;
 }
 
+.chart-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.chart-empty[hidden] {
+  display: none;
+}
+
 /* Upload: schwebendes Dialogfenster auf dem Dashboard (kein Seitenwechsel) */
 
 .upload-dialog {

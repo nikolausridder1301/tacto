@@ -4,8 +4,8 @@ import { aggregateByMonat, buildQuartalSnapshot, KPI_DEFS } from "./kpi-data";
 
 const EMPTY = `<td class="kpi-delta">–</td>`;
 
-function deltaCell(ist: number, ref: number | null, format: (n: number) => string): string {
-  if (ref === null) return EMPTY;
+function deltaCell(ist: number | null, ref: number | null, format: (n: number) => string): string {
+  if (ist === null || ref === null) return EMPTY;
   return `<td class="kpi-delta">${format(ist - ref)}</td>`;
 }
 

@@ -1,19 +1,21 @@
 import type { KpiRow } from "@tacto/csv";
 import { formatEur, formatNumber, formatPercent } from "./format";
 
-export type NumericKey =
-  | "einkaufsvolumenEur"
-  | "einsparungMonatEur"
-  | "einsparquoteProzent"
-  | "zeitersparnisStd"
-  | "rfqsAbgeschlossen"
-  | "aktiveLieferanten"
+/** KPIs, die direkt als Spalte in kpis.csv stehen. */
+export type BaseKey =
+  | "bestellvolumenEur"
+  | "einsparungenEur"
+  | "verhandlungen"
+  | "verhandlungsquoteProzent"
   | "datenqualitaetProzent"
-  | "aktiveNutzer"
-  | "materialquoteProzent";
+  | "liefertreueProzent"
+  | "mengentreueProzent";
 
-export type ForecastKey = `${NumericKey}Forecast`;
-export type BudgetKey = `${NumericKey}Budget`;
+/** Alle KPIs im Dashboard, inkl. der im Dashboard berechneten Quoten. */
+export type NumericKey = BaseKey | "einsparquoteProzent";
+
+type ForecastKey = `${BaseKey}Forecast`;
+type BudgetKey = `${BaseKey}Budget`;
 
 /** Wie Werte über mehrere Gesellschaften hinweg kombiniert werden (Filter "Alle"). */
 type CompanyAggregate = "sum" | "avg";
@@ -21,14 +23,16 @@ type CompanyAggregate = "sum" | "avg";
 /**
  * Wie Werte über mehrere Monate hinweg zu einem größeren Zeitraum kombiniert
  * werden (Monate -> Quartal, Monate -> Year-to-Date):
- * "sum"    – Flussgröße, addiert sich über den Zeitraum (z.B. Einsparung).
- * "avg"    – Durchschnitt über die enthaltenen Monate (z.B. Einsparquote).
- * "latest" – Bestandsgröße, Wert des letzten enthaltenen Monats (z.B. Aktive Nutzer).
+ * "sum"    – Flussgröße, addiert sich über den Zeitraum (z.B. Einsparungen).
+ * "avg"    – Durchschnitt über die enthaltenen Monate (z.B. Liefertreue).
+ * "latest" – Bestandsgröße, Wert des letzten enthaltenen Monats (z.B. Datenqualität).
  */
 type PeriodMode = "sum" | "avg" | "latest";
 
-export interface KpiDef {
-  key: NumericKey;
+/** KPI, die direkt aus einer CSV-Spalte gelesen wird. */
+interface BaseKpiDef {
+  kind: "base";
+  key: BaseKey;
   forecastKey: ForecastKey;
   budgetKey: BudgetKey;
   label: string;
@@ -37,14 +41,33 @@ export interface KpiDef {
   format: (n: number) => string;
 }
 
-function def(
-  key: NumericKey,
+/**
+ * Quote, die nicht in der CSV steht, sondern immer aus zwei anderen KPIs
+ * berechnet wird (Zähler / Nenner in %) – auf jeder Ebene (Monat, Quartal,
+ * YTD, Gesellschaft, Gruppe) aus den dort bereits summierten Werten. Dadurch
+ * bleibt sie stets nachvollziehbar aus den angezeigten Zeilen und ist
+ * automatisch nach Volumen gewichtet statt ein Mittel aus Einzelquoten.
+ */
+interface RatioKpiDef {
+  kind: "ratio";
+  key: Exclude<NumericKey, BaseKey>;
+  numerator: BaseKey;
+  denominator: BaseKey;
+  label: string;
+  format: (n: number) => string;
+}
+
+export type KpiDef = BaseKpiDef | RatioKpiDef;
+
+function base(
+  key: BaseKey,
   label: string,
   companyAggregate: CompanyAggregate,
   periodMode: PeriodMode,
   format: (n: number) => string,
-): KpiDef {
+): BaseKpiDef {
   return {
+    kind: "base",
     key,
     forecastKey: `${key}Forecast` as ForecastKey,
     budgetKey: `${key}Budget` as BudgetKey,
@@ -56,26 +79,52 @@ function def(
 }
 
 export const KPI_DEFS: KpiDef[] = [
-  def("einkaufsvolumenEur", "Einkaufsvolumen gesamt", "sum", "sum", formatEur),
-  def("einsparungMonatEur", "Einsparung", "sum", "sum", formatEur),
-  def("einsparquoteProzent", "Einsparquote", "avg", "avg", formatPercent),
-  def("zeitersparnisStd", "Zeitersparnis", "sum", "sum", (n) => `${formatNumber(n)} Std.`),
-  def("rfqsAbgeschlossen", "RFQs abgeschlossen", "sum", "sum", formatNumber),
-  def("aktiveLieferanten", "Aktive Lieferanten", "sum", "latest", formatNumber),
-  def("datenqualitaetProzent", "Datenqualität", "avg", "latest", formatPercent),
-  def("aktiveNutzer", "Aktive Nutzer", "sum", "latest", formatNumber),
-  def("materialquoteProzent", "Materialquote", "avg", "avg", formatPercent),
+  base("bestellvolumenEur", "Bestellvolumen", "sum", "sum", formatEur),
+  base("einsparungenEur", "Einsparungen", "sum", "sum", formatEur),
+  {
+    kind: "ratio",
+    key: "einsparquoteProzent",
+    numerator: "einsparungenEur",
+    denominator: "bestellvolumenEur",
+    label: "Einsparungen / Bestellvolumen",
+    format: formatPercent,
+  },
+  base("verhandlungen", "Verhandlungen", "sum", "sum", formatNumber),
+  base("verhandlungsquoteProzent", "Verhandlungsquote", "avg", "avg", formatPercent),
+  base("datenqualitaetProzent", "Datenqualität", "avg", "latest", formatPercent),
+  base("liefertreueProzent", "Liefertreue", "avg", "avg", formatPercent),
+  base("mengentreueProzent", "Mengentreue", "avg", "avg", formatPercent),
 ];
 
-function combine(nums: number[], mode: CompanyAggregate): number {
+const BASE_DEFS = KPI_DEFS.filter((d): d is BaseKpiDef => d.kind === "base");
+const RATIO_DEFS = KPI_DEFS.filter((d): d is RatioKpiDef => d.kind === "ratio");
+
+type Werte = Record<NumericKey, number | null>;
+
+/** Kombiniert die vorhandenen Werte; null, wenn gar kein Wert vorliegt (z.B. kein Ist für künftige Monate). */
+function combine(values: (number | null)[], mode: CompanyAggregate): number | null {
+  const nums = values.filter((n): n is number => n !== null);
+  if (nums.length === 0) return null;
   const sum = nums.reduce((a, b) => a + b, 0);
   return mode === "sum" ? sum : sum / nums.length;
 }
 
-function periodCombine(nums: number[], mode: PeriodMode): number {
+function periodCombine(values: (number | null)[], mode: PeriodMode): number | null {
+  const nums = values.filter((n): n is number => n !== null);
+  if (nums.length === 0) return null;
   if (mode === "latest") return nums[nums.length - 1];
   if (mode === "sum") return nums.reduce((a, b) => a + b, 0);
   return nums.reduce((a, b) => a + b, 0) / nums.length;
+}
+
+/** Ergänzt die berechneten Quoten aus den bereits kombinierten Basiswerten. */
+function addRatios(werte: Werte): Werte {
+  for (const d of RATIO_DEFS) {
+    const zaehler = werte[d.numerator];
+    const nenner = werte[d.denominator];
+    werte[d.key] = zaehler !== null && nenner !== null && nenner !== 0 ? (zaehler / nenner) * 100 : null;
+  }
+  return werte;
 }
 
 function splitMonat(monat: string): { jahr: number; monatNr: number } {
@@ -88,7 +137,7 @@ function splitQuartal(quartal: string): { jahr: number; q: number } {
   return { jahr: Number(jahr), q: Number(q) };
 }
 
-/** z.B. "2026-09" -> "2026-Q3". */
+/** z.B. "2027-09" -> "2027-Q3". */
 export function monatZuQuartal(monat: string): string {
   const { jahr, monatNr } = splitMonat(monat);
   return `${jahr}-Q${Math.ceil(monatNr / 3)}`;
@@ -96,9 +145,9 @@ export function monatZuQuartal(monat: string): string {
 
 export interface MonatWerte {
   monat: string;
-  values: Record<NumericKey, number>;
-  forecast: Record<NumericKey, number | null>;
-  budget: Record<NumericKey, number | null>;
+  values: Werte;
+  forecast: Werte;
+  budget: Werte;
 }
 
 /** Aggregiert Rohzeilen (ggf. mehrere Gesellschaften) je Monat, über alle drei Wertreihen (Ist/Forecast/Budget). */
@@ -113,24 +162,26 @@ export function aggregateByMonat(rows: KpiRow[]): MonatWerte[] {
   return Array.from(byMonat.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([monat, monatsRows]) => {
-      const values = {} as Record<NumericKey, number>;
-      const forecast = {} as Record<NumericKey, number | null>;
-      const budget = {} as Record<NumericKey, number | null>;
+      const values = {} as Werte;
+      const forecast = {} as Werte;
+      const budget = {} as Werte;
 
-      for (const d of KPI_DEFS) {
+      for (const d of BASE_DEFS) {
         values[d.key] = combine(
           monatsRows.map((r) => r[d.key]),
           d.companyAggregate,
         );
-
-        const fc = monatsRows.map((r) => r[d.forecastKey]).filter((n): n is number => n !== null);
-        forecast[d.key] = fc.length === 0 ? null : combine(fc, d.companyAggregate);
-
-        const bu = monatsRows.map((r) => r[d.budgetKey]).filter((n): n is number => n !== null);
-        budget[d.key] = bu.length === 0 ? null : combine(bu, d.companyAggregate);
+        forecast[d.key] = combine(
+          monatsRows.map((r) => r[d.forecastKey]),
+          d.companyAggregate,
+        );
+        budget[d.key] = combine(
+          monatsRows.map((r) => r[d.budgetKey]),
+          d.companyAggregate,
+        );
       }
 
-      return { monat, values, forecast, budget };
+      return { monat, values: addRatios(values), forecast: addRatios(forecast), budget: addRatios(budget) };
     });
 }
 
@@ -142,10 +193,22 @@ export function verfuegbareQuartale(rows: KpiRow[]): string[] {
 
 export interface QuartalSnapshot {
   quartal: string;
-  ist: Record<NumericKey, number>;
-  budget: Record<NumericKey, number | null>;
-  istYtd: Record<NumericKey, number>;
-  budgetYtd: Record<NumericKey, number | null>;
+  ist: Werte;
+  budget: Werte;
+  istYtd: Werte;
+  budgetYtd: Werte;
+}
+
+/** Kombiniert eine Wertreihe (Ist oder Budget) über mehrere Monate, inkl. der berechneten Quoten. */
+function kombiniereMonate(monate: MonatWerte[], reihe: "values" | "budget"): Werte {
+  const werte = {} as Werte;
+  for (const d of BASE_DEFS) {
+    werte[d.key] = periodCombine(
+      monate.map((m) => m[reihe][d.key]),
+      d.periodMode,
+    );
+  }
+  return addRatios(werte);
 }
 
 /**
@@ -169,26 +232,11 @@ export function buildQuartalSnapshot(rows: KpiRow[], zielQuartal: string): Quart
     return jahr === zielJahr && Math.ceil(monatNr / 3) <= zielQ;
   });
 
-  const ist = {} as Record<NumericKey, number>;
-  const budget = {} as Record<NumericKey, number | null>;
-  const istYtd = {} as Record<NumericKey, number>;
-  const budgetYtd = {} as Record<NumericKey, number | null>;
-
-  for (const d of KPI_DEFS) {
-    ist[d.key] = periodCombine(
-      quartalsMonate.map((m) => m.values[d.key]),
-      d.periodMode,
-    );
-    const buQ = quartalsMonate.map((m) => m.budget[d.key]).filter((n): n is number => n !== null);
-    budget[d.key] = buQ.length === 0 ? null : periodCombine(buQ, d.periodMode);
-
-    istYtd[d.key] = periodCombine(
-      ytdMonate.map((m) => m.values[d.key]),
-      d.periodMode,
-    );
-    const buY = ytdMonate.map((m) => m.budget[d.key]).filter((n): n is number => n !== null);
-    budgetYtd[d.key] = buY.length === 0 ? null : periodCombine(buY, d.periodMode);
-  }
-
-  return { quartal: zielQuartal, ist, budget, istYtd, budgetYtd };
+  return {
+    quartal: zielQuartal,
+    ist: kombiniereMonate(quartalsMonate, "values"),
+    budget: kombiniereMonate(quartalsMonate, "budget"),
+    istYtd: kombiniereMonate(ytdMonate, "values"),
+    budgetYtd: kombiniereMonate(ytdMonate, "budget"),
+  };
 }

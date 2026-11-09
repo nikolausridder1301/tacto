@@ -17,7 +17,7 @@ const baseEnv: Env = {
 };
 
 const VALID_KPI_CSV =
-  "Monat,Gesellschaft,KPI_Einkaufsvolumen_EUR,KPI_Einsparung_Monat_EUR,KPI_Einsparquote_Prozent,KPI_Zeitersparnis_Std,KPI_RFQs_Abgeschlossen,KPI_Aktive_Lieferanten,KPI_Datenqualitaet_Prozent,KPI_Aktive_Nutzer,KPI_Materialquote_Prozent\n2026-09,Maximator,2900000,15000,1.0,32,2,85,78,6,30";
+  "Monat,Gesellschaft,KPI_Bestellvolumen_EUR,KPI_Einsparungen_EUR,KPI_Verhandlungen,KPI_Verhandlungsquote_Prozent,KPI_Datenqualitaet_Prozent,KPI_Liefertreue_Prozent,KPI_Mengentreue_Prozent\n2027-01,Maximator Hydrogen,1320000,38000,2,9.8,82,78,96";
 
 const INVALID_KPI_CSV = "Monat,Gesellschaft\n2026-09,Maximator";
 

@@ -10,12 +10,33 @@ let chart: Chart | null = null;
 let selectedKey: NumericKey = KPI_DEFS[0].key;
 let lastRows: KpiRow[] = [];
 
+/** Hinweistext im Chart-Container, solange es (noch) keine Ist-/Forecast-Werte gibt. */
+function emptyHint(canvas: HTMLCanvasElement): HTMLElement {
+  const container = canvas.parentElement!;
+  let hint = container.querySelector<HTMLElement>(".chart-empty");
+  if (!hint) {
+    hint = document.createElement("p");
+    hint.className = "chart-empty";
+    hint.textContent = "Noch keine Ist-Werte vorhanden.";
+    container.appendChild(hint);
+  }
+  return hint;
+}
+
 function draw(canvas: HTMLCanvasElement): void {
   const def = KPI_DEFS.find((d) => d.key === selectedKey) ?? KPI_DEFS[0];
-  const monatsWerte = aggregateByMonat(lastRows).slice(-ANZAHL_MONATE);
+  // Nur Monate mit Ist- oder Forecast-Wert: Reine Budget-Monate (z.B.
+  // Jahresziele für künftige Monate) würden sonst die "letzten 6 Monate"
+  // belegen und die tatsächlich vorhandenen Ist-Werte aus dem Chart drängen.
+  const monatsWerte = aggregateByMonat(lastRows)
+    .filter((m) => m.values[def.key] !== null || m.forecast[def.key] !== null)
+    .slice(-ANZAHL_MONATE);
 
   chart?.destroy();
   chart = null;
+  const hint = emptyHint(canvas);
+  hint.hidden = monatsWerte.length > 0;
+  canvas.hidden = monatsWerte.length === 0;
   if (monatsWerte.length === 0) return;
 
   const hasForecast = monatsWerte.some((m) => m.forecast[def.key] !== null);

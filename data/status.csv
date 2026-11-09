@@ -1,14 +1,24 @@
 Gesellschaft,Thema,Status,Verantwortlicher,Naechster_Schritt,Prioritaet,Zieltermin,Kommentar
-HAZEMAG,Datentransfer: lesen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Lesefunktion funktioniert grundsaetzlich. FEST Bisher nur Test-Datei empfangen; Ticket bei FEE (ERP Anbieter) zwecks Datenexport.
-HAZEMAG,Datentransfer: schreiben,Rot,N. Ridder,Schreibfunktion je Firma fertigstellen,Hoch,,Schreibfunktion zurueck ins ERP bei allen Firmen in Arbeit.
-HAZEMAG,Warengruppen,Gelb,N. Ridder,Konsolidierte Warengruppen auf Gruppenebene erstellen,Mittel,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.
-HAZEMAG,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
-HAZEMAG,Einsparungen (Hinweise),Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
-HAZEMAG,RFQs,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
-HAZEMAG,Agenten,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Verhandlungsagent live. Preisabwehr live.
-HAZEMAG,Lieferantenabfragen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
-HAZEMAG,Lieferantenbewertungen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
-HAZEMAG,Auftragsbestaetigung,Rot,N. Ridder,Auftragsbestaetigungs-Funktion umsetzen,Hoch,,Bei allen Einheiten ausstehend.
+HAZEMAG & EPR,Datentransfer: lesen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Lesefunktion funktioniert grundsaetzlich. FEST Bisher nur Test-Datei empfangen; Ticket bei FEE (ERP Anbieter) zwecks Datenexport.
+HAZEMAG & EPR,Datentransfer: schreiben,Rot,N. Ridder,Schreibfunktion je Firma fertigstellen,Hoch,,Schreibfunktion zurueck ins ERP bei allen Firmen in Arbeit.
+HAZEMAG & EPR,Warengruppen,Gelb,N. Ridder,Konsolidierte Warengruppen auf Gruppenebene erstellen,Mittel,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.
+HAZEMAG & EPR,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
+HAZEMAG & EPR,Einsparungen (Hinweise),Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
+HAZEMAG & EPR,RFQs,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
+HAZEMAG & EPR,Agenten,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Verhandlungsagent live. Preisabwehr live.
+HAZEMAG & EPR,Lieferantenabfragen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
+HAZEMAG & EPR,Lieferantenbewertungen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
+HAZEMAG & EPR,Auftragsbestaetigung,Rot,N. Ridder,Auftragsbestaetigungs-Funktion umsetzen,Hoch,,Bei allen Einheiten ausstehend.
+HAZEMAG Systems,Datentransfer: lesen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Lesefunktion funktioniert grundsaetzlich. FEST Bisher nur Test-Datei empfangen; Ticket bei FEE (ERP Anbieter) zwecks Datenexport.
+HAZEMAG Systems,Datentransfer: schreiben,Rot,N. Ridder,Schreibfunktion je Firma fertigstellen,Hoch,,Schreibfunktion zurueck ins ERP bei allen Firmen in Arbeit.
+HAZEMAG Systems,Warengruppen,Gelb,N. Ridder,Konsolidierte Warengruppen auf Gruppenebene erstellen,Mittel,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.
+HAZEMAG Systems,Analytics,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
+HAZEMAG Systems,Einsparungen (Hinweise),Gruen,N. Ridder,Laufend nutzen,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
+HAZEMAG Systems,RFQs,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
+HAZEMAG Systems,Agenten,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Verhandlungsagent live. Preisabwehr live.
+HAZEMAG Systems,Lieferantenabfragen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
+HAZEMAG Systems,Lieferantenbewertungen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
+HAZEMAG Systems,Auftragsbestaetigung,Rot,N. Ridder,Auftragsbestaetigungs-Funktion umsetzen,Hoch,,Bei allen Einheiten ausstehend.
 Allmineral,Datentransfer: lesen,Gruen,N. Ridder,Laufend nutzen,Niedrig,,Lesefunktion funktioniert grundsaetzlich. FEST Bisher nur Test-Datei empfangen; Ticket bei FEE (ERP Anbieter) zwecks Datenexport.
 Allmineral,Datentransfer: schreiben,Rot,N. Ridder,Schreibfunktion je Firma fertigstellen,Hoch,,Schreibfunktion zurueck ins ERP bei allen Firmen in Arbeit.
 Allmineral,Warengruppen,Gelb,N. Ridder,Konsolidierte Warengruppen auf Gruppenebene erstellen,Mittel,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.

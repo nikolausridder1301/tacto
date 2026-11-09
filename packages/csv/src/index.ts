@@ -5,7 +5,8 @@
 import Papa from "papaparse";
 
 export const GESELLSCHAFTEN = [
-  "HAZEMAG",
+  "HAZEMAG & EPR",
+  "HAZEMAG Systems",
   "Allmineral",
   "Maximator",
   "Maximator Hydrogen",
@@ -16,15 +17,13 @@ export const GESELLSCHAFTEN = [
 export type Gesellschaft = (typeof GESELLSCHAFTEN)[number];
 
 const KPI_BASE_FIELDS = [
-  "KPI_Einkaufsvolumen_EUR",
-  "KPI_Einsparung_Monat_EUR",
-  "KPI_Einsparquote_Prozent",
-  "KPI_Zeitersparnis_Std",
-  "KPI_RFQs_Abgeschlossen",
-  "KPI_Aktive_Lieferanten",
+  "KPI_Bestellvolumen_EUR",
+  "KPI_Einsparungen_EUR",
+  "KPI_Verhandlungen",
+  "KPI_Verhandlungsquote_Prozent",
   "KPI_Datenqualitaet_Prozent",
-  "KPI_Aktive_Nutzer",
-  "KPI_Materialquote_Prozent",
+  "KPI_Liefertreue_Prozent",
+  "KPI_Mengentreue_Prozent",
 ] as const;
 
 type KpiBaseField = (typeof KPI_BASE_FIELDS)[number];
@@ -36,50 +35,46 @@ function budgetColumn(field: KpiBaseField): string {
   return `${field}_Budget`;
 }
 
+// Ist-Werte sind (wie Forecast/Budget) nullable: Für künftige Monate liegen
+// oft nur Budget-Werte (Jahresziele) vor, die Ist-Zellen bleiben dann leer.
+// Die Quote "Einsparungen / Bestellvolumen" steht bewusst nicht in der CSV –
+// das Dashboard berechnet sie immer aus diesen beiden Spalten.
 export interface KpiRow {
-  monat: string; // "YYYY-MM", z.B. "2026-03"
+  monat: string; // "YYYY-MM", z.B. "2027-03"
   gesellschaft: Gesellschaft;
-  einkaufsvolumenEur: number;
-  einkaufsvolumenEurForecast: number | null;
-  einkaufsvolumenEurBudget: number | null;
-  einsparungMonatEur: number;
-  einsparungMonatEurForecast: number | null;
-  einsparungMonatEurBudget: number | null;
-  einsparquoteProzent: number;
-  einsparquoteProzentForecast: number | null;
-  einsparquoteProzentBudget: number | null;
-  zeitersparnisStd: number;
-  zeitersparnisStdForecast: number | null;
-  zeitersparnisStdBudget: number | null;
-  rfqsAbgeschlossen: number;
-  rfqsAbgeschlossenForecast: number | null;
-  rfqsAbgeschlossenBudget: number | null;
-  aktiveLieferanten: number;
-  aktiveLieferantenForecast: number | null;
-  aktiveLieferantenBudget: number | null;
-  datenqualitaetProzent: number;
+  bestellvolumenEur: number | null;
+  bestellvolumenEurForecast: number | null;
+  bestellvolumenEurBudget: number | null;
+  einsparungenEur: number | null;
+  einsparungenEurForecast: number | null;
+  einsparungenEurBudget: number | null;
+  verhandlungen: number | null;
+  verhandlungenForecast: number | null;
+  verhandlungenBudget: number | null;
+  verhandlungsquoteProzent: number | null;
+  verhandlungsquoteProzentForecast: number | null;
+  verhandlungsquoteProzentBudget: number | null;
+  datenqualitaetProzent: number | null;
   datenqualitaetProzentForecast: number | null;
   datenqualitaetProzentBudget: number | null;
-  aktiveNutzer: number;
-  aktiveNutzerForecast: number | null;
-  aktiveNutzerBudget: number | null;
-  materialquoteProzent: number;
-  materialquoteProzentForecast: number | null;
-  materialquoteProzentBudget: number | null;
+  liefertreueProzent: number | null;
+  liefertreueProzentForecast: number | null;
+  liefertreueProzentBudget: number | null;
+  mengentreueProzent: number | null;
+  mengentreueProzentForecast: number | null;
+  mengentreueProzentBudget: number | null;
 }
 
 // Mapping CSV-Basisspalte -> KpiRow-Feldname (camelCase), damit die
-// Parse-Schleife unten nicht neunmal denselben Code wiederholt.
+// Parse-Schleife unten nicht für jede KPI denselben Code wiederholt.
 const FIELD_MAP: Record<KpiBaseField, keyof KpiRow> = {
-  KPI_Einkaufsvolumen_EUR: "einkaufsvolumenEur",
-  KPI_Einsparung_Monat_EUR: "einsparungMonatEur",
-  KPI_Einsparquote_Prozent: "einsparquoteProzent",
-  KPI_Zeitersparnis_Std: "zeitersparnisStd",
-  KPI_RFQs_Abgeschlossen: "rfqsAbgeschlossen",
-  KPI_Aktive_Lieferanten: "aktiveLieferanten",
+  KPI_Bestellvolumen_EUR: "bestellvolumenEur",
+  KPI_Einsparungen_EUR: "einsparungenEur",
+  KPI_Verhandlungen: "verhandlungen",
+  KPI_Verhandlungsquote_Prozent: "verhandlungsquoteProzent",
   KPI_Datenqualitaet_Prozent: "datenqualitaetProzent",
-  KPI_Aktive_Nutzer: "aktiveNutzer",
-  KPI_Materialquote_Prozent: "materialquoteProzent",
+  KPI_Liefertreue_Prozent: "liefertreueProzent",
+  KPI_Mengentreue_Prozent: "mengentreueProzent",
 };
 
 export type Status = "Rot" | "Gelb" | "Gruen" | "Blau";
@@ -142,8 +137,9 @@ function parseCsv(csvText: string): { data: Record<string, string>[]; fields: st
 }
 
 /**
- * Parst eine optionale Zusatzspalte (Forecast/Budget) für eine Zeile. Fehlt
- * die Spalte komplett in der Datei, wird kein Wert erwartet (null). Ist sie
+ * Parst eine Wertspalte (Ist/Forecast/Budget) für eine Zeile. Fehlt die
+ * Spalte komplett in der Datei, wird kein Wert erwartet (null) – für die
+ * Ist-Spalten wird das vorher über KPI_REQUIRED_COLUMNS abgefangen. Ist sie
  * vorhanden, darf die einzelne Zelle trotzdem leer bleiben (null, kein
  * Validierungsfehler) – nur ein tatsächlich vorhandener, aber nicht-
  * numerischer Wert ist ein Fehler.
@@ -203,13 +199,9 @@ export function parseKpiCsv(csvText: string): ParseResult<KpiRow> {
 
     for (const field of KPI_BASE_FIELDS) {
       const baseKey = FIELD_MAP[field];
-      const n = parseLocaleNumber(raw[field] ?? "", commaAsDecimal);
-      if (!Number.isFinite(n)) {
-        errors.push(`Zeile ${lineNo}: Spalte "${field}" ist kein gültiger Zahlenwert ("${raw[field]}")`);
-        rowValid = false;
-      } else {
-        (row as Record<string, unknown>)[baseKey] = n;
-      }
+      const ist = parseOptionalColumn(raw, fields, field, commaAsDecimal, lineNo, errors);
+      if (!ist.ok) rowValid = false;
+      (row as Record<string, unknown>)[baseKey] = ist.value;
 
       const forecast = parseOptionalColumn(raw, fields, forecastColumn(field), commaAsDecimal, lineNo, errors);
       if (!forecast.ok) rowValid = false;
