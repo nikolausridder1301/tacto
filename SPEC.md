@@ -78,7 +78,7 @@ Eindeutigkeit: Kombination `Monat` + `Gesellschaft` muss eindeutig sein (keine d
 
 **Forecast-/Budget-Spalten (optional):** Zu jeder `KPI_*`-Spalte können zwei gleichnamige Zusatzspalten ergänzt werden: `KPI_*_Forecast` (aktuelle Hochrechnung) und `KPI_*_Budget` (Jahresziel/Plan), jeweils auf Monatsebene. Das Dashboard stellt daraus automatisch Ist/Budget samt Delta gegenüber (Tabelle, konsolidiert auf Quartal + YTD) und Ist/Forecast als Trendlinien (Chart, Monatsebene). Vollständig optional: fehlt eine `_Forecast`- oder `_Budget`-Spalte komplett, wird für diese Kennzahl kein Vergleich angezeigt; ist die Spalte vorhanden, darf die einzelne Zelle trotzdem leer bleiben (kein Wert für diesen Monat/diese Gesellschaft, kein Validierungsfehler).
 
-**Jahresziele als Budget:** Jahresziele werden auf Monate heruntergebrochen – Flussgrößen (Bestellvolumen, Einsparungen, Verhandlungen) gleichmäßig auf 12 Monate verteilt (Rundungsrest im Dezember, damit die Jahressumme exakt stimmt), Quoten gelten unverändert in jedem Monat. So entspricht das Budget Year to Date nach Q4 genau dem Jahresziel.
+**Jahresziele als Budget:** Jahresziele werden auf Monate heruntergebrochen – Bestellvolumen und Einsparungen gleichmäßig auf 12 Monate verteilt (Rundungsrest im Dezember, damit die Jahressumme exakt stimmt), Quoten gelten unverändert in jedem Monat. Verhandlungen gibt es nur als ganze Zahl: Die Monatswerte werden so verteilt, dass das bis dahin aufgelaufene Ziel immer aufgerundet ist (z.B. Jahresziel 5 → YTD 2/3/4/5 nach Q1–Q4); die Anzeige rundet Verhandlungen zusätzlich immer auf ganze Zahlen auf. So entspricht das Budget Year to Date nach Q4 genau dem Jahresziel.
 
 **Konsolidierung im Dashboard (nicht in der CSV):** Aus den Monatswerten werden automatisch abgeleitet:
 - **Quartal:** die 3 Monate des jeweiligen Quartals, kombiniert je nach KPI-Typ.
@@ -89,8 +89,8 @@ Kombinationslogik je KPI-Typ: Summe bei Flussgrößen (Bestellvolumen, Einsparun
 Beispiel (Ist + Budget; Allmineral bisher nur mit Budget):
 ```
 Monat,Gesellschaft,KPI_Bestellvolumen_EUR,KPI_Bestellvolumen_EUR_Budget,KPI_Einsparungen_EUR,KPI_Einsparungen_EUR_Budget,KPI_Verhandlungen,KPI_Verhandlungen_Budget,KPI_Verhandlungsquote_Prozent,KPI_Verhandlungsquote_Prozent_Budget,KPI_Datenqualitaet_Prozent,KPI_Datenqualitaet_Prozent_Budget,KPI_Liefertreue_Prozent,KPI_Liefertreue_Prozent_Budget,KPI_Mengentreue_Prozent,KPI_Mengentreue_Prozent_Budget
-2027-01,Maximator Hydrogen,1320000,1375000,38000,41250,2,2.5,9.8,10.7,82,85,78,80,96,97
-2027-01,Allmineral,,458333,,20833,,0.42,,3.4,,80,,85,,98
+2027-01,Maximator Hydrogen,1320000,1375000,38000,41250,2,3,9.8,10.7,82,85,78,80,96,97
+2027-01,Allmineral,,458333,,20833,,1,,3.4,,80,,85,,98
 ```
 
 ### 4.2 `status.csv`

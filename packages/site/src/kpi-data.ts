@@ -78,6 +78,11 @@ function base(
   };
 }
 
+/** Verhandlungen gibt es nur ganz – Bruchteile (z.B. aus anteiligen Budgets) werden immer aufgerundet. */
+function formatGanzzahlAufgerundet(n: number): string {
+  return formatNumber(Math.ceil(n));
+}
+
 export const KPI_DEFS: KpiDef[] = [
   base("bestellvolumenEur", "Bestellvolumen", "sum", "sum", formatEur),
   base("einsparungenEur", "Einsparungen", "sum", "sum", formatEur),
@@ -89,7 +94,7 @@ export const KPI_DEFS: KpiDef[] = [
     label: "Einsparungen / Bestellvolumen",
     format: formatPercent,
   },
-  base("verhandlungen", "Verhandlungen", "sum", "sum", formatNumber),
+  base("verhandlungen", "Verhandlungen", "sum", "sum", formatGanzzahlAufgerundet),
   base("verhandlungsquoteProzent", "Verhandlungsquote", "avg", "avg", formatPercent),
   base("datenqualitaetProzent", "Datenqualität", "avg", "latest", formatPercent),
   base("liefertreueProzent", "Liefertreue", "avg", "avg", formatPercent),

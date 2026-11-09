@@ -59,13 +59,13 @@ FEST,Agenten,Rot,N. Ridder,Verhandlungsagent nach Live-Gang aktivieren,Hoch,,Ver
 FEST,Lieferantenabfragen,Rot,N. Ridder,Nach Live-Gang aktivieren,Hoch,,Modul bei allen Einheiten funktionsfaehig.
 FEST,Lieferantenbewertungen,Rot,N. Ridder,Nach Live-Gang aktivieren,Hoch,,Modul bei allen Einheiten funktionsfaehig.
 FEST,Auftragsbestaetigung,Rot,N. Ridder,Auftragsbestaetigungs-Funktion umsetzen,Hoch,,Bei allen Einheiten ausstehend.
-Perforator,Datentransfer: lesen,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Lesefunktion funktioniert grundsaetzlich. FEST Bisher nur Test-Datei empfangen; Ticket bei FEE (ERP Anbieter) zwecks Datenexport.
-Perforator,Datentransfer: schreiben,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Schreibfunktion zurueck ins ERP bei allen Firmen in Arbeit.
-Perforator,Warengruppen,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.
-Perforator,Analytics,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
-Perforator,Einsparungen (Hinweise),Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
-Perforator,RFQs,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
-Perforator,Agenten,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Verhandlungsagent live. Preisabwehr live.
-Perforator,Lieferantenabfragen,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
-Perforator,Lieferantenbewertungen,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Modul bei allen Einheiten funktionsfaehig.
-Perforator,Auftragsbestaetigung,Blau,N. Ridder,Noch nicht gestartet,Niedrig,,Bei allen Einheiten ausstehend.
+Perforator,Datentransfer: lesen,Gelb,N. Ridder,Implementierung laeuft (Start November 2026),Mittel,,Lesefunktion funktioniert grundsaetzlich. FEST Bisher nur Test-Datei empfangen; Ticket bei FEE (ERP Anbieter) zwecks Datenexport.
+Perforator,Datentransfer: schreiben,Gelb,N. Ridder,Implementierung laeuft (Start November 2026),Mittel,,Schreibfunktion zurueck ins ERP bei allen Firmen in Arbeit.
+Perforator,Warengruppen,Gelb,N. Ridder,Implementierung laeuft (Start November 2026),Mittel,,Muss teilweise eingefuehrt werden bzw. geprueft werde. Auf Gruppenebene muessen neue konsolidierte Warengruppen erstellt werden.
+Perforator,Analytics,Gelb,N. Ridder,Implementierung laeuft (Start November 2026),Mittel,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
+Perforator,Einsparungen (Hinweise),Gelb,N. Ridder,Implementierung laeuft (Start November 2026),Mittel,,Funktioniert bei allen Einheiten die live sind (bis auf FEST). Natuerlich stark abhaengig von Datenqualitaet (siehe KPIs).
+Perforator,RFQs,Gelb,N. Ridder,Implementierung laeuft (Start November 2026),Mittel,,Academy muss abgeschlossen werden um eigene Abfragen zu erstellen.
+Perforator,Agenten,Gelb,N. Ridder,Implementierung laeuft (Start November 2026),Mittel,,Verhandlungsagent live. Preisabwehr live.
+Perforator,Lieferantenabfragen,Gelb,N. Ridder,Implementierung laeuft (Start November 2026),Mittel,,Modul bei allen Einheiten funktionsfaehig.
+Perforator,Lieferantenbewertungen,Gelb,N. Ridder,Implementierung laeuft (Start November 2026),Mittel,,Modul bei allen Einheiten funktionsfaehig.
+Perforator,Auftragsbestaetigung,Gelb,N. Ridder,Implementierung laeuft (Start November 2026),Mittel,,Bei allen Einheiten ausstehend.
